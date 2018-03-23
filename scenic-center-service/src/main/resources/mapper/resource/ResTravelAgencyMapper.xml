@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.TravelAgencyMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.travelAgency.ResTravelAgency" >
+    <result column="ID" property="id" jdbcType="BIGINT" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="SHORT_NAME" property="shortName" jdbcType="VARCHAR" />
+    <result column="LICENSENO" property="licenseno" jdbcType="VARCHAR" />
+    <result column="EMAIL" property="email" jdbcType="VARCHAR" />
+    <result column="QQ_WEIBO" property="qqWeibo" jdbcType="VARCHAR" />
+    <result column="SINA_WEIBO" property="sinaWeibo" jdbcType="VARCHAR" />
+    <result column="WECHAT" property="wechat" jdbcType="VARCHAR" />
+    <result column="REGION" property="region" jdbcType="VARCHAR" />
+    <result column="LOGO" property="logo" jdbcType="VARCHAR" />
+    <result column="VIDEO" property="video" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="PHONE" property="phone" jdbcType="VARCHAR" />
+    <result column="FAX" property="fax" jdbcType="VARCHAR" />
+    <result column="TRAVEL_TYPE" property="travelType" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    ID, NAME, SHORT_NAME, LICENSENO, EMAIL, QQ_WEIBO, SINA_WEIBO, WECHAT, REGION, LOGO,
+    VIDEO, ADDRESS, PHONE, FAX, TRAVEL_TYPE,STATUS, VCODE
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from res_travel_agency
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from res_travel_agency
+    <where>
+      AND vcode = #{vcode}
+      AND STATUS != -1
+      <if test="name != null and '' != name">
+        AND name LIKE '%${name}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND status = #{status}
+      </if>
+    </where>
+    ORDER BY ID DESC
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM res_travel_agency
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.daqsoft.entity.travelAgency.ResTravelAgency" >
+    insert into res_travel_agency (ID, NAME, SHORT_NAME,
+    LICENSENO, EMAIL, QQ_WEIBO,
+    SINA_WEIBO, WECHAT, REGION,
+    LOGO, VIDEO, ADDRESS,
+    PHONE, FAX,TRAVEL_TYPE, STATUS,
+    VCODE)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{shortName,jdbcType=VARCHAR},
+    #{licenseno,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{qqWeibo,jdbcType=VARCHAR},
+    #{sinaWeibo,jdbcType=VARCHAR}, #{wechat,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR},
+    #{logo,jdbcType=VARCHAR}, #{video,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+    #{phone,jdbcType=VARCHAR}, #{fax,jdbcType=VARCHAR},#{travelType,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
+    #{vcode,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.travelAgency.ResTravelAgency" >
+    update res_travel_agency
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="shortName != null" >
+        SHORT_NAME = #{shortName,jdbcType=VARCHAR},
+      </if>
+      <if test="licenseno != null" >
+        LICENSENO = #{licenseno,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        EMAIL = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="qqWeibo != null" >
+        QQ_WEIBO = #{qqWeibo,jdbcType=VARCHAR},
+      </if>
+      <if test="sinaWeibo != null" >
+        SINA_WEIBO = #{sinaWeibo,jdbcType=VARCHAR},
+      </if>
+      <if test="wechat != null" >
+        WECHAT = #{wechat,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        REGION = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null" >
+        LOGO = #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="video != null" >
+        VIDEO = #{video,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null" >
+        FAX = #{fax,jdbcType=VARCHAR},
+      </if>
+      <if test="travelType != null" >
+        TRAVEL_TYPE = #{travelType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

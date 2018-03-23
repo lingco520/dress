@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.SendInfoContentMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.sendInfoContent.ManagerSendInfoContent" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="DITCH_NAME" property="ditchName" jdbcType="VARCHAR" />
+    <result column="PLATFORM_NAME" property="platformName" jdbcType="VARCHAR" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="AUTHO" property="autho" jdbcType="VARCHAR" />
+    <result column="SOURCE" property="source" jdbcType="VARCHAR" />
+    <result column="LABEL" property="label" jdbcType="VARCHAR" />
+    <result column="PUBLISH_TIME" property="publishTime" jdbcType="VARCHAR" />
+    <result column="LINK" property="link" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="CONTENT" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    ID, DITCH_NAME, PLATFORM_NAME, TITLE, AUTHO, SOURCE, LABEL,DATE_FORMAT(PUBLISH_TIME,'%Y-%m-%d %H:%i:%s') as PUBLISH_TIME, LINK, STATUS,
+    VCODE, UPDATE_TIME,CONTENT
+  </sql>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    FROM
+    manager_send_info_content
+    <where>
+      AND STATUS != -1
+      <if test="name != null and '' != name">
+        AND DITCH_NAME LIKE '%${name}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND status = #{status}
+      </if>
+    </where>
+    ORDER BY id DESC
+  </select>
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from manager_send_info_content
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from manager_send_info_content
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.daqsoft.entity.sendInfoContent.ManagerSendInfoContent" >
+    insert into manager_send_info_content (ID, DITCH_NAME, PLATFORM_NAME, 
+      TITLE, AUTHO, SOURCE, 
+      LABEL, PUBLISH_TIME, LINK, 
+      STATUS, VCODE, UPDATE_TIME, 
+      CONTENT)
+    values (#{id,jdbcType=BIGINT}, #{ditchName,jdbcType=VARCHAR}, #{platformName,jdbcType=VARCHAR}, 
+      #{title,jdbcType=VARCHAR}, #{autho,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR}, 
+      #{label,jdbcType=VARCHAR}, #{publishTime}, #{link,jdbcType=VARCHAR},
+      #{status,jdbcType=INTEGER}, #{vcode,jdbcType=VARCHAR}, now(),
+      #{content,jdbcType=LONGVARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.sendInfoContent.ManagerSendInfoContent" >
+    update manager_send_info_content
+    <set >
+      <if test="ditchName != null" >
+        DITCH_NAME = #{ditchName,jdbcType=VARCHAR},
+      </if>
+      <if test="platformName != null" >
+        PLATFORM_NAME = #{platformName,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        TITLE = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="autho != null" >
+        AUTHO = #{autho,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        SOURCE = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="label != null" >
+        LABEL = #{label,jdbcType=VARCHAR},
+      </if>
+      <if test="publishTime != null" >
+        PUBLISH_TIME = #{publishTime},
+      </if>
+      <if test="link != null" >
+        LINK = #{link,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=LONGVARCHAR},
+      </if>
+      UPDATE_TIME = now(),
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="getDitchName" parameterType="String" resultType="com.daqsoft.vo.ScenicSpotsVo">
+    select ditch_name as name,ID,vcode from manager_send_info_channel;
+  </select>
+
+</mapper>

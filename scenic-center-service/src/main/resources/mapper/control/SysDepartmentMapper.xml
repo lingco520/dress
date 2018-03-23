@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.control.DepartmentMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.department.SysDepartment" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="ADDTIME" property="addtime" jdbcType="TIMESTAMP" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="PHONE" property="phone" jdbcType="VARCHAR" />
+    <result column="OFFICE" property="office" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="BIGINT" />
+    <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+    <result column="isInspection" property="isinspection" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, ADDTIME, NAME, PHONE, OFFICE, STATUS, UPDATETIME, VCODE, isInspection
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_department
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from sys_department
+    <where>
+      AND STATUS != -1 AND  vcode=#{vcode}
+      <if test="name != null and '' != name">
+        AND name LIKE '%${name}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND status = #{status}
+      </if>
+    </where>
+    ORDER BY id DESC
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from sys_department
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.daqsoft.entity.department.SysDepartment" >
+    insert into sys_department (ADDTIME, NAME,
+      PHONE, OFFICE, STATUS, 
+      UPDATETIME, VCODE, isInspection
+      )
+    values (now(), #{name,jdbcType=VARCHAR},
+      #{phone,jdbcType=VARCHAR}, #{office,jdbcType=VARCHAR}, #{status,jdbcType=BIGINT}, 
+      now(), #{vcode,jdbcType=VARCHAR}, #{isinspection,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.department.SysDepartment" >
+    update sys_department
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="office != null" >
+        OFFICE = #{office,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=BIGINT},
+      </if>
+
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="isinspection != null" >
+        isInspection = #{isinspection,jdbcType=VARCHAR},
+      </if>
+      UPDATETIME = now(),
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

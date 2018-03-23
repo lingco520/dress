@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.control.ScenicRelationMapper">
+    <resultMap id="BaseResultMap" type="com.daqsoft.entity.scenicEntity.SysUserScenic">
+        <id column="ID" property="id" jdbcType="BIGINT"/>
+        <result column="EMAIL" property="email" jdbcType="VARCHAR"/>
+        <result column="ACCOUNT" property="account" jdbcType="VARCHAR"/>
+        <result column="LOGINIP" property="loginip" jdbcType="VARCHAR"/>
+        <result column="LOGINTIME" property="logintime" jdbcType="TIMESTAMP"/>
+        <result column="NAME" property="name" jdbcType="VARCHAR"/>
+        <result column="PASSWORD" property="password" jdbcType="VARCHAR"/>
+        <result column="STATUS" property="status" jdbcType="BIGINT"/>
+        <result column="PHONE" property="phone" jdbcType="VARCHAR"/>
+        <result column="REGION" property="region" jdbcType="BIGINT"/>
+        <result column="VALIDITY" property="validity" jdbcType="TIMESTAMP"/>
+        <result column="CREATER" property="creater" jdbcType="BIGINT"/>
+        <result column="VCODE" property="vcode" jdbcType="VARCHAR"/>
+        <result column="APPUSERROLE" property="appUserRole" jdbcType="BIGINT"/>
+        <result column="APPUSERTYPE" property="appUserType" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    ID, EMAIL, ACCOUNT, LOGINIP, LOGINTIME, NAME, PASSWORD, STATUS, PHONE, REGION, VALIDITY,
+    CREATER, VCODE, APPUSERROLE, APPUSERTYPE
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
+        where ID = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
+        <where>
+            <if test="account != null and '' != account">
+                AND account LIKE '%${account}%'
+            </if>
+            and STATUS = 1
+        </where>
+
+
+    </select>
+
+    <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.scenicEntity.SysUserScenic">
+        update sys_user
+        <set>
+            <if test="email != null">
+                EMAIL = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="account != null">
+                ACCOUNT = #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="loginip != null">
+                LOGINIP = #{loginip,jdbcType=VARCHAR},
+            </if>
+            <if test="logintime != null">
+                LOGINTIME = #{logintime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="name != null">
+                NAME = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                PASSWORD = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                STATUS = #{status,jdbcType=BIGINT},
+            </if>
+            <if test="phone != null">
+                PHONE = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="region != null">
+                REGION = #{region,jdbcType=BIGINT},
+            </if>
+            <if test="validity != null">
+                VALIDITY = #{validity,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater,jdbcType=BIGINT},
+            </if>
+            <if test="vcode != null">
+                VCODE = #{vcode,jdbcType=VARCHAR},
+            </if>
+            APPUSERROLE = #{appUserRole,jdbcType=BIGINT},
+            <if test="appUserType != null">
+                APPUSERTYPE = #{appUserType,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!--查询上级创建者的vcode-->
+    <select id="getCreaterVcode" resultType="java.lang.String" parameterType="java.lang.Long">
+    select
+    vcode
+    from sys_user
+    where ID = #{creater,jdbcType=BIGINT}
+  </select>
+    <!--通过登录账号获取登录用户-->
+    <select id="getUserByAccount" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
+        where ACCOUNT = #{account,jdbcType=VARCHAR}
+    </select>
+
+
+    <!--通过登录账号获取登录用户-->
+    <select id="getUserByAccountAndPassWord" resultMap="BaseResultMap"
+            parameterType="com.daqsoft.entity.scenicEntity.SysUserScenic">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
+        where ACCOUNT = #{account,jdbcType=VARCHAR}
+        AND PASSWORD = #{password,jdbcType=VARCHAR}
+        AND STATUS = 1
+    </select>
+</mapper>

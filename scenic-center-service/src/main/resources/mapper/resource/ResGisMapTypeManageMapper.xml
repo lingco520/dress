@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.ResGisMapTypeManageMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.gisMapTypeManage.ResGisMapTypeManage" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, NAME, STATUS, UPDATE_TIME,TYPE
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_gis_map_type_manage
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_gis_map_type_manage
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from res_gis_map_type_manage
+    <where>
+      AND STATUS != -1
+      <if test="name != null and '' != name">
+        AND name LIKE '%${name}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND status = #{status}
+      </if>
+    </where>
+    ORDER BY id DESC
+  </select>
+
+
+  <insert id="insert" parameterType="com.daqsoft.entity.gisMapTypeManage.ResGisMapTypeManage" >
+    insert into res_gis_map_type_manage (ID, NAME, STATUS, 
+      UPDATE_TIME,TYPE)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      now(),#{type})
+  </insert>
+
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.gisMapTypeManage.ResGisMapTypeManage" >
+    update res_gis_map_type_manage
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+        UPDATE_TIME = now(),
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="checkGisMapType" parameterType="java.lang.String" resultType="java.lang.Integer">
+    SELECT count(NAME) FROM res_gis_map_type_manage where name = #{gisName} and status = 1
+  </select>
+
+</mapper>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.ResScenicComfortMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.scenicComfort.ResScenicComfort" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="RANK" property="rank" jdbcType="INTEGER" />
+    <result column="RATING" property="rating" jdbcType="VARCHAR" />
+    <result column="MAXCOUNT" property="maxcount" jdbcType="VARCHAR" />
+    <result column="MINCOUNT" property="mincount" jdbcType="VARCHAR" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, NAME, RANK, RATING, MAXCOUNT, MINCOUNT, VCODE, STATUS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from res_scenic_comfort
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from res_scenic_comfort
+    <where>
+      AND vcode = #{vcode}
+      AND STATUS != -1
+      <if test="rating != null and '' != rating">
+        AND rating = #{rating}
+      </if>
+      <if test="name != null and '' != name">
+        AND name LIKE '%${name}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND status = #{status}
+      </if>
+    </where>
+    ORDER BY id,rank DESC
+  </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM res_scenic_comfort
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.daqsoft.entity.scenicComfort.ResScenicComfort" >
+    insert into res_scenic_comfort (ID, NAME, RANK, 
+      RATING, MAXCOUNT, MINCOUNT, 
+      VCODE, STATUS)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{rank,jdbcType=INTEGER}, 
+      #{rating,jdbcType=VARCHAR}, #{maxcount,jdbcType=VARCHAR}, #{mincount,jdbcType=VARCHAR}, 
+      #{vcode,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.scenicComfort.ResScenicComfort" >
+    update res_scenic_comfort
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="rank != null" >
+        RANK = #{rank,jdbcType=INTEGER},
+      </if>
+      <if test="rating != null" >
+        RATING = #{rating,jdbcType=VARCHAR},
+      </if>
+      <if test="maxcount != null" >
+        MAXCOUNT = #{maxcount,jdbcType=VARCHAR},
+      </if>
+      <if test="mincount != null" >
+        MINCOUNT = #{mincount,jdbcType=VARCHAR},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

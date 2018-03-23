@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.ResScenicAreasMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.scenicAreas.ResScenicAreas" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <id column="MAXQUANTITY" property="maxquantity" jdbcType="INTEGER" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="LATITUDE" property="latitude" jdbcType="VARCHAR" />
+    <result column="LONGITUDE" property="longitude" jdbcType="VARCHAR" />
+    <result column="LEVEL" property="level" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="ALIAS" property="alias" jdbcType="VARCHAR" />
+    <result column="ENGLISHNAME" property="englishname" jdbcType="VARCHAR" />
+    <result column="OPEN_TIME" property="openTime" jdbcType="VARCHAR" />
+    <result column="PHONE" property="phone" jdbcType="VARCHAR" />
+    <result column="FAXPHONE" property="faxphone" jdbcType="VARCHAR" />
+    <result column="REGION" property="region" jdbcType="VARCHAR" />
+    <result column="PLAY_TIME" property="playTime" jdbcType="INTEGER" />
+    <result column="SCENIC_TYPE" property="scenicType" jdbcType="VARCHAR" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="SKETCH_PICTURE" property="sketchPicture" jdbcType="VARCHAR" />
+    <result column="TICKETPRICE" property="ticketprice" jdbcType="INTEGER" />
+    <result column="RELATEDTITLES" property="relatedtitles" jdbcType="VARCHAR" />
+    <result column="POSTCODE" property="postcode" jdbcType="INTEGER" />
+    <result column="ELECTRONIMG" property="electronimg" jdbcType="VARCHAR" />
+    <result column="SCENIC_WEB" property="scenicWeb" jdbcType="VARCHAR" />
+    <result column="SCENIC_WEIBO" property="scenicWeibo" jdbcType="VARCHAR" />
+    <result column="SCENIC_EMAIL" property="scenicEmail" jdbcType="VARCHAR" />
+    <result column="RECREATION_FACILITY" property="recreationFacility" jdbcType="VARCHAR" />
+    <result column="SERVICE_FACILITY" property="serviceFacility" jdbcType="VARCHAR" />
+    <result column="SPECIALEVENTS" property="specialevents" jdbcType="VARCHAR" />
+    <result column="GUIDEDEVICERENTAL" property="guidedevicerental" jdbcType="INTEGER" />
+    <result column="SKETCH_MAP" property="sketchMap" jdbcType="VARCHAR" />
+    <result column="BRAND_IMG" property="brandImg" jdbcType="VARCHAR" />
+    <result column="INTRODUCE" property="introduce" jdbcType="LONGVARCHAR" />
+    <result column="SERVICE_CONTENT" property="serviceContent" jdbcType="LONGVARCHAR" />
+    <result column="TOUR_ROUTE" property="tourRoute" jdbcType="LONGVARCHAR" />
+    <result column="ANNOUNCEMENTS" property="announcements" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, ADDRESS, LATITUDE, LONGITUDE, LEVEL, NAME, ALIAS, ENGLISHNAME, OPEN_TIME, PHONE, 
+    FAXPHONE, REGION, PLAY_TIME, SCENIC_TYPE, VCODE, STATUS, SKETCH_PICTURE,
+    TICKETPRICE, RELATEDTITLES, POSTCODE, ELECTRONIMG, SCENIC_WEB, SCENIC_WEIBO, SCENIC_EMAIL, 
+    RECREATION_FACILITY, SERVICE_FACILITY, SPECIALEVENTS, GUIDEDEVICERENTAL, SKETCH_MAP, 
+    BRAND_IMG,INTRODUCE, SERVICE_CONTENT, TOUR_ROUTE, ANNOUNCEMENTS,MAXQUANTITY
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_scenic_areas
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM res_scenic_areas
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.daqsoft.entity.scenicAreas.ResScenicAreas" >
+    insert into res_scenic_areas (ADDRESS, LATITUDE,
+      LONGITUDE, LEVEL, NAME, 
+      ALIAS, ENGLISHNAME, OPEN_TIME, 
+      PHONE, FAXPHONE, REGION,
+      PLAY_TIME, SCENIC_TYPE, VCODE, 
+      STATUS, SKETCH_PICTURE, TICKETPRICE, 
+      RELATEDTITLES, POSTCODE, ELECTRONIMG, 
+      SCENIC_WEB, SCENIC_WEIBO, SCENIC_EMAIL, 
+      RECREATION_FACILITY, SERVICE_FACILITY, SPECIALEVENTS, 
+      GUIDEDEVICERENTAL, SKETCH_MAP, BRAND_IMG, 
+      INTRODUCE, SERVICE_CONTENT, TOUR_ROUTE, 
+      ANNOUNCEMENTS,MAXQUANTITY,UPDATE_TIME)
+    values (#{address,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR},
+      #{longitude,jdbcType=VARCHAR}, #{level,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{alias,jdbcType=VARCHAR}, #{englishname,jdbcType=VARCHAR}, #{openTime,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, #{faxphone,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR},
+      #{playTime,jdbcType=INTEGER}, #{scenicType,jdbcType=VARCHAR}, #{vcode,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{sketchPicture,jdbcType=VARCHAR}, #{ticketprice,jdbcType=INTEGER}, 
+      #{relatedtitles,jdbcType=VARCHAR}, #{postcode,jdbcType=INTEGER}, #{electronimg,jdbcType=VARCHAR}, 
+      #{scenicWeb,jdbcType=VARCHAR}, #{scenicWeibo,jdbcType=VARCHAR}, #{scenicEmail,jdbcType=VARCHAR}, 
+      #{recreationFacility,jdbcType=VARCHAR}, #{serviceFacility,jdbcType=VARCHAR}, #{specialevents,jdbcType=VARCHAR}, 
+      #{guidedevicerental,jdbcType=INTEGER}, #{sketchMap,jdbcType=VARCHAR}, #{brandImg,jdbcType=VARCHAR}, 
+      #{introduce,jdbcType=LONGVARCHAR}, #{serviceContent,jdbcType=LONGVARCHAR}, #{tourRoute,jdbcType=LONGVARCHAR}, 
+      #{announcements,jdbcType=LONGVARCHAR},#{maxquantity,jdbcType=INTEGER},now())
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.scenicAreas.ResScenicAreas" >
+    update res_scenic_areas
+    <set >
+      <if test="address != null" >
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null" >
+        LATITUDE = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        LONGITUDE = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        LEVEL = #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="alias != null" >
+        ALIAS = #{alias,jdbcType=VARCHAR},
+      </if>
+      <if test="englishname != null" >
+        ENGLISHNAME = #{englishname,jdbcType=VARCHAR},
+      </if>
+      <if test="openTime != null" >
+        OPEN_TIME = #{openTime,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="faxphone != null" >
+        FAXPHONE = #{faxphone,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        REGION = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="playTime != null" >
+        PLAY_TIME = #{playTime,jdbcType=INTEGER},
+      </if>
+      <if test="scenicType != null" >
+        SCENIC_TYPE = #{scenicType,jdbcType=VARCHAR},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="sketchPicture != null" >
+        SKETCH_PICTURE = #{sketchPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketprice != null" >
+        TICKETPRICE = #{ticketprice,jdbcType=INTEGER},
+      </if>
+      <if test="relatedtitles != null" >
+        RELATEDTITLES = #{relatedtitles,jdbcType=VARCHAR},
+      </if>
+      <if test="postcode != null" >
+        POSTCODE = #{postcode,jdbcType=INTEGER},
+      </if>
+      <if test="electronimg != null" >
+        ELECTRONIMG = #{electronimg,jdbcType=VARCHAR},
+      </if>
+      <if test="scenicWeb != null" >
+        SCENIC_WEB = #{scenicWeb,jdbcType=VARCHAR},
+      </if>
+      <if test="scenicWeibo != null" >
+        SCENIC_WEIBO = #{scenicWeibo,jdbcType=VARCHAR},
+      </if>
+      <if test="scenicEmail != null" >
+        SCENIC_EMAIL = #{scenicEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="recreationFacility != null" >
+        RECREATION_FACILITY = #{recreationFacility,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceFacility != null" >
+        SERVICE_FACILITY = #{serviceFacility,jdbcType=VARCHAR},
+      </if>
+      <if test="specialevents != null" >
+        SPECIALEVENTS = #{specialevents,jdbcType=VARCHAR},
+      </if>
+      <if test="guidedevicerental != null" >
+        GUIDEDEVICERENTAL = #{guidedevicerental,jdbcType=INTEGER},
+      </if>
+      <if test="sketchMap != null" >
+        SKETCH_MAP = #{sketchMap,jdbcType=VARCHAR},
+      </if>
+      <if test="brandImg != null" >
+        BRAND_IMG = #{brandImg,jdbcType=VARCHAR},
+      </if>
+      <if test="introduce != null" >
+        INTRODUCE = #{introduce,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="serviceContent != null" >
+        SERVICE_CONTENT = #{serviceContent,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="tourRoute != null" >
+        TOUR_ROUTE = #{tourRoute,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="announcements != null" >
+        ANNOUNCEMENTS = #{announcements,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="maxquantity != null" >
+        MAXQUANTITY = #{maxquantity,jdbcType=INTEGER},
+      </if>
+      UPDATE_TIME = now()
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from res_scenic_areas
+    <where>
+      AND vcode = #{vcode}
+      AND STATUS != -1
+      <if test="name != null and '' != name">
+        AND name LIKE '%${name}%'
+      </if>
+      <if test="level != null and '' != level">
+        AND LEVEL = #{level}
+      </if>
+      <if test="status != null and '' != status">
+        AND STATUS = #{status}
+      </if>
+    </where>
+    ORDER BY ID DESC
+  </select>
+
+  <select id="getAreaData" resultType="java.lang.Integer" parameterType="java.lang.String">
+    select
+    COUNT(1)
+    from res_scenic_areas
+    <where>
+      AND vcode = #{vcode}
+      AND STATUS != -1
+    </where>
+  </select>
+
+  <!--查询景区中心点位经纬度-->
+  <select id="getScenicArea" resultType="com.daqsoft.vo.resource.ScenicAreaVo" parameterType="java.lang.String">
+    select
+    ID, NAME ,LATITUDE, LONGITUDE
+    from res_scenic_areas
+    WHERE vcode = #{vcode} AND status = 1
+  </select>
+
+
+</mapper>

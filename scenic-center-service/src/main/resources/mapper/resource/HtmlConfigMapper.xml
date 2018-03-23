@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.HtmlConfigMapper" >
+
+  <select id="moduleSelect" resultType="Map">
+    SELECT NAME, HKEY from  data_template_html;
+
+  </select>
+
+  <select id="getOne" resultType="com.daqsoft.entity.htmlConfig.HtmlConfig" parameterType="String">
+    SELECT  HKEY from  data_template_config_html where vcode = #{vcode};
+
+  </select>
+
+  <insert id="insert" parameterType="Map">
+    INSERT INTO data_template_config_html ( HKEY, VCODE)
+    values (#{hkey}, #{vcode});
+  </insert>
+
+  <delete id="emptyTable" >
+    DELETE from data_template_config_html where VCODE = #{vcode};
+
+  </delete>
+
+</mapper>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.MediaKrpanoMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.krpano.Krpano" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="SCENIC_NAME" property="scenicName" jdbcType="VARCHAR" />
+    <result column="URL" property="url" jdbcType="VARCHAR" />
+    <result column="IMG" property="img" jdbcType="VARCHAR" />
+    <result column="TERMINAL" property="terminal" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, TITLE, SCENIC_NAME, URL, IMG, TERMINAL, UPDATE_TIME, STATUS, VCODE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from media_krpano
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from media_krpano
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.daqsoft.entity.krpano.Krpano" >
+    insert into media_krpano (ID, TITLE, SCENIC_NAME, 
+      URL, IMG, TERMINAL, 
+      UPDATE_TIME, STATUS, VCODE
+      )
+    values (#{id,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{scenicName,jdbcType=VARCHAR},
+      #{url,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR}, #{terminal,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{vcode,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.krpano.Krpano" >
+    update media_krpano
+    <set >
+      <if test="title != null" >
+        TITLE = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="scenicName != null" >
+        SCENIC_NAME = #{scenicName,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        URL = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="img != null" >
+        IMG = #{img,jdbcType=VARCHAR},
+      </if>
+      <if test="terminal != null" >
+        TERMINAL = #{terminal,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    s.ID,
+    s.TITLE,
+    s.SCENIC_NAME,
+    s.URL,
+    s.IMG,
+    s.TERMINAL,
+    s.IMG,
+    s.STATUS,
+    s.VCODE,
+    s.UPDATE_TIME
+    from media_krpano s
+    <where>
+      AND s.vcode = #{vcode}
+      AND s.STATUS != -1
+      <if test="scenicName != null and '' != scenicName">
+        AND s.NAME LIKE '%${scenicName}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND s.STATUS = #{status}
+      </if>
+    </where>
+    ORDER BY s.UPDATE_TIME DESC
+  </select>
+</mapper>

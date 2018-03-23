@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.ResDiningPlaceMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.diningPlace.ResDiningPlace" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="USNAME" property="usname" jdbcType="VARCHAR" />
+    <result column="LICENSE" property="license" jdbcType="VARCHAR" />
+    <result column="KEY_WORD" property="keyWord" jdbcType="VARCHAR" />
+    <result column="RESTAURANT_LEVEL" property="restaurantLevel" jdbcType="VARCHAR" />
+    <result column="RESTAURANT_TYPE" property="restaurantType" jdbcType="VARCHAR" />
+    <result column="HONOR_QUALIFICATION" property="honorQualification" jdbcType="VARCHAR" />
+    <result column="BRAND" property="brand" jdbcType="VARCHAR" />
+    <result column="DINING_STYLE" property="diningStyle" jdbcType="VARCHAR" />
+    <result column="STYLE_COOKING" property="styleCooking" jdbcType="VARCHAR" />
+    <result column="SPECIALTY_DISH" property="specialtyDish" jdbcType="VARCHAR" />
+    <result column="PHONE" property="phone" jdbcType="VARCHAR" />
+    <result column="FAX" property="fax" jdbcType="VARCHAR" />
+    <result column="WEB_URL" property="webUrl" jdbcType="VARCHAR" />
+    <result column="OFFICIAL_LINE" property="officialLine" jdbcType="VARCHAR" />
+    <result column="REGION" property="region" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="ELECTRONIC_MAP" property="electronicMap" jdbcType="VARCHAR" />
+    <result column="TRAFFIC_DESCRIPTION" property="trafficDescription" jdbcType="VARCHAR" />
+    <result column="BUSINESS_HOURS" property="businessHours" jdbcType="VARCHAR" />
+    <result column="DINING_NUMBER" property="diningNumber" jdbcType="INTEGER" />
+    <result column="ROOMS" property="rooms" jdbcType="INTEGER" />
+    <result column="PER_CAPITA_CONSUMPTION" property="perCapitaConsumption" jdbcType="INTEGER" />
+    <result column="PAY_METHOD" property="payMethod" jdbcType="VARCHAR" />
+    <result column="PARKING_NUM" property="parkingNum" jdbcType="INTEGER" />
+    <result column="CORPORATE" property="corporate" jdbcType="VARCHAR" />
+    <result column="SKETCH_PICTURE" property="sketchPicture" jdbcType="VARCHAR" />
+    <result column="PICTURELIBRARY" property="picturelibrary" jdbcType="VARCHAR" />
+    <result column="VIDEO" property="video" jdbcType="VARCHAR" />
+    <result column="EMAIL" property="email" jdbcType="VARCHAR" />
+    <result column="LEGAL_PERSON" property="legalPerson" jdbcType="VARCHAR" />
+    <result column="LEGAL_PHONE" property="legalPhone" jdbcType="VARCHAR" />
+    <result column="PRESIDE" property="preside" jdbcType="VARCHAR" />
+    <result column="PRESIDE_PHONE" property="presidePhone" jdbcType="VARCHAR" />
+    <result column="REGISTER_DATE" property="registerDate" jdbcType="DATE" />
+    <result column="LONGITUDE" property="longitude" jdbcType="VARCHAR" />
+    <result column="LATITUDE" property="latitude" jdbcType="VARCHAR" />
+    <result column="MAP_TYPE" property="mapType" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="SORT" property="sort" jdbcType="INTEGER" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+    <result column="INTRODUCTION" property="introduction" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, NAME, USNAME, LICENSE, KEY_WORD, RESTAURANT_LEVEL, RESTAURANT_TYPE, HONOR_QUALIFICATION, 
+    BRAND, DINING_STYLE, STYLE_COOKING, SPECIALTY_DISH, PHONE, FAX, WEB_URL, OFFICIAL_LINE, 
+    REGION, ADDRESS, ELECTRONIC_MAP, TRAFFIC_DESCRIPTION, BUSINESS_HOURS, DINING_NUMBER, 
+    ROOMS, PER_CAPITA_CONSUMPTION, PAY_METHOD, PARKING_NUM, CORPORATE, SKETCH_PICTURE,
+    PICTURELIBRARY, VIDEO, EMAIL, LEGAL_PERSON, LEGAL_PHONE, PRESIDE, PRESIDE_PHONE, 
+    REGISTER_DATE, LONGITUDE, LATITUDE, MAP_TYPE, STATUS, VCODE,INTRODUCTION,SORT
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_dining_place
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    s.id,s.name,s.usname,s.phone,s.address,s.status,s.vcode,d.name as restaurantLevel,t.name as restaurantType
+    from res_dining_place s
+    LEFT JOIN sys_dict d on d.value = s.restaurant_level
+    LEFT JOIN sys_dict t on t.value = s.restaurant_type
+    <where>
+      AND s.vcode = #{vcode}
+      AND s.STATUS != -1
+      <if test="name != null and '' != name">
+        AND s.name LIKE '%${name}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND s.status = #{status}
+      </if>
+      <if test="level != null and '' != level">
+        AND s.RESTAURANT_LEVEL = #{level}
+      </if>
+      <if test="type != null and '' != type">
+        AND s.RESTAURANT_TYPE = #{type}
+      </if>
+    </where>
+    ORDER BY s.SORT DESC
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_dining_place
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.daqsoft.entity.diningPlace.ResDiningPlace" >
+    insert into res_dining_place ( NAME, USNAME,
+      LICENSE, KEY_WORD, RESTAURANT_LEVEL, 
+      RESTAURANT_TYPE, HONOR_QUALIFICATION, BRAND, 
+      DINING_STYLE, STYLE_COOKING, SPECIALTY_DISH, 
+      PHONE, FAX, WEB_URL, 
+      OFFICIAL_LINE, REGION, ADDRESS, 
+      ELECTRONIC_MAP, TRAFFIC_DESCRIPTION, BUSINESS_HOURS, 
+      DINING_NUMBER, ROOMS, PER_CAPITA_CONSUMPTION,
+      PAY_METHOD, PARKING_NUM, CORPORATE, 
+      SKETCH_PICTURE, PICTURELIBRARY, VIDEO, 
+      EMAIL, LEGAL_PERSON, LEGAL_PHONE, 
+      PRESIDE, PRESIDE_PHONE, REGISTER_DATE,
+      LONGITUDE, LATITUDE, MAP_TYPE, STATUS,
+      VCODE, INTRODUCTION,UPDATE_TIME,SORT)
+    values ( #{name,jdbcType=VARCHAR}, #{usname,jdbcType=VARCHAR},
+      #{license,jdbcType=VARCHAR}, #{keyWord,jdbcType=VARCHAR}, #{restaurantLevel,jdbcType=VARCHAR}, 
+      #{restaurantType,jdbcType=VARCHAR}, #{honorQualification,jdbcType=VARCHAR}, #{brand,jdbcType=VARCHAR}, 
+      #{diningStyle,jdbcType=VARCHAR}, #{styleCooking,jdbcType=VARCHAR}, #{specialtyDish,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, #{fax,jdbcType=VARCHAR}, #{webUrl,jdbcType=VARCHAR}, 
+      #{officialLine,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{electronicMap,jdbcType=VARCHAR}, #{trafficDescription,jdbcType=VARCHAR}, #{businessHours,jdbcType=VARCHAR}, 
+      #{diningNumber,jdbcType=INTEGER}, #{rooms,jdbcType=INTEGER}, #{perCapitaConsumption,jdbcType=INTEGER},
+      #{payMethod,jdbcType=VARCHAR}, #{parkingNum,jdbcType=INTEGER}, #{corporate,jdbcType=VARCHAR}, 
+      #{sketchPicture,jdbcType=VARCHAR}, #{picturelibrary,jdbcType=VARCHAR}, #{video,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{legalPerson,jdbcType=VARCHAR}, #{legalPhone,jdbcType=VARCHAR}, 
+      #{preside,jdbcType=VARCHAR}, #{presidePhone,jdbcType=VARCHAR}, #{registerDate,jdbcType=DATE},
+      #{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}, #{mapType,jdbcType=INTEGER}, #{status,jdbcType=INTEGER},
+      #{vcode,jdbcType=VARCHAR}, #{introduction,jdbcType=LONGVARCHAR},NOW(),#{sort})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.diningPlace.ResDiningPlace" >
+    update res_dining_place
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="usname != null" >
+        USNAME = #{usname,jdbcType=VARCHAR},
+      </if>
+      <if test="license != null" >
+        LICENSE = #{license,jdbcType=VARCHAR},
+      </if>
+      <if test="keyWord != null" >
+        KEY_WORD = #{keyWord,jdbcType=VARCHAR},
+      </if>
+      <if test="restaurantLevel != null" >
+        RESTAURANT_LEVEL = #{restaurantLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="restaurantType != null" >
+        RESTAURANT_TYPE = #{restaurantType,jdbcType=VARCHAR},
+      </if>
+      <if test="honorQualification != null" >
+        HONOR_QUALIFICATION = #{honorQualification,jdbcType=VARCHAR},
+      </if>
+      <if test="brand != null" >
+        BRAND = #{brand,jdbcType=VARCHAR},
+      </if>
+      <if test="diningStyle != null" >
+        DINING_STYLE = #{diningStyle,jdbcType=VARCHAR},
+      </if>
+      <if test="styleCooking != null" >
+        STYLE_COOKING = #{styleCooking,jdbcType=VARCHAR},
+      </if>
+      <if test="specialtyDish != null" >
+        SPECIALTY_DISH = #{specialtyDish,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null" >
+        FAX = #{fax,jdbcType=VARCHAR},
+      </if>
+      <if test="webUrl != null" >
+        WEB_URL = #{webUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="officialLine != null" >
+        OFFICIAL_LINE = #{officialLine,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        REGION = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="electronicMap != null" >
+        ELECTRONIC_MAP = #{electronicMap,jdbcType=VARCHAR},
+      </if>
+      <if test="trafficDescription != null" >
+        TRAFFIC_DESCRIPTION = #{trafficDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="businessHours != null" >
+        BUSINESS_HOURS = #{businessHours,jdbcType=VARCHAR},
+      </if>
+      <if test="diningNumber != null" >
+        DINING_NUMBER = #{diningNumber,jdbcType=INTEGER},
+      </if>
+      <if test="rooms != null" >
+        ROOMS = #{rooms,jdbcType=INTEGER},
+      </if>
+      <if test="perCapitaConsumption != null" >
+        PER_CAPITA_CONSUMPTION = #{perCapitaConsumption,jdbcType=INTEGER},
+      </if>
+      <if test="payMethod != null" >
+        PAY_METHOD = #{payMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="parkingNum != null" >
+        PARKING_NUM = #{parkingNum,jdbcType=INTEGER},
+      </if>
+      <if test="corporate != null" >
+        CORPORATE = #{corporate,jdbcType=VARCHAR},
+      </if>
+      <if test="sketchPicture != null" >
+        SKETCH_PICTURE = #{sketchPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="picturelibrary != null" >
+        PICTURELIBRARY = #{picturelibrary,jdbcType=VARCHAR},
+      </if>
+      <if test="video != null" >
+        VIDEO = #{video,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        EMAIL = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="legalPerson != null" >
+        LEGAL_PERSON = #{legalPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="legalPhone != null" >
+        LEGAL_PHONE = #{legalPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="preside != null" >
+        PRESIDE = #{preside,jdbcType=VARCHAR},
+      </if>
+      <if test="presidePhone != null" >
+        PRESIDE_PHONE = #{presidePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="registerDate != null" >
+        REGISTER_DATE = #{registerDate,jdbcType=DATE},
+      </if>
+      <if test="longitude != null" >
+        LONGITUDE = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null" >
+        LATITUDE = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="mapType != null" >
+        MAP_TYPE = #{mapType,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null" >
+        INTRODUCTION = #{introduction,jdbcType=LONGVARCHAR},
+      </if>
+      UPDATE_TIME = NOW()
+    </set>
+
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

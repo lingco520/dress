@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.ResRuralTourismMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.ruralTourism.ResRuralTourism" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="SHORT_NAME" property="shortName" jdbcType="VARCHAR" />
+    <result column="EMAIL" property="email" jdbcType="VARCHAR" />
+    <result column="TENCENT_WEIBO" property="tencentWeibo" jdbcType="VARCHAR" />
+    <result column="SINA_WEIBO" property="sinaWeibo" jdbcType="VARCHAR" />
+    <result column="WEIXIN" property="weixin" jdbcType="VARCHAR" />
+    <result column="RURAL_TOURISM_TYPE" property="ruralTourismType" jdbcType="VARCHAR" />
+    <result column="RURAL_TOURISM_LEVEL" property="ruralTourismLevel" jdbcType="VARCHAR" />
+    <result column="REGION" property="region" jdbcType="VARCHAR" />
+    <result column="LONGITUDE" property="longitude" jdbcType="VARCHAR" />
+    <result column="LATITUDE" property="latitude" jdbcType="VARCHAR" />
+    <result column="MAP_TYPE" property="mapType" jdbcType="INTEGER" />
+    <result column="CORPORATE" property="corporate" jdbcType="VARCHAR" />
+    <result column="LOGO" property="logo" jdbcType="VARCHAR" />
+    <result column="VIDEO" property="video" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="PHONE" property="phone" jdbcType="VARCHAR" />
+    <result column="FAX" property="fax" jdbcType="VARCHAR" />
+    <result column="WEB_SITE" property="webSite" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, NAME, SHORT_NAME, EMAIL, TENCENT_WEIBO, SINA_WEIBO, WEIXIN, RURAL_TOURISM_TYPE,
+    RURAL_TOURISM_LEVEL, REGION, LONGITUDE, LATITUDE, MAP_TYPE, CORPORATE, LOGO, VIDEO, ADDRESS,
+    PHONE, FAX, WEB_SITE, SORT, STATUS, VCODE
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_rural_tourism
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select s.id,s.name,s.short_Name,s.address,s.phone,s.status,s.vcode,d.name as ruralTourismType,l.name as ruralTourismLevel
+    from res_rural_tourism s
+    LEFT JOIN sys_dict d on d.value = s.RURAL_TOURISM_TYPE
+    LEFT JOIN sys_dict l on l.value = s.RURAL_TOURISM_LEVEL
+    <where>
+      AND s.vcode = #{vcode}
+      AND s.STATUS != -1
+      <if test="name != null and '' != name">
+        AND s.name LIKE '%${name}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND s.status = #{status}
+      </if>
+      <if test="type != null and '' != type">
+        AND s.RURAL_TOURISM_TYPE = #{type}
+      </if>
+      <if test="level != null and '' != level">
+        AND s.RURAL_TOURISM_LEVEL = #{level}
+      </if>
+    </where>
+    ORDER BY s.SORT DESC
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_rural_tourism
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.daqsoft.entity.ruralTourism.ResRuralTourism" >
+    insert into res_rural_tourism ( NAME, SHORT_NAME,
+      EMAIL, TENCENT_WEIBO, SINA_WEIBO,
+      WEIXIN, RURAL_TOURISM_TYPE, RURAL_TOURISM_LEVEL, 
+      REGION, LONGITUDE, LATITUDE, MAP_TYPE,
+      CORPORATE, LOGO, VIDEO, 
+      ADDRESS, PHONE, FAX, 
+      WEB_SITE, SORT, STATUS, 
+      VCODE, UPDATE_TIME)
+    values ( #{name,jdbcType=VARCHAR}, #{shortName,jdbcType=VARCHAR},
+      #{email,jdbcType=VARCHAR}, #{tencentWeibo,jdbcType=VARCHAR}, #{sinaWeibo,jdbcType=VARCHAR},
+      #{weixin,jdbcType=VARCHAR}, #{ruralTourismType,jdbcType=VARCHAR}, #{ruralTourismLevel,jdbcType=VARCHAR}, 
+      #{region,jdbcType=VARCHAR}, #{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}, #{mapType,jdbcType=INTEGER},
+      #{corporate,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, #{video,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{fax,jdbcType=VARCHAR}, 
+      #{webSite,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{vcode,jdbcType=VARCHAR}, now())
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.ruralTourism.ResRuralTourism" >
+    update res_rural_tourism
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="shortName != null" >
+        SHORT_NAME = #{shortName,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        EMAIL = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="tencentWeibo != null" >
+        TENCENT_WEIBO = #{tencentWeibo,jdbcType=VARCHAR},
+      </if>
+      <if test="sinaWeibo != null" >
+        SINA_WEIBO = #{sinaWeibo,jdbcType=VARCHAR},
+      </if>
+      <if test="weixin != null" >
+        WEIXIN = #{weixin,jdbcType=VARCHAR},
+      </if>
+      <if test="ruralTourismType != null" >
+        RURAL_TOURISM_TYPE = #{ruralTourismType,jdbcType=VARCHAR},
+      </if>
+      <if test="ruralTourismLevel != null" >
+        RURAL_TOURISM_LEVEL = #{ruralTourismLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        REGION = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        LONGITUDE = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null" >
+        LATITUDE = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="mapType != null" >
+        MAP_TYPE = #{mapType,jdbcType=VARCHAR},
+      </if>
+      <if test="corporate != null" >
+        CORPORATE = #{corporate,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null" >
+        LOGO = #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="video != null" >
+        VIDEO = #{video,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null" >
+        FAX = #{fax,jdbcType=VARCHAR},
+      </if>
+      <if test="webSite != null" >
+        WEB_SITE = #{webSite,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+        UPDATE_TIME = now()
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

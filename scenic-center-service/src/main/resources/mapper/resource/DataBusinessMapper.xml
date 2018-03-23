@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.DataBusinessMapper" >
+
+
+  <!-- 模拟数据 -->
+  <insert id="saveSimulationData" parameterType="java.util.Map">
+   ${sql}
+  </insert>
+
+<!--删除模拟数据-->
+  <delete id="deleteData">
+    ${sql}
+  </delete>
+
+  <!--查询所有地区-->
+  <select id="getAddressNameList" resultType="Map">
+    SELECT NAME FROM sys_region where PARENT = 100000
+  </select>
+</mapper>

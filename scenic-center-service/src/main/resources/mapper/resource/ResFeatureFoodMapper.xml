@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.ResFeatureFoodMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.featureFood.ResFeatureFood" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="IMAGE" property="image" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+    <result column="SOURCE" property="source" jdbcType="VARCHAR" />
+    <result column="AUTHOR" property="author" jdbcType="VARCHAR" />
+    <result column="SCANS" property="scans" jdbcType="INTEGER" />
+    <result column="CHECK_PRICE" property="checkPrice" jdbcType="DECIMAL" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="SORT" property="sort" jdbcType="INTEGER" />
+    <result column="LANGUAGE_TYPE" property="languageType" jdbcType="VARCHAR" />
+    <result column="CONTENT" property="content" jdbcType="LONGVARCHAR" />
+    <result column="INTRODUCTION" property="introduction" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, IMAGE, NAME, STATUS, VCODE, SOURCE, AUTHOR, SCANS, CHECK_PRICE, UPDATE_TIME,
+    SORT, LANGUAGE_TYPE, CONTENT, INTRODUCTION
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_feature_food
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from res_feature_food
+    WHERE STATUS != -1 AND VCODE = #{vcode}
+      <if test="name != null and '' != name">
+        AND NAME LIKE '%${name}%'
+      </if>
+      <if test="status != null">
+        AND STATUS = #{status}
+      </if>
+    ORDER BY SORT ASC, UPDATE_TIME DESC
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_feature_food
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.daqsoft.entity.featureFood.ResFeatureFood" >
+    insert into res_feature_food (ID, IMAGE, NAME, 
+      STATUS, VCODE, SOURCE, 
+      AUTHOR, SCANS, CHECK_PRICE, 
+      UPDATE_TIME, SORT, LANGUAGE_TYPE,
+      CONTENT, INTRODUCTION)
+    values (#{id,jdbcType=BIGINT}, #{image,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{vcode,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR}, 
+      #{author,jdbcType=VARCHAR}, #{scans,jdbcType=INTEGER}, #{checkPrice,jdbcType=DECIMAL}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{sort,jdbcType=INTEGER}, #{languageType,jdbcType=VARCHAR},
+      #{content,jdbcType=LONGVARCHAR}, #{introduction,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.featureFood.ResFeatureFood" >
+    update res_feature_food
+    <set >
+      <if test="image != null" >
+        IMAGE = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        SOURCE = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        AUTHOR = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="scans != null" >
+        SCANS = #{scans,jdbcType=INTEGER},
+      </if>
+      <if test="checkPrice != null" >
+        CHECK_PRICE = #{checkPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="languageType != null" >
+        LANGUAGE_TYPE = #{languageType,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="introduction != null" >
+        INTRODUCTION = #{introduction,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

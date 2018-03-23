@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.ResAgritainmentMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.agritainment.ResAgritainment" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="LEVEL" property="level" jdbcType="VARCHAR" />
+    <result column="LICENSE" property="license" jdbcType="VARCHAR" />
+    <result column="SHORT_NAME" property="shortName" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="EMAIL" property="email" jdbcType="VARCHAR" />
+    <result column="LEGAL_PERSON" property="legalPerson" jdbcType="VARCHAR" />
+    <result column="LEGAL_PHONE" property="legalPhone" jdbcType="VARCHAR" />
+    <result column="PRESIDE" property="preside" jdbcType="VARCHAR" />
+    <result column="PRESIDE_PHONE" property="presidePhone" jdbcType="VARCHAR" />
+    <result column="CHECK_PRICE" property="checkPrice" jdbcType="DECIMAL" />
+    <result column="ROOM_COUNT" property="roomCount" jdbcType="INTEGER" />
+    <result column="HOLD_COUNT" property="holdCount" jdbcType="INTEGER" />
+    <result column="REGION" property="region" jdbcType="VARCHAR" />
+    <result column="PHONE" property="phone" jdbcType="VARCHAR" />
+    <result column="FAX" property="fax" jdbcType="VARCHAR" />
+    <result column="LONGITUDE" property="longitude" jdbcType="VARCHAR" />
+    <result column="LATITUDE" property="latitude" jdbcType="VARCHAR" />
+    <result column="IMAGE" property="image" jdbcType="VARCHAR" />
+    <result column="DINING_ROOM" property="diningRoom" jdbcType="INTEGER" />
+    <result column="REGISTER_DATE" property="registerDate" jdbcType="DATE" />
+    <result column="SORT" property="sort" jdbcType="INTEGER" />
+    <result column="MAP_TYPE" property="mapType" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="INTRODUCE" property="introduce" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    ID, NAME, LEVEL, LICENSE, SHORT_NAME, ADDRESS, EMAIL, LEGAL_PERSON, LEGAL_PHONE,
+    PRESIDE, PRESIDE_PHONE, CHECK_PRICE, ROOM_COUNT, HOLD_COUNT, REGION, PHONE, FAX,
+    DINING_ROOM, REGISTER_DATE, SORT, STATUS, VCODE,INTRODUCE,LONGITUDE,LATITUDE,IMAGE,MAP_TYPE
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from res_agritainment
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    s.id,s.name,s.short_Name,s.address,s.phone,s.status,s.vcode,d.name as LEVEL
+    from res_agritainment s
+    LEFT JOIN sys_dict d on d.`VALUE` = s.level
+    <where>
+      AND s.vcode = #{vcode}
+      AND s.STATUS != -1
+      <if test="name != null and '' != name">
+        AND s.name LIKE '%${name}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND s.status = #{status}
+      </if>
+      <if test="level != null and '' != level">
+        AND s.level = #{level}
+      </if>
+    </where>
+    ORDER BY s.SORT DESC
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_agritainment
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.daqsoft.entity.agritainment.ResAgritainment">
+    insert into res_agritainment (ID, NAME, LEVEL,
+      LICENSE, SHORT_NAME, ADDRESS,
+      EMAIL, LEGAL_PERSON, LEGAL_PHONE,
+      PRESIDE, PRESIDE_PHONE, CHECK_PRICE,
+      ROOM_COUNT, HOLD_COUNT, DINING_ROOM,
+      REGION, MAP_TYPE, LONGITUDE,
+      LATITUDE, PHONE, FAX,
+      IMAGE, REGISTER_DATE, SORT,
+      STATUS, VCODE, UPDATE_TIME,
+      INTRODUCE)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{level,jdbcType=VARCHAR},
+      #{license,jdbcType=VARCHAR}, #{shortName,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+      #{email,jdbcType=VARCHAR}, #{legalPerson,jdbcType=VARCHAR}, #{legalPhone,jdbcType=VARCHAR},
+      #{preside,jdbcType=VARCHAR}, #{presidePhone,jdbcType=VARCHAR}, #{checkPrice,jdbcType=DECIMAL},
+      #{roomCount,jdbcType=INTEGER}, #{holdCount,jdbcType=INTEGER}, #{diningRoom,jdbcType=INTEGER},
+      #{region,jdbcType=VARCHAR}, #{mapType,jdbcType=INTEGER}, #{longitude,jdbcType=VARCHAR},
+      #{latitude,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{fax,jdbcType=VARCHAR},
+      #{image,jdbcType=VARCHAR}, #{registerDate,jdbcType=DATE}, #{sort,jdbcType=INTEGER},
+      #{status,jdbcType=INTEGER}, #{vcode,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},
+      #{introduce,jdbcType=LONGVARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.agritainment.ResAgritainment">
+    update res_agritainment
+    <set>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        LEVEL = #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="license != null">
+        LICENSE = #{license,jdbcType=VARCHAR},
+      </if>
+      <if test="shortName != null">
+        SHORT_NAME = #{shortName,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        EMAIL = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="legalPerson != null">
+        LEGAL_PERSON = #{legalPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="legalPhone != null">
+        LEGAL_PHONE = #{legalPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="preside != null">
+        PRESIDE = #{preside,jdbcType=VARCHAR},
+      </if>
+      <if test="presidePhone != null">
+        PRESIDE_PHONE = #{presidePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="checkPrice != null">
+        CHECK_PRICE = #{checkPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="roomCount != null">
+        ROOM_COUNT = #{roomCount,jdbcType=INTEGER},
+      </if>
+      <if test="holdCount != null">
+        HOLD_COUNT = #{holdCount,jdbcType=INTEGER},
+      </if>
+      <if test="diningRoom != null">
+        DINING_ROOM = #{diningRoom,jdbcType=INTEGER},
+      </if>
+      <if test="region != null">
+        REGION = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="mapType != null">
+        MAP_TYPE = #{mapType,jdbcType=INTEGER},
+      </if>
+      <if test="longitude != null">
+        LONGITUDE = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        LATITUDE = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null">
+        FAX = #{fax,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null">
+        IMAGE = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="registerDate != null">
+        REGISTER_DATE = #{registerDate,jdbcType=DATE},
+      </if>
+      <if test="sort != null">
+        SORT = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="vcode != null">
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="introduce != null">
+        INTRODUCE = #{introduce,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

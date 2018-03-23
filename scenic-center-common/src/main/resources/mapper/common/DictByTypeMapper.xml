@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.common.DictByTypeMapper" >
+
+
+
+  <select id="getDictByType" resultType="com.daqsoft.vo.SysDictVo" parameterType="java.lang.String" >
+    SELECT
+     NAME as name,VALUE as value FROM SYS_DICT
+    WHERE PID IS NOT NULL AND TYPE = #{type} ORDER BY SORT ASC
+  </select>
+  <select id="getDictListByTwo" resultType="com.daqsoft.vo.SysDictVo">
+    SELECT
+        `NAME` AS name,
+        `VALUE` AS value
+    FROM
+        sys_dict
+    WHERE
+        PID IS NOT NULL
+    AND (
+        type = #{type1} OR type = #{type2}
+    )
+  </select>
+  <select id="getDictListByOne" resultType="com.daqsoft.vo.SysDictVo">
+    SELECT
+        `NAME` AS name,
+        `VALUE` AS value
+    FROM
+        sys_dict
+    WHERE
+        PID IS NOT NULL
+    AND type = #{type}
+  </select>
+
+  <select id="getScenicByVcode" resultType="com.daqsoft.vo.ScenicSpotsVo" parameterType="java.lang.String" >
+    SELECT ID as id ,NAME as name,vcode as vcode FROM res_scenic_spots
+    WHERE  vcode = #{vcode} and status = 1 ORDER BY id ASC
+  </select>
+
+  <select id="getMediaType" resultType="com.daqsoft.vo.MediaTypeVo" parameterType="java.util.HashMap" >
+    SELECT ID as id ,NAME as name,type as TYPE ,vcode as vcode FROM res_media_type
+    WHERE  vcode = #{vcode} and status = 1 and type=#{type}  ORDER BY id ASC
+  </select>
+
+    <!-- 通过region查询地区region对象数据 -->
+    <select id="getSysRegionByRegion" resultType="com.daqsoft.framework.entity.SysRegion" parameterType="java.lang.String" >
+    SELECT
+        REGION AS region,
+        `NAME` AS NAME,
+        MEMO AS memo,
+        LONGITUDE AS longitude,
+        LATITUDE AS latitude
+    FROM
+        sys_region
+    WHERE
+        REGION = #{region}
+  </select>
+
+    <select id="getAccount" resultType="com.daqsoft.vo.SysDictVo" parameterType="java.lang.String" >
+     select name ,account as value from sys_user where vcode=#{vcode}
+    </select>
+
+    <select id="getDepartment" resultType="com.daqsoft.vo.SysDictVo" parameterType="java.lang.String" >
+     select name,id as `VALUE` from sys_department where vcode=#{vcode}
+    </select>
+
+</mapper>

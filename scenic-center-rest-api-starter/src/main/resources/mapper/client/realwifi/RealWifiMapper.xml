@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.client.realwifi.RealWifiDao">
+
+<select id="getWifiPart" resultType="Map">
+    select COUNT(1) as count,muMacAddress,DATE_FORMAT(part.addTime,'%Y年%m月%d日') as timesheet,
+    part.vcode,apMacAddress,apmac.id,spots.name
+    from (select muMacAddress,addTime,vcode,apMacAddress from jq_wifi_part where 1=1
+    and vcode = #{vcode}
+    and isAssociated = '1'
+    and addTime BETWEEN #{startTime} AND #{endTime}
+    GROUP BY muMacAddress) part
+    INNER JOIN jq_wifi_apmac apmac on part.apMacAddress = apmac.apmac
+    INNER JOIN api_scenic_spots spots on apmac.scenicId = spots.id
+    where 1=1
+    GROUP BY timesheet,apMacAddress;
+</select>
+
+<select id="getScenicWifi" resultType="Map">
+	  SELECT buildingCode as name,overnumber as count from jq_wifi_detail WHERE CreateTime > CURDATE() and CreateTime = (SELECT MAX(CreateTime) from jq_wifi_detail WHERE vcode = #{vcode})
+		AND vcode = #{vcode}
+</select>
+
+<!-- 查询景区有多少个对应的WIFI点位 -->
+<select id="getWifiSites" parameterType="String" resultType="Map">
+	select 
+		BuildingCode ,
+		BuildingId
+	from jq_wifi_stay
+	where vcode = #{vcode} group by BuildingId
+</select>
+
+<!-- 查询景区当天最新时间统计的驻留时长 -->
+<select id="getWifiStay" parameterType="Map" resultType="Map">
+	SELECT
+		SumType,
+		SumMacs,
+		BuildingId,
+		BuildingCode
+	FROM
+		jq_wifi_stay
+	WHERE
+	vcode = '${vcode}'
+	AND BuildingId = ${BuildingId}
+	AND CreateTime = (
+		SELECT
+			max(CreateTime)
+		FROM
+			jq_wifi_stay
+		WHERE
+			vcode = '${vcode}'
+		AND BuildingId = ${BuildingId}
+		AND CreateTime > CURRENT_DATE
+	)
+	ORDER BY
+		SumType
+</select>
+<!-- 查询景区wifi列表 -->
+<select id="getYCHBHWifiList" parameterType="String" resultType="Map">
+	SELECT
+		apMacAddress as apMac,
+		NAME as name,
+		longitude,
+		latitude,
+		coverage
+	FROM
+		jq_wifi_scenic
+	WHERE
+		vcode = #{vcode}
+		AND status = 1
+</select>
+<!-- 查询景区wifi设备连接数 -->
+<select id="getYCHBHWifiNums" parameterType="map" resultType="map">
+	SELECT
+		COUNT(1) as nums
+	FROM
+		wifi_zx
+	WHERE
+		vcode = #{vcode}
+	AND online_date BETWEEN #{startTime}
+	AND #{endTime}
+	AND ap_mac = #{apMac}
+</select>
+</mapper>

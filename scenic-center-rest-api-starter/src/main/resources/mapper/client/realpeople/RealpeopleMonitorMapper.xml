@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daqsoft.mapper.client.realpeople.RealPeopleMonitorDao">
+
+
+    <!-- 主页景区景点实施负荷度查询 时间应为（SUBDATE(now(),interval 10 minute)）-->
+    <select id="getRealpeopleMonitorHyj" parameterType="String"
+            resultType="com.daqsoft.vo.client.mysqlBean.JqScenicTimelyPopulation">
+        <![CDATA[
+          SELECT scenicTbale.id,scenicTbale.sumpeople,scenicTbale.name,scenicTbale.vcode,comfort.maxLoad as total,(scenicTbale.sumpeople/comfort.maxLoad) as TEMPLYQUANTITY,scenicTbale.longitude,scenicTbale.latitude,comfort.maxcount,comfort.mincount,comfort.mark FROM
+        (SELECT b.scenicId AS id, c.people AS sumPeople, a.name,c.vcode,a.longitude,a.latitude FROM api_scenic_spots a
+         left JOIN jq_wifi_apmac b ON a.id=b.scenicid AND b.vcode=#{vcode}
+         left JOIN (select w.apMacAddress,w.people,w.vcode,w.timeWifi from (SELECT s.apMacAddress,count(1) as people,s.vcode,s.addtime as timeWifi FROM jq_wifi_part s WHERE s.vcode=#{vcode} and
+        s.addtime BETWEEN   SUBDATE(now(),interval 15 minute)  and now()   GROUP BY s.apMacAddress ) w
+			where 1=1  ) c
+			ON b.apmac=c.apMacAddress
+          ) scenicTbale,(SELECT scenicid, max(CAST(maxCount AS unsigned)+1) AS maxLoad,maxcount,mincount,mark FROM jq_scenic_comfort WHERE  vcode=#{vcode}
+        GROUP BY scenicid) comfort  WHERE scenicTbale.id = comfort.scenicid   ORDER BY TEMPLYQUANTITY desc
+
+        ]]>
+    </select>
+
+    <select id="getRealpeopleMonitorBee" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.SpotsWifiBeeComfortVo">
+        <![CDATA[
+                  select d.BuildingCode as bdcode,sum(d.TotalNumber) as totalnum,
+                    c.maxCount,
+                    DATE_FORMAT(d.CreateTime,'%Y-%m-%d %H') as crtime
+                    from jq_wifi_detail as d,jq_scenic_comfort as c,api_scenic_spots as s
+
+                    where 1=1
+                    and d.buildingid = c.buildingid
+                    and c.scenicid = s.id
+                    and d.vcode = #{vcode}
+
+
+                    and d.CreateTime BETWEEN #{startTime} and #{endTime}
+                    group by d.BuildingCode,DATE_FORMAT(d.CreateTime,'%Y-%m-%d %H')
+                    order by d.Buildingid,DATE_FORMAT(d.CreateTime,'%Y-%m-%d %H') asc
+
+        ]]>
+    </select>
+
+</mapper>

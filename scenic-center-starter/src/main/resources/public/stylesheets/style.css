@@ -1,0 +1,5 @@
+.system-top{ position: absolute; left: 0; top: 0; width:100%; height: 38px; line-height: 39px; background-color: #fff; border-bottom: 5px solid #eff2f7;}
+.system-top .daq-crumb{ padding-left: 15px; }
+.section-content{ top: 38px; }
+.system-btn{ font-size: 0;}
+.system-btn .daq-btn{ margin-right: 10px;}

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.client.jqScenicMsg.JqScenicMsgDao">
+
+
+    <!--获取景区列表-->
+    <select id="getJqScenicList" parameterType="java.lang.String"
+            resultType="com.daqsoft.vo.client.madeVoBean.JqScenicAreas">
+        select j.name, j.latitude, j.longitude, j.administrative_division as region
+          from jq_scenic_areas as j where vcode = #{vcode}
+    </select>
+
+
+    <select id="getJqScenicRegion" parameterType="java.lang.String"
+            resultType="com.daqsoft.vo.client.madeVoBean.JqScenicAreas">
+        SELECT
+            j. NAME,
+            j.latitude,
+            j.longitude,
+            j.administrative_division AS region,
+            j.CITY_REGION AS cityRegion
+        FROM
+            jq_scenic_areas AS j
+        WHERE
+            vcode = #{vcode}
+        AND STATUS = 1
+        AND j.ADMINISTRATIVE_DIVISION IS NOT NULL
+        LIMIT 1
+    </select>
+
+    <select id="getJqResourceCode" parameterType="java.lang.String"
+            resultType="com.daqsoft.vo.client.madeVoBean.JqScenicMsgVO">
+        select sl.scenic_name,sl.vcode,sl.account , sl.name,sl.resourceCode from sys_user as sl ,
+        jq_scenic_resource_code as jsrc
+        where sl.resourceCode = jsrc.newCode
+        <if test="vcode != null and vcode.trim() != ''">
+            and sl.vcode = #{vcode}
+        </if>
+
+        and sl.status = 1
+        and sl.resourceCode is not null
+    </select>
+    <select id="getJqScenicProvinceRegion" parameterType="java.lang.String"
+            resultType="java.lang.String">
+        SELECT
+            CONCAT(
+              SUBSTRING(
+                    (
+                    SELECT
+                    sr.REGION
+                    FROM
+                    sys_region sr
+                    INNER JOIN sys_user sml ON sr.REGION = sml.REGION
+                    WHERE
+                    sml.VCODE = #{vcode}
+                    AND sml.REGION IS NOT NULL
+                    LIMIT 1
+                    ),
+                1,
+              2
+              ),
+            '0000'
+            )
+    </select>
+
+</mapper>

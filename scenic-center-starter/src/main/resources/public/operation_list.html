@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <!--优先使用 IE 最新版本和 Chrome-->
+    <meta name="renderer" content="webkit"/>
+    <meta name="author" content="智慧旅游云-综合信息服务平台"/>
+    <title>智慧旅游云-综合信息服务平台</title>
+    <link rel="stylesheet" href="http://filealiyun.geeker.com.cn/ued/geekUI/css/daq-system.min.css"/>
+</head>
+<body>
+<!--当前位置 S-->
+<div class="system-top">
+    <p class="daq-crumb clearfix">
+        <a href="javascript:void(0);">首页</a>
+        <i class="crumb-sign">-</i>
+        <a href="javascript:void(0);">产品管理</a>
+        <i class="crumb-sign">-</i>
+        <a class="crumb-disable" href="javascript:void(0);">产品列表</a>
+    </p>
+</div>
+<!--内容 S-->
+<div class="section-content">
+    <!--<h3 class="system-title">系统首页</h3>-->
+    <div class="section-son-content source-pad">
+        <div class="clearfix mt-32">
+            <!-- 事件名称 -->
+            <div class="form-item mr-20 fl">
+                <label class="form-label wid-56">事件名称</label>
+                <div class="form-position">
+                    <div class="daq-inp-rule wid-198">
+                        <input type="text" placeholder="请输入文字"/>
+                    </div>
+                </div>
+            </div>
+            <!-- 所属区域 -->
+            <div class="daq-form fl">
+                <span class="form-label mr-10">所属地区</span>
+                <div id="js_cityPicker" class="fl clearfix"></div>
+            </div>
+            <!--操作按钮-->
+            <div class="system-btn">
+                <button class="daq-btn"><i class="sysfont">&#xe626;</i><span>查询</span></button>
+            </div>
+        </div>
+        <table id="table" class="mt-20" width="100%"></table>
+    </div>
+</div>
+<script src="http://filealiyun.geeker.com.cn/ued/js/jquery-1.8.3.min.js"></script>
+<script src="http://192.168.7.110/static/geekUI/daq-system.min.js"></script>
+<script src="/script/common/initiazation0.0.1.js"></script>
+<script>
+    $(function () {
+        // 调用输入框获取焦点事件
+        $('.daq-inp-rule input').clearText();
+
+        // 实例表格
+        var token = window.parent.document.getElementById("token").value;
+        var table = $('#table').daqDataTables({
+            url: '<%= url %>?token=' + token,
+            params: {
+                pageSize: 10,
+                currPage: 1
+            },
+            columns: [
+                {
+                    field: 'BNAME',
+                    title: '菜单名称',
+                    className: 'table-center'
+                }, {
+                    field: 'NAME',
+                    title: '操作名称',
+                    className: 'table-center'
+                }, {
+                    field: 'OP',
+                    title: '操作代码',
+                    className: 'table-center'
+                }, {
+                    field: 'URL',
+                    title: 'URL地址',
+                    className: 'table-center'
+                }, {
+                    field: 'DISPLAY',
+                    title: '工具栏显示',
+                    className: 'table-center',
+                    formatter: function (data) {
+                        return data == 1 ? "显示" : "不显示";
+                    }
+                }, {
+                    field: 'SORT',
+                    title: '排序权重',
+                    className: 'table-center'
+                }],
+            radio: true
+        });
+        // 查看跳转页面
+        /*$('.section-content').on('click', '.js_editor', function () {
+         $('#indIframe', parent.document).attr('src','about-detail.html')
+         })*/
+    })
+</script>
+</body>
+</html>

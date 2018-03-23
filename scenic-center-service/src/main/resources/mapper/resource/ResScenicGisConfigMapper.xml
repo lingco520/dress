@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.ResScenicGisConfigMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.scenicGisConfig.ResScenicGisConfig" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="URL" property="url" jdbcType="VARCHAR" />
+    <result column="CENTER_LONGITUDE" property="centerLongitude" jdbcType="VARCHAR" />
+    <result column="CENTER_LATITUDE" property="centerLatitude" jdbcType="VARCHAR" />
+    <result column="MAP_SCALE" property="mapScale" jdbcType="INTEGER" />
+    <result column="POPUP_BOTTOM" property="popupBottom" jdbcType="VARCHAR" />
+    <result column="BACKGROUND_COLOR" property="backgroundColor" jdbcType="VARCHAR" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, NAME, URL, CENTER_LONGITUDE, CENTER_LATITUDE, MAP_SCALE,POPUP_BOTTOM, BACKGROUND_COLOR, VCODE,
+    STATUS, UPDATE_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_scenic_gis_config
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from res_scenic_gis_config
+    <where>
+      AND vcode = #{vcode}
+      AND STATUS != -1
+      <if test="name != null and '' != name">
+        AND name LIKE '%${name}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND status = #{status}
+      </if>
+    </where>
+    ORDER BY id DESC
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_scenic_gis_config
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.daqsoft.entity.scenicGisConfig.ResScenicGisConfig" >
+    insert into res_scenic_gis_config ( NAME, URL,
+      CENTER_LONGITUDE, CENTER_LATITUDE, MAP_SCALE,
+      BACKGROUND_COLOR, VCODE, STATUS,POPUP_BOTTOM,
+      UPDATE_TIME)
+    values ( #{name,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},
+      #{centerLongitude,jdbcType=VARCHAR}, #{centerLatitude,jdbcType=VARCHAR}, #{mapScale,jdbcType=INTEGER},
+      #{backgroundColor,jdbcType=VARCHAR}, #{vcode,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},#{popupBottom,jdbcType=VARCHAR},now())
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.scenicGisConfig.ResScenicGisConfig" >
+    update res_scenic_gis_config
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        URL = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="centerLongitude != null" >
+        CENTER_LONGITUDE = #{centerLongitude,jdbcType=VARCHAR},
+      </if>
+      <if test="centerLatitude != null" >
+        CENTER_LATITUDE = #{centerLatitude,jdbcType=VARCHAR},
+      </if>
+      <if test="mapScale != null" >
+        MAP_SCALE = #{mapScale,jdbcType=INTEGER},
+      </if>
+      <if test="backgroundColor != null" >
+        BACKGROUND_COLOR = #{backgroundColor,jdbcType=VARCHAR},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="popupBottom != null" >
+        POPUP_BOTTOM = #{popupBottom,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      UPDATE_TIME =now()
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="getIsGis" resultType="Integer" >
+    select
+    count(1)
+    from res_scenic_gis_config
+    WHERE vcode=#{vcode} and status = 1
+  </select>
+</mapper>

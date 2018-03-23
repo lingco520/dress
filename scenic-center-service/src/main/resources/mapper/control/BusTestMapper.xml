@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.control.BusTestMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.test.BusTest" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="BUS_NUM" property="busNum" jdbcType="VARCHAR" />
+    <result column="REGION" property="region" jdbcType="VARCHAR" />
+    <result column="COMPANY" property="company" jdbcType="VARCHAR" />
+    <result column="PHONE" property="phone" jdbcType="VARCHAR" />
+    <result column="CAR_TYPE" property="carType" jdbcType="VARCHAR" />
+    <result column="CAR_LEVEL" property="carLevel" jdbcType="VARCHAR" />
+    <result column="PEOPLE" property="people" jdbcType="INTEGER" />
+    <result column="COLOR" property="color" jdbcType="VARCHAR" />
+    <result column="LONGITUDE" property="longitude" jdbcType="VARCHAR" />
+    <result column="LATITUDE" property="latitude" jdbcType="VARCHAR" />
+    <result column="BTIME" property="btime" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="SMALLINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, BUS_NUM, REGION, COMPANY, PHONE, CAR_TYPE, CAR_LEVEL, PEOPLE, COLOR, LONGITUDE,
+    LATITUDE, BTIME, STATUS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from bus
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectList" resultMap="BaseResultMap">
+      select
+          <include refid="Base_Column_List" />
+          from bus
+          <where>
+            <if test="name != null and '' != name">
+              AND COMPANY LIKE '%${name}%'
+            </if>
+            <if test="level != null and '' != level">
+              AND CAR_LEVEL = #{level}
+            </if>
+            <if test="type != null and '' != type">
+              AND CAR_TYPE = #{type}
+            </if>
+            <if test="peopleNumStart != null and '' != peopleNumStart">
+              AND PEOPLE >= #{peopleNumStart}
+            </if>
+            <if test="peopleNumEnd != null and '' != peopleNumEnd">
+              <![CDATA[
+                AND PEOPLE <= #{peopleNumEnd}
+              ]]>
+            </if>
+          </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from bus
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.daqsoft.entity.test.BusTest" >
+    insert into bus (ID, BUS_NUM, REGION, 
+      COMPANY, PHONE, CAR_TYPE, 
+      CAR_LEVEL, PEOPLE, COLOR, 
+      LONGITUDE, LATITUDE, BTIME, 
+      STATUS)
+    values (#{id,jdbcType=BIGINT}, #{busNum,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, 
+      #{company,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{carType,jdbcType=VARCHAR}, 
+      #{carLevel,jdbcType=VARCHAR}, #{people,jdbcType=INTEGER}, #{color,jdbcType=VARCHAR}, 
+      #{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}, #{btime,jdbcType=VARCHAR}, 
+      #{status,jdbcType=SMALLINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.test.BusTest" >
+    update bus
+    <set >
+      <if test="busNum != null" >
+        BUS_NUM = #{busNum,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        REGION = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null" >
+        COMPANY = #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="carType != null" >
+        CAR_TYPE = #{carType,jdbcType=VARCHAR},
+      </if>
+      <if test="carLevel != null" >
+        CAR_LEVEL = #{carLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="people != null" >
+        PEOPLE = #{people,jdbcType=INTEGER},
+      </if>
+      <if test="color != null" >
+        COLOR = #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        LONGITUDE = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null" >
+        LATITUDE = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="btime != null" >
+        BTIME = #{btime,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="getDictsByType" parameterType="String" resultType="Map">
+    SELECT NAME ,VALUE FROM SYS_DICT WHERE PID IS NOT NULL AND TYPE = #{carLevel} ORDER BY SORT ASC
+  </select>
+</mapper>

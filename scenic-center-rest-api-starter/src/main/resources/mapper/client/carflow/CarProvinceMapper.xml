@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.daqsoft.mapper.client.carflow.CarProvinceDao">
+
+
+    <!-- 当日车辆来源排行 -->
+    <select id="getCarComeFromDay" resultType="com.daqsoft.vo.client.madeVoBean.CarComeFromWidgetVo" parameterType="map">
+        select count(s.ID) num,
+        substr(s.VEHICLENO,1,1) carNum
+        from jq_tvpm_vehiclelog_part s
+        where s.VCODE = #{vcode}
+        and substr(s.ACCESSDATE,1,10) = #{day}
+        group by substr(s.ACCESSDATE,1,10),CARNUM,s.VCODE
+        ORDER BY num desc
+    </select>
+
+    <!-- 选择日期车辆来源排行 @update zf 20170822-->
+    <select id="getCarComeFromDay2Day" resultType="com.daqsoft.vo.client.madeVoBean.CarComeFromWidgetVo" parameterType="map">
+        select count(s.ID) num,
+        PROVINCE  as carNum
+        from jq_tvpm_vehiclelog_part s
+        where s.VCODE = #{vcode} AND city IS NOT NULL AND province IS NOT NULL
+        and s.ACCESSDATE BETWEEN #{beginDay} AND #{endDay}
+        group by CARNUM
+        ORDER BY num desc
+    </select>
+
+    <!-- 季度城市车辆来源 zf   @update zf 20170822-->
+    <select id="getCarComeFromQuarter" resultType="com.daqsoft.vo.client.madeVoBean.CarComeFromWidgetVo" parameterType="map">
+        select count(s.ID) num,
+        PROVINCE  as carNum
+        from jq_tvpm_vehiclelog_part s
+        where s.VCODE = #{vcode} AND city IS NOT NULL AND province IS NOT NULL
+        and s.ACCESSDATE between #{beginTime} and #{endTime}
+        group by CARNUM
+        ORDER BY num desc
+    </select>
+
+    <!-- 当年城市车辆来源 -->
+    <select id="getCarComeFromYear" resultType="com.daqsoft.vo.client.madeVoBean.CarComeFromWidgetVo" parameterType="map">
+        select count(s.ID) num,
+       substr(s.VEHICLENO,1,1) carNum
+        from jq_tvpm_vehiclelog_part s
+        where s.VCODE = #{vcode}
+        and DATE_FORMAT(s.ACCESSDATE,'%Y') = #{year}
+        group by substr(s.ACCESSDATE,1,4),CARNUM,VCODE
+        ORDER BY num desc
+    </select>
+
+    <!-- 选择日期车辆来源排行 @update zf 20170822-->
+    <select id="getCarComeFromYear2Year" resultType="com.daqsoft.vo.client.madeVoBean.CarComeFromWidgetVo" parameterType="map">
+        select count(s.ID) num,
+        PROVINCE  as carNum
+        from jq_tvpm_vehiclelog_part s
+        where s.VCODE = #{vcode} AND city IS NOT NULL AND province IS NOT NULL
+        and (s.ACCESSDATE BETWEEN #{beginYear} AND #{endYear})
+        group by CARNUM
+        ORDER BY num desc
+    </select>
+
+    <!-- 当月城市车辆来源 zf @update zf 20170822-->
+    <select id="getCarComeFromMonth" resultType="com.daqsoft.vo.client.madeVoBean.CarComeFromWidgetVo" parameterType="map">
+        select count(s.ID) num,
+        PROVINCE  as carNum
+        from jq_tvpm_vehiclelog_part s
+        where s.VCODE = #{vcode} AND city IS NOT NULL AND province IS NOT NULL
+        and s.ACCESSDATE BETWEEN #{startTime} and #{endTime}
+        group by CARNUM
+        ORDER BY num desc
+    </select>
+
+</mapper>

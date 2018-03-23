@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.MediaPicMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.pic.MediaPic" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="IMAGE_URL" property="imageUrl" jdbcType="VARCHAR" />
+    <result column="IMAGE_TYPE" property="imageType" jdbcType="VARCHAR" />
+    <result column="SCENIC_ID" property="scenicId" jdbcType="BIGINT" />
+    <result column="HEIGHT" property="height" jdbcType="VARCHAR" />
+    <result column="WIDTH" property="width" jdbcType="VARCHAR" />
+    <result column="INTRODUCTION" property="introduction" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="INTEGER" />
+    <result column="LANGUAGE_TYPE" property="languageType" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, TITLE, IMAGE_URL, IMAGE_TYPE, SCENIC_ID, HEIGHT, WIDTH, INTRODUCTION, SORT, LANGUAGE_TYPE, 
+    UPDATE_TIME, STATUS, VCODE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from media_pic
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    from media_pic
+    where STATUS != -1 AND VCODE = #{vcode}
+    <if test="title != null and '' != title">
+      AND TITLE LIKE '%${title}%'
+    </if>
+    <if test="scenicId != null and '' != scenicId">
+      AND SCENIC_ID = #{scenicId}
+    </if>
+    <if test="languageType != null and '' != languageType">
+      AND LANGUAGE_TYPE = #{languageType}
+    </if>
+    <if test="imageType != null and '' != imageType">
+      AND IMAGE_TYPE = #{imageType}
+    </if>
+    <if test="status != null">
+      AND STATUS = #{status}
+    </if>
+    ORDER BY SORT ASC, UPDATE_TIME DESC
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from media_pic
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.daqsoft.entity.pic.MediaPic" >
+    insert into media_pic (ID, TITLE, IMAGE_URL, 
+      IMAGE_TYPE, SCENIC_ID, HEIGHT, 
+      WIDTH, INTRODUCTION, SORT, 
+      LANGUAGE_TYPE, UPDATE_TIME, STATUS, 
+      VCODE)
+    values (#{id,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{imageUrl,jdbcType=VARCHAR}, 
+      #{imageType,jdbcType=VARCHAR}, #{scenicId,jdbcType=BIGINT}, #{height,jdbcType=VARCHAR}, 
+      #{width,jdbcType=VARCHAR}, #{introduction,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, 
+      #{languageType,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
+      #{vcode,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.pic.MediaPic" >
+    update media_pic
+    <set >
+      <if test="title != null" >
+        TITLE = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="imageUrl != null" >
+        IMAGE_URL = #{imageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="imageType != null" >
+        IMAGE_TYPE = #{imageType,jdbcType=VARCHAR},
+      </if>
+      <if test="scenicId != null" >
+        SCENIC_ID = #{scenicId,jdbcType=BIGINT},
+      </if>
+      <if test="height != null" >
+        HEIGHT = #{height,jdbcType=VARCHAR},
+      </if>
+      <if test="width != null" >
+        WIDTH = #{width,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null" >
+        INTRODUCTION = #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="languageType != null" >
+        LANGUAGE_TYPE = #{languageType,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

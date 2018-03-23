@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.control.DutyPersonnelMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.dutypersonnel.SysDutypersonnel" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="DUTYTYPE" property="dutytype" jdbcType="VARCHAR" />
+    <result column="ADDTIME" property="addtime" jdbcType="TIMESTAMP" />
+    <result column="DUTY" property="duty" jdbcType="VARCHAR" />
+    <result column="LANDLINE" property="landline" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="OFFICE" property="office" jdbcType="VARCHAR" />
+    <result column="PHONE" property="phone" jdbcType="VARCHAR" />
+    <result column="SLEVEL" property="slevel" jdbcType="BIGINT" />
+    <result column="STATUS" property="status" jdbcType="BIGINT" />
+    <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="DEPARTMENT_ID" property="departmentId" jdbcType="BIGINT" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+    <result column="LOCATION_TIME" property="locationTime" jdbcType="TIME" />
+    <result column="LON" property="lon" jdbcType="VARCHAR" />
+    <result column="LAT" property="lat" jdbcType="VARCHAR" />
+    <result column="SEX" property="sex" jdbcType="VARCHAR" />
+    <result column="AGE" property="age" jdbcType="VARCHAR" />
+    <result column="GID" property="gid" jdbcType="VARCHAR" />
+    <result column="BIRTHDAY" property="birthday" jdbcType="VARCHAR" />
+    <result column="MANAGER" property="manager" jdbcType="VARCHAR" />
+    <result column="SECURITY" property="security" jdbcType="VARCHAR" />
+    <result column="LOGIN_STATUS" property="loginStatus" jdbcType="VARCHAR" />
+    <result column="USERNUM" property="usernum" jdbcType="VARCHAR" />
+    <result column="PWD" property="pwd" jdbcType="VARCHAR" />
+    <result column="RESOURCECODE" property="resourcecode" jdbcType="VARCHAR" />
+    <result column="COMMON" property="common" jdbcType="VARCHAR" />
+    <result column="ISDEPARTURE" property="isdeparture" jdbcType="INTEGER" />
+    <result column="DEPARTUREDATE" property="departuredate" jdbcType="DATE" />
+    <result column="EDU" property="edu" jdbcType="VARCHAR" />
+    <result column="ENTRY" property="entry" jdbcType="DATE" />
+    <result column="WORKINGTIME" property="workingtime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DUTYTYPE, ADDTIME, DUTY, LANDLINE, NAME, OFFICE, PHONE, SLEVEL, STATUS, UPDATETIME, 
+    DEPARTMENT_ID, VCODE, LOCATION_TIME, LON, LAT, SEX, AGE, GID, DATE_FORMAT(BIRTHDAY,'%Y-%m-%d') as BIRTHDAY, MANAGER,
+    SECURITY, LOGIN_STATUS, USERNUM, PWD, RESOURCECODE, COMMON, ISDEPARTURE, DEPARTUREDATE, 
+    EDU, ENTRY, WORKINGTIME
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_dutypersonnel
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from sys_dutypersonnel
+    <where>
+      AND STATUS != -1 AND  vcode=#{vcode}
+      <if test="name != null and '' != name">
+        AND name LIKE '%${name}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND status = #{status}
+      </if>
+    </where>
+    ORDER BY id DESC
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from sys_dutypersonnel
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.daqsoft.entity.dutypersonnel.SysDutypersonnel" >
+    insert into sys_dutypersonnel ( DUTYTYPE, ADDTIME,
+      DUTY, LANDLINE, NAME, 
+      OFFICE, PHONE, SLEVEL, 
+      STATUS, UPDATETIME, DEPARTMENT_ID, 
+      VCODE, LOCATION_TIME, LON, 
+      LAT, SEX, AGE, GID, 
+      BIRTHDAY, MANAGER, SECURITY, 
+      LOGIN_STATUS, USERNUM, PWD, 
+      RESOURCECODE, COMMON, ISDEPARTURE, 
+      DEPARTUREDATE, EDU, ENTRY, 
+      WORKINGTIME)
+    values ( #{dutytype,jdbcType=VARCHAR}, now(),
+      #{duty,jdbcType=VARCHAR}, #{landline,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{office,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{slevel,jdbcType=BIGINT}, 
+      #{status,jdbcType=BIGINT}, now(), #{departmentId,jdbcType=BIGINT},
+      #{vcode,jdbcType=VARCHAR}, #{locationTime,jdbcType=TIME}, #{lon,jdbcType=VARCHAR}, 
+      #{lat,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{age,jdbcType=VARCHAR}, #{gid,jdbcType=VARCHAR}, 
+      #{birthday,jdbcType=TIMESTAMP}, #{manager,jdbcType=VARCHAR}, #{security,jdbcType=VARCHAR}, 
+      #{loginStatus,jdbcType=VARCHAR}, #{usernum,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, 
+      #{resourcecode,jdbcType=VARCHAR}, #{common,jdbcType=VARCHAR}, #{isdeparture,jdbcType=INTEGER}, 
+      #{departuredate,jdbcType=DATE}, #{edu,jdbcType=VARCHAR}, #{entry,jdbcType=DATE}, 
+      #{workingtime,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.dutypersonnel.SysDutypersonnel" >
+    update sys_dutypersonnel
+    <set >
+      <if test="dutytype != null" >
+        DUTYTYPE = #{dutytype,jdbcType=VARCHAR},
+      </if>
+      <if test="addtime != null" >
+        ADDTIME = #{addtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="duty != null" >
+        DUTY = #{duty,jdbcType=VARCHAR},
+      </if>
+      <if test="landline != null" >
+        LANDLINE = #{landline,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="office != null" >
+        OFFICE = #{office,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="slevel != null" >
+        SLEVEL = #{slevel,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=BIGINT},
+      </if>
+      <if test="updatetime != null" >
+        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="departmentId != null" >
+        DEPARTMENT_ID = #{departmentId,jdbcType=BIGINT},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="locationTime != null" >
+        LOCATION_TIME = #{locationTime,jdbcType=TIME},
+      </if>
+      <if test="lon != null" >
+        LON = #{lon,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null" >
+        LAT = #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        SEX = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        AGE = #{age,jdbcType=VARCHAR},
+      </if>
+      <if test="gid != null" >
+        GID = #{gid,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null" >
+        BIRTHDAY = #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="manager != null" >
+        MANAGER = #{manager,jdbcType=VARCHAR},
+      </if>
+      <if test="security != null" >
+        SECURITY = #{security,jdbcType=VARCHAR},
+      </if>
+      <if test="loginStatus != null" >
+        LOGIN_STATUS = #{loginStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="usernum != null" >
+        USERNUM = #{usernum,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null" >
+        PWD = #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="resourcecode != null" >
+        RESOURCECODE = #{resourcecode,jdbcType=VARCHAR},
+      </if>
+      <if test="common != null" >
+        COMMON = #{common,jdbcType=VARCHAR},
+      </if>
+      <if test="isdeparture != null" >
+        ISDEPARTURE = #{isdeparture,jdbcType=INTEGER},
+      </if>
+      <if test="departuredate != null" >
+        DEPARTUREDATE = #{departuredate,jdbcType=DATE},
+      </if>
+      <if test="edu != null" >
+        EDU = #{edu,jdbcType=VARCHAR},
+      </if>
+      <if test="entry != null" >
+        ENTRY = #{entry,jdbcType=DATE},
+      </if>
+      <if test="workingtime != null" >
+        WORKINGTIME = #{workingtime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

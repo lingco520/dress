@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.client.threedimensionalmap.ThreeDimensionalMapDao">
+
+    <!--监控列表 -->
+    <select id="getMonitoring" parameterType="String"
+            resultType="com.daqsoft.vo.client.mysqlBean.Monitor">
+		<![CDATA[
+			select s.id ,s.name ,s.coordinate_x ,s.coordinate_y from jq_monitor AS  s where s.vcode=#{vcode} AND s.status = 1   and s.ISSHOW = 1 and s.NOW_STATUS = 1
+        ]]>
+	</select>
+    <!--监控播放-->
+    <select id="getMonitorById"
+            resultType="com.daqsoft.vo.client.madeVoBean.MonitorPlayVo" parameterType="java.util.Map">
+        select @rownum:=@rownum+1 as rownum,j.BRAND as brand,j.name as name,j.OUTIPADDRESS as outipaddress,j.OUTPORT as outport,j.UNAME as uname,j.PWD as pwd ,j.NUMCODE as numcode,j.RANK as rank,j.url,j.IMAGE as image,j.`STATUS` as status,j.ISSHOW as isshow ,j.nowStatus as nowstatus
+        from jq_monitor j,(select @rownum:=0)  t where 1=1 and j.ISSHOW = 1 and j.NOW_STATUS = 1 and j.STATUS = 1
+        and j.vcode = #{vcode} and j.id = #{id}
+
+    </select>
+    <!-- 停车场-->
+    <select id="getParking" parameterType="String"
+            resultType="com.daqsoft.vo.client.mysqlBean.ApiParking">
+        <![CDATA[
+        select 	s.name,	s.id , s.latitude, s.longitude
+        from res_parking s
+        where s.vcode=#{vcode} AND s.status = 1 Group by  name
+        ]]>
+    </select>
+    <!-- 景点-->
+    <select id="getScenicSpots" parameterType="String"
+            resultType="com.daqsoft.vo.client.mysqlBean.ApiScenicSpots">
+        <![CDATA[
+         SELECT s.id, s.name, s.introduction, s.longitude, s.latitude from api_scenic_spots s
+		  where s.vcode=#{vcode}
+            and s.status = 1
+        ]]>
+    </select>
+
+    <!--厕所-->
+    <select id="getToilet" resultType="com.daqsoft.vo.client.mysqlBean.ApiTourismToilet"
+            parameterType="String">
+          <![CDATA[
+        SELECT s.id, s.latitude, s.longitude, s.name
+        FROM api_tourism_toilet s
+        WHERE s.VCODE = #{vcode} AND s.status = 1
+        ]]>
+    </select>
+
+    <!--报警亭-->
+    <select id="getPolice" resultType="com.daqsoft.vo.client.mysqlBean.ApiPolice"
+            parameterType="String">
+ <![CDATA[
+        SELECT s.id, s.latitude, s.longitude, s.name
+        FROM api_police  s
+        where s.`status` = 1
+        and s.VCODE = #{vcode}
+        ]]>
+    </select>
+    <!--医疗点-->
+    <select id="getApiMedical" resultType="com.daqsoft.vo.client.mysqlBean.ApiMedical"
+            parameterType="String">
+        <![CDATA[
+      select s.latitude, s.id, s.longitude, s.	name
+      from api_medical s
+      where s.vcode=#{vcode} and  s.status = 1;
+        ]]>
+    </select>
+    <!--越界报警-->
+    <select id="getMoniterBoundsPolice" resultType="com.daqsoft.vo.client.mysqlBean.MoniterBoundsPolice"
+            parameterType="String">
+        <![CDATA[
+      SELECT *
+      FROM jq_moniter_bounds_police  s
+      where s.VCODE = #{vcode} AND  s.`status` = 1
+        ]]>
+    </select>
+
+
+    <!--热电开关-->
+    <select id="getSpotsHeat"
+            resultType="com.daqsoft.vo.client.madeVoBean.ScenicSpotsHeatSealVo" parameterType="String">
+           SELECT
+                b.scenicId AS id,
+                c.people AS sumPeople,
+                a. NAME,
+                a.personcount,
+                a.longitude,
+                a.latitude
+            FROM
+                api_scenic_spots a
+            JOIN jq_wifi_apmac b ON a.id = b.scenicid
+            AND b.vcode = #{vcode}
+            JOIN (
+                SELECT
+                    s.apMacAddress,
+                    count(1) AS people,
+                    s.vcode
+                FROM
+                    jq_wifi_part s
+                WHERE
+                    s.vcode = #{vcode}
+                AND s.addtime between DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 10 MINUTE),'%Y-%m-%d %H:%i:00') AND DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 10 MINUTE),'%Y-%m-%d %H:%i:59')
+                GROUP BY
+                    s.apMacAddress
+            ) c ON b.apmac = c.apMacAddress
+            ORDER BY
+                id
+    </select>
+    <!--三维地图平台配置-->
+    <select id="getSysConfig" parameterType="String" resultType="com.daqsoft.vo.client.madeVoBean.SysConfigTendVo">
+        <![CDATA[
+            select (select `VALUE` as bodyBackgroundColor from sys_sysconfig s where vcode=#{vcode} and s.key='bodyBackgroundColor') bodyBackgroundColor,
+            (select `VALUE` as mapDefaulSize from sys_sysconfig s where vcode=#{vcode} and s.key='mapDefaulSize') mapDefaulSize,
+            (select `VALUE` as mapTitle from sys_sysconfig s where vcode=#{vcode} and s.key='mapTitle') mapTitle,
+            (select `VALUE` as scales from sys_sysconfig s where vcode=#{vcode} and s.key='scales') scales,
+            (select `VALUE` as centerLon from sys_sysconfig s where vcode=#{vcode} and s.key='centerLon') centerLon,
+            (select `VALUE` as centerLat from sys_sysconfig s where vcode=#{vcode} and s.key='centerLat') centerLat,
+            (select `VALUE` as mapurl from sys_sysconfig s where vcode=#{vcode} and s.key='mapurl') mapurl,
+            (select `VALUE` as mapboundsleft from sys_sysconfig s where vcode=#{vcode} and s.key='mapbounds_left') mapboundsleft,
+            (select `VALUE` as mapboundsbottom from sys_sysconfig s where vcode=#{vcode} and s.key='mapbounds_bottom') mapboundsbottom,
+            (select `VALUE` as mapboundsright from sys_sysconfig s where vcode=#{vcode} and s.key='mapbounds_right') mapboundsright,
+            (select `VALUE` as mapboundstop from sys_sysconfig s where vcode=#{vcode} and s.key='mapbounds_top') mapboundstop,
+            (select `VALUE` as mapScale from sys_sysconfig s where vcode=#{vcode} and s.key='map_scale') mapScale,
+            (select `VALUE` as mapType from sys_sysconfig s where vcode=#{vcode} and s.key='mapType') mapType,
+            (select `VALUE` as popupBottom from sys_sysconfig s where vcode=#{vcode} and s.key='popupBottom') popupBottom
+        ]]>
+    </select>
+    <!-- gis地图查询，为了微件升级，数据结构问题，返回数据少一些 -->
+    <select id="getGisSysConfig" parameterType="String" resultType="map">
+        <![CDATA[
+            select (select `VALUE` as bodyBackgroundColor from sys_sysconfig s where vcode=#{vcode} and s.key='bodyBackgroundColor') bodyBackgroundColor,
+            (select `VALUE` as mapDefaulSize from sys_sysconfig s where vcode=#{vcode} and s.key='mapDefaulSize') mapDefaulSize,
+            (select `VALUE` as mapTitle from sys_sysconfig s where vcode=#{vcode} and s.key='mapTitle') mapTitle,
+            (select `VALUE` as scales from sys_sysconfig s where vcode=#{vcode} and s.key='scales') scales,
+            (select `VALUE` as centerLon from sys_sysconfig s where vcode=#{vcode} and s.key='centerLon') centerLon,
+            (select `VALUE` as centerLat from sys_sysconfig s where vcode=#{vcode} and s.key='centerLat') centerLat,
+            (select `VALUE` as mapurl from sys_sysconfig s where vcode=#{vcode} and s.key='mapurl') mapurl,
+            (select `VALUE` as mapboundsleft from sys_sysconfig s where vcode=#{vcode} and s.key='mapbounds_left') mapboundsleft,
+            (select `VALUE` as mapboundsbottom from sys_sysconfig s where vcode=#{vcode} and s.key='mapbounds_bottom') mapboundsbottom,
+            (select `VALUE` as mapboundsright from sys_sysconfig s where vcode=#{vcode} and s.key='mapbounds_right') mapboundsright,
+            (select `VALUE` as mapboundstop from sys_sysconfig s where vcode=#{vcode} and s.key='mapbounds_top') mapboundstop
+        ]]>
+    </select>
+
+
+    <!--超图地图配置-->
+    <select id="getSuperMapConfig" resultType="com.daqsoft.vo.client.madeVoBean.SuperMapConfig" parameterType="java.util.Map">
+        <![CDATA[
+
+            SELECT
+                s.MAPBOUNDSTOP ,
+                s.MAPBOUNDSRIGHT ,
+                s.MAPBOUNDSBOTTOM ,
+                s.MAPBOUNDSLEFT ,
+                s.MAPURL ,
+                s.CENTERLAT ,
+                s.CENTERLON ,
+                s.SCALES ,
+                s.MAPTITLE ,
+                s.MAPDEFAULSIZE ,
+                s.BODYBACKGROUNDCOLOR ,
+                s.USERPLATFORM
+            FROM
+                api_supermap AS s
+            WHERE
+                1 = 1
+            AND s.STATUS = 1
+            AND s.VCODE = #{vcode} and s.USERPLATFORM = #{userplatform}
+
+        ]]>
+    </select>
+
+    <!--三维地图平台配置-->
+    <select id="getDining" parameterType="String"
+            resultType="com.daqsoft.vo.client.mysqlBean.Dining">
+        <![CDATA[
+
+          SELECT id,name,IFNULL(longitude,' ') as longitude ,IFNULL(latitude,' ') as latitude  FROM api_dining_place
+          WHERE 1=1  and status = 1
+          and vcode = #{vcode}
+
+
+        ]]>
+    </select>
+    <!--三维地图平台配置-->
+    <select id="getDiningByType" resultType="com.daqsoft.vo.client.mysqlBean.Dining" statementType="STATEMENT">
+          SELECT id,
+            <choose>
+                <when test="type != null and '' != type">
+                    ${longkey} AS longitude,
+                    ${latkey} AS latitude,
+                </when>
+                <otherwise>
+                    IFNULL(longitude,'') as longitude ,IFNULL(latitude,'') as latitude,
+                </otherwise>
+            </choose>
+            name
+          FROM api_dining_place
+          WHERE status = 1
+          and vcode = '${vcode}'
+    </select>
+    <select id="getDiningListByVcode" parameterType="String" resultType="map">
+        <![CDATA[
+            SELECT
+                LATITUDE AS latitude,
+                LONGITUDE AS longitude,
+                `NAME` AS NAME,
+                INTRODUCTION AS introduction,
+                ID AS id
+            FROM
+                res_dining_place
+            WHERE
+                `STATUS` = 1
+            AND VCODE = #{vcode}
+        ]]>
+    </select>
+</mapper>

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.DataBasisConfigMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.dataconfig.DataBasisConfig" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="DSTP_NAME" property="dstpName" jdbcType="VARCHAR" />
+    <result column="DSTP_TOTAL_MIN" property="dstpTotalMin" jdbcType="VARCHAR" />
+    <result column="DSTP_TOTAL_MAX" property="dstpTotalMax" jdbcType="VARCHAR" />
+    <result column="DSTP_SOURCE" property="dstpSource" jdbcType="VARCHAR" />
+    <result column="DSTP_TYPE" property="dstpType" jdbcType="VARCHAR" />
+    <result column="DSTP_RANDOM_MIN" property="dstpRandomMin" jdbcType="VARCHAR" />
+    <result column="DSTP_RANDOM_MAX" property="dstpRandomMax" jdbcType="VARCHAR" />
+    <result column="DSTP_START_DATE" property="dstpStartDate" jdbcType="DATE" />
+    <result column="DSTP_END_DATE" property="dstpEndDate" jdbcType="DATE" />
+    <result column="DOFFT_NAME" property="dofftName" jdbcType="VARCHAR" />
+    <result column="DOFFT_PRICE" property="dofftPrice" jdbcType="VARCHAR" />
+    <result column="DOFFT_NUMBER" property="dofftNumber" jdbcType="VARCHAR" />
+    <result column="DOFFT_RANDOM_MIN" property="dofftRandomMin" jdbcType="VARCHAR" />
+    <result column="DOFFT_RANDOM_MAX" property="dofftRandomMax" jdbcType="VARCHAR" />
+    <result column="DOFFT_START_DATE" property="dofftStartDate" jdbcType="DATE" />
+    <result column="DOFFT_END_DATE" property="dofftEndDate" jdbcType="DATE" />
+    <result column="DONT_NAME" property="dontName" jdbcType="VARCHAR" />
+    <result column="DONT_PRICE" property="dontPrice" jdbcType="VARCHAR" />
+    <result column="DONT_NUMBER" property="dontNumber" jdbcType="VARCHAR" />
+    <result column="DONT_RANDOM_MIN" property="dontRandomMin" jdbcType="VARCHAR" />
+    <result column="DONT_RANDOM_MAX" property="dontRandomMax" jdbcType="VARCHAR" />
+    <result column="DONT_START_DATE" property="dontStartDate" jdbcType="DATE" />
+    <result column="DONT_END_DATE" property="dontEndDate" jdbcType="DATE" />
+    <result column="DTVP_REGION_NAME" property="dtvpRegionName" jdbcType="VARCHAR" />
+    <result column="DTVP_REGION" property="dtvpRegion" jdbcType="VARCHAR" />
+    <result column="DTVP_RANDOM_MIN" property="dtvpRandomMin" jdbcType="VARCHAR" />
+    <result column="DTVP_RANDOM_MAX" property="dtvpRandomMax" jdbcType="VARCHAR" />
+    <result column="DTVP_START_DATE" property="dtvpStartDate" jdbcType="DATE" />
+    <result column="DTVP_END_DATE" property="dtvpEndDate" jdbcType="DATE" />
+    <result column="DTP_PARKING_ID" property="dtpParkingId" jdbcType="VARCHAR" />
+    <result column="DTP_TOTAL" property="dtpTotal" jdbcType="VARCHAR" />
+    <result column="DTP_USED_MIN" property="dtpUsedMin" jdbcType="VARCHAR" />
+    <result column="DTP_USED_MAX" property="dtpUsedMax" jdbcType="VARCHAR" />
+    <result column="DTP_RANDOM_MIN" property="dtpRandomMin" jdbcType="VARCHAR" />
+    <result column="DTP_RANDOM_MAX" property="dtpRandomMax" jdbcType="VARCHAR" />
+    <result column="DTP_START_DATE" property="dtpStartDate" jdbcType="DATE" />
+    <result column="DTP_END_DATE" property="dtpEndDate" jdbcType="DATE" />
+    <result column="DPC_PARKING_ID" property="dpcParkingId" jdbcType="VARCHAR" />
+    <result column="DPC__REGION_NAME" property="dpcRegionName" jdbcType="VARCHAR" />
+    <result column="DPC_REGION" property="dpcRegion" jdbcType="VARCHAR" />
+    <result column="DPC_RANDOM_MIN" property="dpcRandomMin" jdbcType="VARCHAR" />
+    <result column="DPC_RANDOM_MAX" property="dpcRandomMax" jdbcType="VARCHAR" />
+    <result column="DPC_START_DATE" property="dpcStartDate" jdbcType="DATE" />
+    <result column="DPC_END_DATE" property="dpcEndDate" jdbcType="DATE" />
+    <result column="OPERATE_ACCOUNT" property="operateAccount" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DSTP_NAME, DSTP_TOTAL_MIN, DSTP_TOTAL_MAX, DSTP_SOURCE, DSTP_TYPE, DSTP_RANDOM_MIN,
+    DSTP_RANDOM_MAX, DSTP_START_DATE, DSTP_END_DATE, DOFFT_NAME, DOFFT_PRICE, DOFFT_NUMBER,
+    DOFFT_RANDOM_MIN, DOFFT_RANDOM_MAX, DOFFT_START_DATE, DOFFT_END_DATE, DONT_NAME,
+    DONT_PRICE, DONT_NUMBER, DONT_RANDOM_MIN, DONT_RANDOM_MAX, DONT_START_DATE, DONT_END_DATE,
+    DTVP_REGION_NAME, DTVP_REGION, DTVP_RANDOM_MIN, DTVP_RANDOM_MAX, DTVP_START_DATE,
+    DTVP_END_DATE, DTP_PARKING_ID, DTP_TOTAL, DTP_USED_MIN, DTP_USED_MAX, DTP_RANDOM_MIN,
+    DTP_RANDOM_MAX, DTP_START_DATE, DTP_END_DATE, DPC_PARKING_ID, DPC__REGION_NAME, DPC_REGION,
+    DPC_RANDOM_MIN, DPC_RANDOM_MAX, DPC_START_DATE, DPC_END_DATE, OPERATE_ACCOUNT, UPDATE_TIME,
+    VCODE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from data_basis_config
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from data_basis_config
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.daqsoft.entity.dataconfig.DataBasisConfig" >
+    insert into data_basis_config (ID, DSTP_NAME, DSTP_TOTAL_MIN,
+    DSTP_TOTAL_MAX, DSTP_SOURCE, DSTP_TYPE,
+    DSTP_RANDOM_MIN, DSTP_RANDOM_MAX, DSTP_START_DATE,
+    DSTP_END_DATE, DOFFT_NAME, DOFFT_PRICE,
+    DOFFT_NUMBER, DOFFT_RANDOM_MIN, DOFFT_RANDOM_MAX,
+    DOFFT_START_DATE, DOFFT_END_DATE, DONT_NAME,
+    DONT_PRICE, DONT_NUMBER, DONT_RANDOM_MIN,
+    DONT_RANDOM_MAX, DONT_START_DATE, DONT_END_DATE,
+    DTVP_REGION_NAME, DTVP_REGION, DTVP_RANDOM_MIN,
+    DTVP_RANDOM_MAX, DTVP_START_DATE, DTVP_END_DATE,
+    DTP_PARKING_ID, DTP_TOTAL, DTP_USED_MIN,
+    DTP_USED_MAX, DTP_RANDOM_MIN, DTP_RANDOM_MAX,
+    DTP_START_DATE, DTP_END_DATE, DPC_PARKING_ID,
+    DPC__REGION_NAME, DPC_REGION, DPC_RANDOM_MIN,
+    DPC_RANDOM_MAX, DPC_START_DATE, DPC_END_DATE,
+    OPERATE_ACCOUNT, UPDATE_TIME, VCODE
+    )
+    values (#{id,jdbcType=BIGINT}, #{dstpName,jdbcType=VARCHAR}, #{dstpTotalMin,jdbcType=VARCHAR},
+    #{dstpTotalMax,jdbcType=VARCHAR}, #{dstpSource,jdbcType=VARCHAR}, #{dstpType,jdbcType=VARCHAR},
+    #{dstpRandomMin,jdbcType=VARCHAR}, #{dstpRandomMax,jdbcType=VARCHAR}, #{dstpStartDate,jdbcType=DATE},
+    #{dstpEndDate,jdbcType=DATE}, #{dofftName,jdbcType=VARCHAR}, #{dofftPrice,jdbcType=VARCHAR},
+    #{dofftNumber,jdbcType=VARCHAR}, #{dofftRandomMin,jdbcType=VARCHAR}, #{dofftRandomMax,jdbcType=VARCHAR},
+    #{dofftStartDate,jdbcType=DATE}, #{dofftEndDate,jdbcType=DATE}, #{dontName,jdbcType=VARCHAR},
+    #{dontPrice,jdbcType=VARCHAR}, #{dontNumber,jdbcType=VARCHAR}, #{dontRandomMin,jdbcType=VARCHAR},
+    #{dontRandomMax,jdbcType=VARCHAR}, #{dontStartDate,jdbcType=DATE}, #{dontEndDate,jdbcType=DATE},
+    #{dtvpRegionName,jdbcType=VARCHAR}, #{dtvpRegion,jdbcType=VARCHAR}, #{dtvpRandomMin,jdbcType=VARCHAR},
+    #{dtvpRandomMax,jdbcType=VARCHAR}, #{dtvpStartDate,jdbcType=DATE}, #{dtvpEndDate,jdbcType=DATE},
+    #{dtpParkingId,jdbcType=VARCHAR}, #{dtpTotal,jdbcType=VARCHAR}, #{dtpUsedMin,jdbcType=VARCHAR},
+    #{dtpUsedMax,jdbcType=VARCHAR}, #{dtpRandomMin,jdbcType=VARCHAR}, #{dtpRandomMax,jdbcType=VARCHAR},
+    #{dtpStartDate,jdbcType=DATE}, #{dtpEndDate,jdbcType=DATE}, #{dpcParkingId,jdbcType=VARCHAR},
+    #{dpcRegionName,jdbcType=VARCHAR}, #{dpcRegion,jdbcType=VARCHAR}, #{dpcRandomMin,jdbcType=VARCHAR},
+    #{dpcRandomMax,jdbcType=VARCHAR}, #{dpcStartDate,jdbcType=DATE}, #{dpcEndDate,jdbcType=DATE},
+    #{operateAccount,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{vcode,jdbcType=VARCHAR}
+    )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.dataconfig.DataBasisConfig" >
+    update data_basis_config
+    <set >
+      <if test="dstpName != null" >
+        DSTP_NAME = #{dstpName,jdbcType=VARCHAR},
+      </if>
+      <if test="dstpTotalMin != null" >
+        DSTP_TOTAL_MIN = #{dstpTotalMin,jdbcType=VARCHAR},
+      </if>
+      <if test="dstpTotalMax != null" >
+        DSTP_TOTAL_MAX = #{dstpTotalMax,jdbcType=VARCHAR},
+      </if>
+      <if test="dstpSource != null" >
+        DSTP_SOURCE = #{dstpSource,jdbcType=VARCHAR},
+      </if>
+      <if test="dstpType != null" >
+        DSTP_TYPE = #{dstpType,jdbcType=VARCHAR},
+      </if>
+      <if test="dstpRandomMin != null" >
+        DSTP_RANDOM_MIN = #{dstpRandomMin,jdbcType=VARCHAR},
+      </if>
+      <if test="dstpRandomMax != null" >
+        DSTP_RANDOM_MAX = #{dstpRandomMax,jdbcType=VARCHAR},
+      </if>
+      <if test="dstpStartDate != null" >
+        DSTP_START_DATE = #{dstpStartDate,jdbcType=DATE},
+      </if>
+      <if test="dstpEndDate != null" >
+        DSTP_END_DATE = #{dstpEndDate,jdbcType=DATE},
+      </if>
+      <if test="dofftName != null" >
+        DOFFT_NAME = #{dofftName,jdbcType=VARCHAR},
+      </if>
+      <if test="dofftPrice != null" >
+        DOFFT_PRICE = #{dofftPrice,jdbcType=VARCHAR},
+      </if>
+      <if test="dofftNumber != null" >
+        DOFFT_NUMBER = #{dofftNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="dofftRandomMin != null" >
+        DOFFT_RANDOM_MIN = #{dofftRandomMin,jdbcType=VARCHAR},
+      </if>
+      <if test="dofftRandomMax != null" >
+        DOFFT_RANDOM_MAX = #{dofftRandomMax,jdbcType=VARCHAR},
+      </if>
+      <if test="dofftStartDate != null" >
+        DOFFT_START_DATE = #{dofftStartDate,jdbcType=DATE},
+      </if>
+      <if test="dofftEndDate != null" >
+        DOFFT_END_DATE = #{dofftEndDate,jdbcType=DATE},
+      </if>
+      <if test="dontName != null" >
+        DONT_NAME = #{dontName,jdbcType=VARCHAR},
+      </if>
+      <if test="dontPrice != null" >
+        DONT_PRICE = #{dontPrice,jdbcType=VARCHAR},
+      </if>
+      <if test="dontNumber != null" >
+        DONT_NUMBER = #{dontNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="dontRandomMin != null" >
+        DONT_RANDOM_MIN = #{dontRandomMin,jdbcType=VARCHAR},
+      </if>
+      <if test="dontRandomMax != null" >
+        DONT_RANDOM_MAX = #{dontRandomMax,jdbcType=VARCHAR},
+      </if>
+      <if test="dontStartDate != null" >
+        DONT_START_DATE = #{dontStartDate,jdbcType=DATE},
+      </if>
+      <if test="dontEndDate != null" >
+        DONT_END_DATE = #{dontEndDate,jdbcType=DATE},
+      </if>
+      <if test="dtvpRegionName != null" >
+        DTVP_REGION_NAME = #{dtvpRegionName,jdbcType=VARCHAR},
+      </if>
+      <if test="dtvpRegion != null" >
+        DTVP_REGION = #{dtvpRegion,jdbcType=VARCHAR},
+      </if>
+      <if test="dtvpRandomMin != null" >
+        DTVP_RANDOM_MIN = #{dtvpRandomMin,jdbcType=VARCHAR},
+      </if>
+      <if test="dtvpRandomMax != null" >
+        DTVP_RANDOM_MAX = #{dtvpRandomMax,jdbcType=VARCHAR},
+      </if>
+      <if test="dtvpStartDate != null" >
+        DTVP_START_DATE = #{dtvpStartDate,jdbcType=DATE},
+      </if>
+      <if test="dtvpEndDate != null" >
+        DTVP_END_DATE = #{dtvpEndDate,jdbcType=DATE},
+      </if>
+      <if test="dtpParkingId != null" >
+        DTP_PARKING_ID = #{dtpParkingId,jdbcType=VARCHAR},
+      </if>
+      <if test="dtpTotal != null" >
+        DTP_TOTAL = #{dtpTotal,jdbcType=VARCHAR},
+      </if>
+      <if test="dtpUsedMin != null" >
+        DTP_USED_MIN = #{dtpUsedMin,jdbcType=VARCHAR},
+      </if>
+      <if test="dtpUsedMax != null" >
+        DTP_USED_MAX = #{dtpUsedMax,jdbcType=VARCHAR},
+      </if>
+      <if test="dtpRandomMin != null" >
+        DTP_RANDOM_MIN = #{dtpRandomMin,jdbcType=VARCHAR},
+      </if>
+      <if test="dtpRandomMax != null" >
+        DTP_RANDOM_MAX = #{dtpRandomMax,jdbcType=VARCHAR},
+      </if>
+      <if test="dtpStartDate != null" >
+        DTP_START_DATE = #{dtpStartDate,jdbcType=DATE},
+      </if>
+      <if test="dtpEndDate != null" >
+        DTP_END_DATE = #{dtpEndDate,jdbcType=DATE},
+      </if>
+      <if test="dpcParkingId != null" >
+        DPC_PARKING_ID = #{dpcParkingId,jdbcType=VARCHAR},
+      </if>
+      <if test="dpcRegionName != null" >
+        DPC__REGION_NAME = #{dpcRegionName,jdbcType=VARCHAR},
+      </if>
+      <if test="dpcRegion != null" >
+        DPC_REGION = #{dpcRegion,jdbcType=VARCHAR},
+      </if>
+      <if test="dpcRandomMin != null" >
+        DPC_RANDOM_MIN = #{dpcRandomMin,jdbcType=VARCHAR},
+      </if>
+      <if test="dpcRandomMax != null" >
+        DPC_RANDOM_MAX = #{dpcRandomMax,jdbcType=VARCHAR},
+      </if>
+      <if test="dpcStartDate != null" >
+        DPC_START_DATE = #{dpcStartDate,jdbcType=DATE},
+      </if>
+      <if test="dpcEndDate != null" >
+        DPC_END_DATE = #{dpcEndDate,jdbcType=DATE},
+      </if>
+      <if test="operateAccount != null" >
+        OPERATE_ACCOUNT = #{operateAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <!--停车场列表-->
+  <select id="getParkingList" resultType="java.util.Map" parameterType="java.lang.String" >
+    SELECT ID as id,`NAME` as name,parking_lot as parkingLot from res_parking WHERE VCODE = #{vcode} AND `STATUS` = 1
+  </select>
+  <!--听过停车场ID查询停车场信息-->
+  <select id="getParkingById" resultType="java.util.Map" parameterType="java.lang.Long" >
+    select PARKING_LOT as parkingLot from res_parking where ID = #{parkingId,jdbcType=BIGINT}
+  </select>
+  <!--通过vcode查询数据记录-->
+  <select id="findByVcode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM data_basis_config WHERE VCODE = #{vcode}
+  </select>
+</mapper>

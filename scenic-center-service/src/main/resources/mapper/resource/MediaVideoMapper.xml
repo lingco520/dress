@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.MediaVideoMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.video.MediaVideo" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="IMAGE_URL" property="imageUrl" jdbcType="VARCHAR" />
+    <result column="VIDEO_URL" property="videoUrl" jdbcType="VARCHAR" />
+    <result column="VIDEO_TYPE" property="videoType" jdbcType="VARCHAR" />
+    <result column="SCENIC_ID" property="scenicId" jdbcType="VARCHAR" />
+    <result column="CONTENT" property="content" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="INTEGER" />
+    <result column="LANGUAGE_TYPE" property="languageType" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, TITLE, IMAGE_URL, VIDEO_URL, VIDEO_TYPE, SCENIC_ID, CONTENT, SORT, LANGUAGE_TYPE, 
+    STATUS, VCODE
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from media_video
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    s.ID,
+    s.TITLE,
+    s.IMAGE_URL,
+    s.VIDEO_URL,
+    s.CONTENT,
+    s.SORT,
+    s.LANGUAGE_TYPE,
+    s.STATUS,
+    s.VCODE,
+    t.name AS VIDEO_TYPE,
+    r.name AS SCENIC_ID
+    from media_video s
+    LEFT JOIN res_media_type t on t.ID=s.VIDEO_TYPE
+    LEFT JOIN res_scenic_spots r on s.SCENIC_ID = r.ID
+    <where>
+      AND s.vcode = #{vcode}
+      AND s.STATUS != -1
+      <if test="name != null and '' != name">
+        AND s.TITLE LIKE '%${name}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND s.STATUS = #{status}
+      </if>
+    </where>
+    ORDER BY s.sort DESC
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+     DELETE FROM media_video
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.daqsoft.entity.video.MediaVideo" >
+    insert into media_video ( TITLE, IMAGE_URL,
+      VIDEO_URL, VIDEO_TYPE, SCENIC_ID, 
+      CONTENT, SORT, LANGUAGE_TYPE, 
+      STATUS, VCODE,UPDATE_TIME)
+    values ( #{title,jdbcType=VARCHAR}, #{imageUrl,jdbcType=VARCHAR},
+      #{videoUrl,jdbcType=VARCHAR}, #{videoType,jdbcType=VARCHAR}, #{scenicId,jdbcType=INTEGER}, 
+      #{content,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{languageType,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{vcode,jdbcType=VARCHAR},now())
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.video.MediaVideo" >
+    update media_video
+    <set >
+      <if test="title != null" >
+        TITLE = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="imageUrl != null" >
+        IMAGE_URL = #{imageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="videoUrl != null" >
+        VIDEO_URL = #{videoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="videoType != null" >
+        VIDEO_TYPE = #{videoType,jdbcType=VARCHAR},
+      </if>
+      <if test="scenicId != null" >
+        SCENIC_ID = #{scenicId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="languageType != null" >
+        LANGUAGE_TYPE = #{languageType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      UPDATE_TIME = NOW()
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

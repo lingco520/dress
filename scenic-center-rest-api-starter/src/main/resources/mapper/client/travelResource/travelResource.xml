@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.client.travelResource.TravelResourceDao">
+
+    <select id="getBasicResource" parameterType="java.lang.String" resultType="java.util.HashMap">
+        <![CDATA[
+             SELECT COUNT(1) AS count,'宾馆酒店' AS name,'hotel' AS types FROM api_accommodation s WHERE s.vcode=#{vcode}  AND s.status = 1
+                UNION
+                SELECT COUNT(1) AS count,'娱乐场所' AS name,'amusement' AS types FROM api_entertainment_services s WHERE s.vcode=#{vcode}  AND s.status = 1
+                UNION
+                SELECT COUNT(1) AS count,'购物场所' AS name,'shop' AS types FROM api_shopping_place s WHERE s.vcode=#{vcode}  AND s.status = 1
+                UNION
+                SELECT COUNT(1) AS count,'餐饮美食' AS name,'food' AS types FROM api_dining_place s WHERE s.vcode=#{vcode}  AND s.status = 1
+                UNION
+                SELECT COUNT(1) AS count,'旅行社' AS name,'travelagency' AS types FROM api_travel_agency s where region = #{region} AND status = 1
+                UNION
+                SELECT COUNT(1) AS count,'农家乐' AS name,'farmhouse' AS types FROM api_agritainment s WHERE s.vcode=#{vcode}  AND s.status = 1
+        ]]>
+    </select>
+
+    <!--华清宫去除寺庙-->
+    <select id="getBasicResourceHQG" parameterType="java.lang.String" resultType="java.util.HashMap">
+        <![CDATA[
+             SELECT COUNT(1) AS count,'宾馆酒店' AS name,'hotel' AS types FROM api_accommodation s WHERE s.vcode=#{vcode}  AND s.status = 1
+                UNION
+                SELECT COUNT(1) AS count,'娱乐场所' AS name,'amusement' AS types FROM api_entertainment_services s WHERE s.vcode=#{vcode}  AND s.status = 1
+                UNION
+                SELECT COUNT(1) AS count,'购物场所' AS name,'shop' AS types FROM api_shopping_place s WHERE s.vcode=#{vcode}  AND s.status = 1
+                UNION
+                SELECT COUNT(1) AS count,'餐饮美食' AS name,'food' AS types FROM api_dining_place s WHERE s.vcode=#{vcode}  AND s.status = 1
+                UNION
+                SELECT COUNT(1) AS count,'旅行社' AS name,'travelagency' AS types FROM api_travel_agency s where region = #{region} AND status = 1
+        ]]>
+    </select>
+
+    <select id="getMultimedia" parameterType="java.lang.String" resultType="java.util.HashMap">
+        <![CDATA[
+         SELECT COUNT(1)AS num,
+	       CASE types WHEN 'video' THEN '视频'
+		   WHEN 'audioF' THEN '音频'
+		   WHEN 'krpano' THEN '720全景'
+		   WHEN 'picture' THEN '图片'
+		   END AS name,
+           TYPES,vcode FROM (SELECT types,vcode FROM v_multimedia
+      WHERE vcode=#{vcode} )a GROUP BY vcode,TYPES
+         ]]>
+    </select>
+
+    <select id="getMultimediaBySql" parameterType="java.lang.String" resultType="java.util.HashMap">
+        <![CDATA[
+         (SELECT
+            COUNT(s.id) num,
+            'picture' AS types,
+            '图片' AS name
+        FROM
+            api_picture_library s
+        INNER JOIN api_scenic_spots ss ON s.scenicId = ss.id
+
+        WHERE
+            s.`status` = 1
+        AND s.source = 2
+        AND s.vcode = #{vcode})
+        UNION ALL
+        (SELECT
+            COUNT(s.id) num,
+            'panorama' AS types,
+            '720全景' AS name
+        FROM
+            w_fp_720 s
+        INNER JOIN api_scenic_spots ss ON s.scenicId = ss.id
+
+        WHERE
+            s.`status` = 1
+        AND s.vcode = #{vcode})
+        UNION ALL
+        (SELECT
+            COUNT(s.id) num,
+            'audio' AS types,
+            '音频' AS name
+        FROM
+            w_voice_list s
+        INNER JOIN api_scenic_spots ss ON s.scenicId = ss.id
+
+
+        WHERE
+            s.`status` = 1
+        AND s.vcode = #{vcode})
+        UNION ALL
+        (SELECT
+            COUNT(s.id) num,
+            'video' AS types,
+            '视频' AS name
+        FROM
+            api_video_library s
+
+        WHERE
+            s.`status` = 1
+        AND s.vcode = #{vcode})
+         ]]>
+    </select>
+
+    <select id="getMultimediaBySqlYLX" parameterType="java.lang.String" resultType="java.util.HashMap">
+        <![CDATA[
+         (SELECT
+            COUNT(s.id) num,
+            'picture' AS types,
+            '图片' AS name
+        FROM
+            api_picture_library s
+        INNER JOIN api_scenic_spots ss ON s.scenicId = ss.id
+
+        WHERE
+            s.`status` = 1
+        AND s.source = 2
+        AND s.vcode = #{vcode})
+        UNION ALL
+        (SELECT
+            COUNT(s.id) num,
+            'panorama' AS types,
+            '360全景' AS name
+        FROM
+            w_fp_720 s
+        INNER JOIN api_scenic_spots ss ON s.scenicId = ss.id
+
+        WHERE
+            s.`status` = 1
+        AND s.vcode = #{vcode})
+        UNION ALL
+        (SELECT
+            COUNT(s.id) num,
+            'audio' AS types,
+            '音频' AS name
+        FROM
+            w_voice_list s
+        INNER JOIN api_scenic_spots ss ON s.scenicId = ss.id
+
+
+        WHERE
+            s.`status` = 1
+        AND s.vcode = #{vcode})
+        UNION ALL
+        (SELECT
+            COUNT(s.id) num,
+            'video' AS types,
+            '视频' AS name
+        FROM
+            api_video_library s
+
+        WHERE
+            s.`status` = 1
+        AND s.vcode = #{vcode})
+         ]]>
+    </select>
+
+    <select id="getEquipment" parameterType="java.lang.String" resultType="java.util.HashMap">
+      SELECT s.name,s.type,count(1) as count
+      FROM jq_equipment s
+      WHERE vcode=#{vcode} GROUP BY s.type
+    </select>
+
+    <select id="getEquipmentDamage" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        select sum(s.isbreak=1) as damage,sum(s.isbreak=0) as 'add',cast(DATE_FORMAT(s.addtime,'%c') as SIGNED INTEGER) as month,cast(DATE_FORMAT(s.addtime,'%Y') as SIGNED INTEGER) as year
+        from jq_equipment s
+        where s.vcode = #{vcode} and s.year = #{year} AND s.`status` != -99
+        GROUP BY DATE_FORMAT(s.addtime,'%Y-%m')
+    </select>
+    <select id="getTravelResource" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT
+            IFNULL(sum(s.isbreak = 1),0) AS damage,
+            IFNULL(sum(s.isbreak = 0),0) AS 'add'
+        FROM
+            jq_equipment s
+        WHERE
+            s.vcode = #{vcode}
+        AND s. YEAR = #{year}
+        AND s.`status` != - 99
+    </select>
+
+    <select id="getEquipmentDetail" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        select	count(1) as count,s.type,sum(s.isbreak=1) as damage,s.name from jq_equipment s where s.vcode =#{vcode} and s.YEAR =#{year} AND s.`status` != -99 group by s.type
+
+    </select>
+
+    <select id="getSourceByVcode" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT resourceCode FROM sys_user WHERE VCODE=#{vcode} limit 1
+    </select>
+    <!--获取人力资源类型数量-->
+    <select id="getHR" parameterType="java.lang.String" resultType="java.util.HashMap">
+       SELECT s.duty as profession,count(1) as count,s.dutyType as type
+       FROM sys_dutypersonnel s
+       WHERE s.status != -99 and s.vcode=#{vcode} GROUP BY s.duty
+
+    </select>
+
+    <!--获取人力资源类型详细数量-->
+    <select id="getHRDetail" parameterType="java.lang.String" resultType="com.daqsoft.vo.client.madeVoBean.HumanResourcesVO">
+      SELECT sum(s.sex='男') as man ,sum(s.sex='女') as women,DATE_FORMAT(s.addtime,'%Y') as year
+      FROM sys_dutypersonnel s
+      WHERE s.vcode=#{vcode}
+      and s.status = 1 AND ISDEPARTURE = 0 GROUP BY DATE_FORMAT(s.addtime,'%Y') ORDER BY year ASC
+    </select>
+
+    <!--获取人力资源离职人数-->
+    <select id="getLeavePeople" parameterType="java.lang.String" resultType="com.daqsoft.vo.client.madeVoBean.HumanResourcesVO">
+     SELECT count(1) as leaveman,DATE_FORMAT(s.DEPARTUREDATE,'%Y') as year
+     FROM sys_dutypersonnel s
+     WHERE s.vcode=#{vcode}  and s.status = 1 and s.ISDEPARTURE = 1
+     group BY DATE_FORMAT(s.DEPARTUREDATE,'%Y') ORDER BY year ASC
+    </select>
+
+    <select id="getRegionByVcode" resultType="java.lang.String" parameterType="java.lang.String">
+        SELECT REGION FROM sys_manager_l WHERE VCODE=#{vcode} limit 1
+    </select>
+
+    <!--寺庙-->
+    <select id="getPublicResourceYTS" parameterType="java.lang.String" resultType="java.util.HashMap">
+        SELECT COUNT(1) AS count,'景点' AS name FROM api_scenic_spots s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'旅游路线' AS name FROM jq_tourist_routes s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'花卉' AS name FROM api_flower s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'旅游厕所' AS name FROM api_tourism_toilet s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'报警亭' AS name FROM api_police s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'医疗点' AS name FROM api_medical s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'寺庙' AS name FROM api_temple s WHERE vcode=#{vcode}  AND s.status != - 99
+
+    </select>
+
+    <!--寺庙变建筑物-->
+    <select id="getPublicResource" parameterType="java.lang.String" resultType="java.util.HashMap">
+        SELECT COUNT(1) AS count,'景点' AS name FROM api_scenic_spots s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'旅游路线' AS name FROM jq_tourist_routes s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'花卉' AS name FROM api_flower s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'旅游厕所' AS name FROM api_tourism_toilet s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'报警亭' AS name FROM api_police s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'医疗点' AS name FROM api_medical s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'建筑物' AS name FROM api_temple s WHERE vcode=#{vcode}  AND s.status != - 99
+
+    </select>
+
+    <!--无寺庙-->
+    <select id="getPublicResourceTemple" parameterType="java.lang.String" resultType="java.util.HashMap">
+        SELECT COUNT(1) AS count,'景点' AS name FROM api_scenic_spots s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'旅游路线' AS name FROM jq_tourist_routes s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'花卉' AS name FROM api_flower s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'旅游厕所' AS name FROM api_tourism_toilet s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'报警亭' AS name FROM api_police s WHERE vcode=#{vcode}  AND s.status != - 99
+        UNION
+        SELECT COUNT(1) AS count,'医疗点' AS name FROM api_medical s WHERE vcode=#{vcode}  AND s.status != - 99
+
+    </select>
+
+    <select id="getQrcodeNum" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            jq_scenic_qrcode
+        WHERE
+            VCODE = #{vcode}
+        AND `STATUS` = 1
+    </select>
+
+<!--员工统计-学历-->
+    <select id="getEducationList" parameterType="Map" resultType="Map">
+        SELECT count(edu) as num,(CASE WHEN edu = '' THEN '其他'
+              when edu = '专科' then '专科'
+        when edu = '大专' then '专科'
+        when edu = '大学' then '本科'
+        when edu = '大学本科' then '本科'
+        when edu = '研究生' then '研究生'
+        when edu = '硕士研究生' then '研究生'
+        when edu = '工商管理硕士' then '研究生'
+        when edu = '中专' then '其他'
+        when edu = '中技' then '其他'
+        when edu = '初中' then '其他'
+        when edu = '小学' then '其他'
+        when edu = '自考' then '其他'
+        when edu = '高中' then '高中'
+        when edu = '高中专' then '其他'
+       WHEN edu IS NULL THEN '其他'
+        ELSE edu END) AS type
+        FROM sys_dutypersonnel where status = 1 and vcode =#{vcode} GROUP BY type ORDER BY num desc
+
+    </select>
+<!--员工统计-年龄-->
+    <select id="getAgeList" parameterType="Map" resultType="Map">
+        SELECT sum(b.num) as num,b.type from (SELECT a.num, (case when  a.type &lt;= 25 and a.type &gt;= 18 then '18-25岁'
+        WHEN  a.type &lt;=35 and  a.type &gt;25  THEN '26-35岁'
+        WHEN  a.type &lt;=45 and a.type &gt;35 THEN '36-45岁'
+        WHEN  a.type &lt;=55 and a.type &gt;45 THEN '46-55'
+        WHEN  a.type &lt;=60 and a.type &gt;55 THEN '55-60'
+        WHEN  a.type &gt; 60  THEN '60以上'
+        when  a.type &lt; 18 then '18岁以下'
+        ELSE a.type END) type from (SELECT count(age) as num,(CASE WHEN age = '' THEN '未知'
+        WHEN age IS NULL THEN '未知'
+        ELSE age END) AS type
+        FROM sys_dutypersonnel where status = 1 and vcode =#{vcode} GROUP BY type) a) b
+        GROUP BY b.type
+        ORDER BY num desc
+
+    </select>
+
+    <!--员工统计-工龄-->
+    <select id="getWorkTimeList" parameterType="Map" resultType="Map">
+        SELECT sum(b.num) as num,b.type from (SELECT a.num,(case when  a.type &lt; 6 and a.type &gt; 0 then '1-6年'
+        WHEN  a.type &lt;=10 and  a.type &gt;=6  THEN '6-10年'
+        WHEN  a.type &lt;=20 and a.type &gt;10 THEN '11-20年'
+        WHEN  a.type &lt;=30 and a.type &gt;20 THEN '21-30年'
+        WHEN  a.type &lt;=40 and a.type &gt;30 THEN '31-40年'
+        WHEN  a.type &gt; 40  THEN '40年以上'
+        ELSE a.type END) type from (SELECT count(workingtime) as num,(CASE WHEN workingtime = '' THEN '未知'
+        WHEN workingtime IS NULL THEN '未知'
+        ELSE workingtime END) AS type
+        FROM sys_dutypersonnel where status = 1 and vcode =#{vcode} GROUP BY workingtime) a ) b
+        GROUP BY b.type
+        ORDER BY num desc
+
+    </select>
+
+    <!--部门员工人数统计-->
+    <select id="getDepartmentInfo" parameterType="String" resultType="Map">
+        SELECT count(d.name) num,d.name from sys_department d,sys_dutypersonnel s
+        where d.id = s.department_id
+        and d.status =1 and s.status =1
+        and s.vcode = #{vcode}
+        GROUP BY d.name
+        ORDER BY num desc
+
+    </select>
+
+
+    <!--物资后台录入-->
+    <select id="getEmergencyGoods" parameterType="java.util.Map" resultType="java.util.Map">
+      select name,sum(num) as num
+      from jq_emergency_goods
+      where vcode=#{vcode} and status = 1
+        <if test="addTime != null">
+            and DATE_FORMAT(addtime, '%Y-%m-%d')=#{addTime}
+        </if>
+        GROUP BY NAME
+    </select>
+
+</mapper>

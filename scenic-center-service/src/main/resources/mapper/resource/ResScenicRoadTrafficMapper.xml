@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.ResScenicRoadTrafficMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.roadTraffic.ResScenicRoadTraffic" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="START_SECTION" property="startSection" jdbcType="VARCHAR" />
+    <result column="START_LATITUDE" property="startLatitude" jdbcType="VARCHAR" />
+    <result column="START_LONGITUDE" property="startLongitude" jdbcType="VARCHAR" />
+    <result column="END_SECTION" property="endSection" jdbcType="VARCHAR" />
+    <result column="END_LATITUDE" property="endLatitude" jdbcType="VARCHAR" />
+    <result column="END_LONGITUDE" property="endLongitude" jdbcType="VARCHAR" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="REGION" property="region" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    ID, START_SECTION, START_LATITUDE, START_LONGITUDE, END_SECTION, END_LATITUDE, END_LONGITUDE, 
+    VCODE, NAME, REGION
+  </sql>
+  <select id="selectList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from res_scenic_road_traffic
+    <where>
+      AND vcode = #{vcode}
+      <if test="name != null and '' != name">
+        AND name LIKE '%${name}%'
+      </if>
+    </where>
+    ORDER BY ID DESC
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_scenic_road_traffic
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_scenic_road_traffic
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.daqsoft.entity.roadTraffic.ResScenicRoadTraffic" >
+    insert into res_scenic_road_traffic ( START_SECTION, START_LATITUDE,
+      START_LONGITUDE, END_SECTION, END_LATITUDE, 
+      END_LONGITUDE, VCODE, NAME, REGION
+      )
+    values ( #{startSection,jdbcType=VARCHAR}, #{startLatitude,jdbcType=VARCHAR},
+      #{startLongitude,jdbcType=VARCHAR}, #{endSection,jdbcType=VARCHAR}, #{endLatitude,jdbcType=VARCHAR}, 
+      #{endLongitude,jdbcType=VARCHAR}, #{vcode,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.daqsoft.entity.roadTraffic.ResScenicRoadTraffic" >
+    insert into res_scenic_road_traffic
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="startSection != null" >
+        START_SECTION,
+      </if>
+      <if test="startLatitude != null" >
+        START_LATITUDE,
+      </if>
+      <if test="startLongitude != null" >
+        START_LONGITUDE,
+      </if>
+      <if test="endSection != null" >
+        END_SECTION,
+      </if>
+      <if test="endLatitude != null" >
+        END_LATITUDE,
+      </if>
+      <if test="endLongitude != null" >
+        END_LONGITUDE,
+      </if>
+      <if test="vcode != null" >
+        VCODE,
+      </if>
+      <if test="name != null" >
+        NAME,
+      </if>
+      <if test="region != null" >
+        REGION
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="startSection != null" >
+        #{startSection,jdbcType=VARCHAR},
+      </if>
+      <if test="startLatitude != null" >
+        #{startLatitude,jdbcType=VARCHAR},
+      </if>
+      <if test="startLongitude != null" >
+        #{startLongitude,jdbcType=VARCHAR},
+      </if>
+      <if test="endSection != null" >
+        #{endSection,jdbcType=VARCHAR},
+      </if>
+      <if test="endLatitude != null" >
+        #{endLatitude,jdbcType=VARCHAR},
+      </if>
+      <if test="endLongitude != null" >
+        #{endLongitude,jdbcType=VARCHAR},
+      </if>
+      <if test="vcode != null" >
+        #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="region !=null">
+        #{region,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.daqsoft.entity.roadTraffic.ResScenicRoadTraffic" >
+    update res_scenic_road_traffic
+    <set >
+      <if test="startSection != null" >
+        START_SECTION = #{startSection,jdbcType=VARCHAR},
+      </if>
+      <if test="startLatitude != null" >
+        START_LATITUDE = #{startLatitude,jdbcType=VARCHAR},
+      </if>
+      <if test="startLongitude != null" >
+        START_LONGITUDE = #{startLongitude,jdbcType=VARCHAR},
+      </if>
+      <if test="endSection != null" >
+        END_SECTION = #{endSection,jdbcType=VARCHAR},
+      </if>
+      <if test="endLatitude != null" >
+        END_LATITUDE = #{endLatitude,jdbcType=VARCHAR},
+      </if>
+      <if test="endLongitude != null" >
+        END_LONGITUDE = #{endLongitude,jdbcType=VARCHAR},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="region !=null">
+        REGION = #{region,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.roadTraffic.ResScenicRoadTraffic" >
+    update res_scenic_road_traffic
+    set START_SECTION = #{startSection,jdbcType=VARCHAR},
+      START_LATITUDE = #{startLatitude,jdbcType=VARCHAR},
+      START_LONGITUDE = #{startLongitude,jdbcType=VARCHAR},
+      END_SECTION = #{endSection,jdbcType=VARCHAR},
+      END_LATITUDE = #{endLatitude,jdbcType=VARCHAR},
+      END_LONGITUDE = #{endLongitude,jdbcType=VARCHAR},
+      VCODE = #{vcode,jdbcType=VARCHAR},
+      NAME = #{name,jdbcType=VARCHAR},
+      REGION = #{region,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

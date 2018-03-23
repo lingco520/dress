@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.client.forecastwarning.ForecastWarningDao">
+
+
+    <!--主页实时人数统计-->
+
+    <select id="getTrafficForecast" parameterType="java.util.Map" resultType="com.daqsoft.vo.client.madeVoBean.TrafficWarningVo">
+        SELECT * FROM jq_traffic_forecast WHERE  vcode=#{vcode}
+            <if test="level!='' and level!=null ">
+                    and level=#{level}
+            </if>
+       limit #{startRow},#{endRow}
+    </select>
+
+    <select id="getTrafficCount" parameterType="java.util.HashMap" resultType="int">
+        SELECT count(1) FROM jq_traffic_forecast WHERE vcode=#{vcode}
+        <if test="level!='' and level!=null ">
+            and level=#{level}
+        </if>
+    </select>
+    <!-- 获取景区经纬度，这里一个景区编码会有多条数据，而且会存在空的经纬度，所以取不为空的一条数据 -->
+    <select id="getMaps" parameterType="java.lang.String" resultType="java.util.HashMap">
+        SELECT
+            LATITUDE latitude,
+            LONGITUDE longitude
+        FROM
+            jq_scenic_areas
+        WHERE
+            VCODE = #{vcode}
+        and LATITUDE IS NOT NULL LIMIT 1
+    </select>
+    <!-- 获取景区今日团队运行数 -->
+    <select id="getTodayTeams" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+            SUM(TEAM_NUM)
+        FROM
+            ussd_team_data
+        WHERE
+            VCODE = #{vcode}
+            AND DATETIME BETWEEN #{startTime} AND #{endTime}
+    </select>
+</mapper>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.client.carflow.CarFlowDao">
+
+
+    <select id="getVehicleFowTimeRangeDay" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.CarFlowVO">
+        <![CDATA[
+		SELECT count(id) as carnum,DATE_FORMAT(accessdate,'%Y-%m-%d') as date
+		FROM jq_tvpm_vehiclelog_part
+		where vcode =#{vcode} and ACCESSDATE > #{startTime} and ACCESSDATE < #{endTime}
+		GROUP BY DATE_FORMAT(accessdate,'%Y-%m-%d')
+		 ]]>
+    </select>
+
+    <select id="getVehicleFowTimeRangeYear" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.CarFlowVO">
+        <![CDATA[
+		SELECT count(id) as carnum,DATE_FORMAT(accessdate,'%Y') as date
+		FROM jq_tvpm_vehiclelog_part
+		where vcode =#{vcode} and ACCESSDATE > #{startTime} and ACCESSDATE < #{endTime}
+		GROUP BY DATE_FORMAT(accessdate,'%Y')
+		 ]]>
+    </select>
+
+    <select id="getVehicleFowTimeRangeMonth" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.CarFlowVO">
+        <![CDATA[
+		SELECT count(id) as carnum,DATE_FORMAT(accessdate,'%Y-%m') as date
+		FROM jq_tvpm_vehiclelog_part
+		where vcode =#{vcode} and ACCESSDATE > #{startTime} and ACCESSDATE < #{endTime}
+		GROUP BY DATE_FORMAT(accessdate,'%Y-%m')
+		 ]]>
+    </select>
+
+    <select id="getVehicleFowTimeRangeHour" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.CarFlowVO">
+        <![CDATA[
+		SELECT count(id) as carnum,DATE_FORMAT(accessdate,'%Y-%m-%d %H') as date
+		FROM jq_tvpm_vehiclelog_part
+		where vcode =#{vcode} and ACCESSDATE > #{startTime} and ACCESSDATE < #{endTime}
+		GROUP BY DATE_FORMAT(accessdate,'%Y-%m-%d %H')
+		 ]]>
+    </select>
+    <select id="getCarNumByType" parameterType="map" resultType="map">
+        <![CDATA[
+            SELECT
+                count(s.ID) sumCar,
+                s.vehicletype carType
+            FROM
+                jq_tvpm_checkout s
+            WHERE
+                (
+                    (
+                        s.ENTRANCETIME <= #{startTime}
+                        AND s.EXITTIME >= #{endTime}
+                    )
+                    OR (
+                        s.ENTRANCETIME < #{startTime}
+                        AND s.EXITTIME BETWEEN #{startTime}
+                        AND #{endTime}
+                    )
+                    OR (
+                        s.EXITTIME > #{endTime}
+                        AND s.ENTRANCETIME BETWEEN #{startTime}
+                        AND #{endTime}
+                    )
+                    OR (
+                        s.ENTRANCETIME > #{startTime}
+                        AND s.EXITTIME < #{endTime}
+                    )
+                )
+            AND s.vcode = #{vcode}
+            GROUP BY  s.vehicletype
+		 ]]>
+    </select>
+
+
+
+</mapper>

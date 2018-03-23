@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.SendInfoChannelMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.sendInfoChannel.ManagerSendInfoChannel" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="PLATFORM_NAME" property="platformName" jdbcType="VARCHAR" />
+    <result column="DITCH_NAME" property="ditchName" jdbcType="VARCHAR" />
+    <result column="INFORMATION_TYPE" property="informationType" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="PUBLISH_TIME" property="publishTime" jdbcType="TIMESTAMP" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID,PLATFORM_NAME, DITCH_NAME, INFORMATION_TYPE, TYPE, PUBLISH_TIME, STATUS, VCODE
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from manager_send_info_channel
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from manager_send_info_channel
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.daqsoft.entity.sendInfoChannel.ManagerSendInfoChannel" >
+    insert into manager_send_info_channel (PLATFORM_NAME, DITCH_NAME, INFORMATION_TYPE,
+    TYPE, PUBLISH_TIME, STATUS,
+    VCODE,UPDATE_TIME)
+    values (#{platformName,jdbcType=VARCHAR}, #{ditchName,jdbcType=VARCHAR}, #{informationType,jdbcType=VARCHAR},
+    #{type,jdbcType=VARCHAR}, now(), #{status,jdbcType=INTEGER},
+    #{vcode,jdbcType=VARCHAR},NOW())
+  </insert>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select m.id,m.INFORMATION_TYPE,m.TYPE,m.STATUS,m.vcode,d.`NAME` as PLATFORM_NAME,m.ditch_name from manager_send_info_channel m
+    LEFT JOIN sys_dict d on d.value = m.PLATFORM_NAME
+    <where>
+      AND m.STATUS != -1
+      <if test="name != null and '' != name">
+        AND m.DITCH_NAME LIKE '%${name}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND m.status = #{status}
+      </if>
+    </where>
+    ORDER BY m.id DESC
+  </select>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.sendInfoChannel.ManagerSendInfoChannel" >
+    update manager_send_info_channel
+    <set >
+      <if test="platformName != null" >
+        PLATFORM_NAME = #{platformName,jdbcType=VARCHAR},
+      </if>
+      <if test="ditchName != null" >
+        DITCH_NAME = #{ditchName,jdbcType=VARCHAR},
+      </if>
+      <if test="informationType != null" >
+        INFORMATION_TYPE = #{informationType,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      UPDATE_TIME = NOW()
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.ResFeaturePlaceMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.featurePlace.ResFeaturePlace" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="SHORT_NAME" property="shortName" jdbcType="VARCHAR" />
+    <result column="BIZLICENSE" property="bizlicense" jdbcType="VARCHAR" />
+    <result column="PARKING_LOT" property="parkingLot" jdbcType="INTEGER" />
+    <result column="CONSUMPTION" property="consumption" jdbcType="VARCHAR" />
+    <result column="ICNAME" property="icname" jdbcType="VARCHAR" />
+    <result column="INDIVIDUALITYLOGO" property="individualitylogo" jdbcType="VARCHAR" />
+    <result column="LEGAL" property="legal" jdbcType="VARCHAR" />
+    <result column="LICENSENO" property="licenseno" jdbcType="VARCHAR" />
+    <result column="LOGOBIG" property="logobig" jdbcType="VARCHAR" />
+    <result column="LOGOSMALL" property="logosmall" jdbcType="VARCHAR" />
+    <result column="MANAGER" property="manager" jdbcType="VARCHAR" />
+    <result column="OPENTIME" property="opentime" jdbcType="VARCHAR" />
+    <result column="VIDEO_PATH" property="videoPath" jdbcType="VARCHAR" />
+    <result column="VIDEO_NAME" property="videoName" jdbcType="VARCHAR" />
+    <result column="MAIL_BOX" property="mailBox" jdbcType="VARCHAR" />
+    <result column="ZIP_CODE" property="zipCode" jdbcType="VARCHAR" />
+    <result column="ZXTICKET" property="zxticket" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+    <result column="CONTENT" property="content" jdbcType="VARCHAR" />
+    <result column="LONGITUDE" property="longitude" jdbcType="VARCHAR" />
+    <result column="LATITUDE" property="latitude" jdbcType="VARCHAR" />
+    <result column="MAP_TYPE" property="mapType" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, NAME, SHORT_NAME, BIZLICENSE, PARKING_LOT, CONSUMPTION, ICNAME, INDIVIDUALITYLOGO, LEGAL, LICENSENO,
+    LOGOBIG, LOGOSMALL, MANAGER, OPENTIME, VIDEO_PATH, VIDEO_NAME, MAIL_BOX, ZIP_CODE, ZXTICKET, SORT,
+    STATUS, UPDATE_TIME, VCODE, CONTENT, LONGITUDE, LATITUDE, MAP_TYPE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_feature_place
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from res_feature_place
+    where STATUS != -1 AND VCODE = #{vcode}
+    <if test="name != null and '' != name">
+      AND NAME LIKE '%${name}%'
+    </if>
+    <if test="status != null">
+      AND STATUS = #{status}
+    </if>
+    ORDER BY SORT ASC, UPDATE_TIME DESC
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_feature_place
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.daqsoft.entity.featurePlace.ResFeaturePlace" >
+    insert into res_feature_place (ID, NAME, SHORT_NAME, BIZLICENSE, PARKING_LOT,
+      CONSUMPTION, ICNAME, INDIVIDUALITYLOGO, 
+      LEGAL, LICENSENO, LOGOBIG, 
+      LOGOSMALL, MANAGER, OPENTIME, 
+      VIDEO_PATH, VIDEO_NAME, MAIL_BOX, ZIP_CODE,
+      ZXTICKET, SORT, STATUS, 
+      UPDATE_TIME, VCODE, CONTENT, LONGITUDE, LATITUDE, MAP_TYPE)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{shortName,jdbcType=VARCHAR}, #{bizlicense,jdbcType=VARCHAR},
+      #{parkingLot,jdbcType=INTEGER}, #{consumption,jdbcType=VARCHAR}, #{icname,jdbcType=VARCHAR}, #{individualitylogo,jdbcType=VARCHAR},
+      #{legal,jdbcType=VARCHAR}, #{licenseno,jdbcType=VARCHAR}, #{logobig,jdbcType=VARCHAR}, 
+      #{logosmall,jdbcType=VARCHAR}, #{manager,jdbcType=VARCHAR}, #{opentime,jdbcType=VARCHAR}, 
+      #{videoPath,jdbcType=VARCHAR}, #{videoName,jdbcType=VARCHAR}, #{mailBox,jdbcType=VARCHAR}, #{zipCode,jdbcType=VARCHAR},
+      #{zxticket,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{vcode,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
+      #{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}, #{mapType,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.featurePlace.ResFeaturePlace" >
+    update res_feature_place
+    <set >
+      <if test="bizlicense != null" >
+        BIZLICENSE = #{bizlicense,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="shortName != null" >
+        SHORT_NAME = #{shortName,jdbcType=VARCHAR},
+      </if>
+      <if test="parkingLot != null" >
+        PARKING_LOT = #{parkingLot,jdbcType=INTEGER},
+      </if>
+      <if test="consumption != null" >
+        CONSUMPTION = #{consumption,jdbcType=VARCHAR},
+      </if>
+      <if test="icname != null" >
+        ICNAME = #{icname,jdbcType=VARCHAR},
+      </if>
+      <if test="individualitylogo != null" >
+        INDIVIDUALITYLOGO = #{individualitylogo,jdbcType=VARCHAR},
+      </if>
+      <if test="legal != null" >
+        LEGAL = #{legal,jdbcType=VARCHAR},
+      </if>
+      <if test="licenseno != null" >
+        LICENSENO = #{licenseno,jdbcType=VARCHAR},
+      </if>
+      <if test="logobig != null" >
+        LOGOBIG = #{logobig,jdbcType=VARCHAR},
+      </if>
+      <if test="logosmall != null" >
+        LOGOSMALL = #{logosmall,jdbcType=VARCHAR},
+      </if>
+      <if test="manager != null" >
+        MANAGER = #{manager,jdbcType=VARCHAR},
+      </if>
+      <if test="opentime != null" >
+        OPENTIME = #{opentime,jdbcType=VARCHAR},
+      </if>
+      <if test="videoPath != null" >
+        VIDEO_PATH = #{videoPath,jdbcType=VARCHAR},
+      </if>
+      <if test="videoName != null" >
+        VIDEO_NAME = #{videoName,jdbcType=VARCHAR},
+      </if>
+      <if test="mailBox != null" >
+        MAIL_BOX = #{mailBox,jdbcType=VARCHAR},
+      </if>
+      <if test="zipCode != null" >
+        ZIP_CODE = #{zipCode,jdbcType=VARCHAR},
+      </if>
+      <if test="zxticket != null" >
+        ZXTICKET = #{zxticket,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        LONGITUDE = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null" >
+        LATITUDE = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="mapType != null" >
+        MAP_TYPE = #{mapType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.client.information.SendInfoSysMapper" >
+    <resultMap id="BaseResultMap" type="com.daqsoft.vo.client.madeVoBean.JqSendInfoSystem" >
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="platform" property="platform" jdbcType="VARCHAR" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        <result column="content" property="content" jdbcType="VARCHAR" />
+        <result column="weather" property="weather" jdbcType="VARCHAR" />
+        <result column="temperature" property="temperature" jdbcType="VARCHAR" />
+        <result column="humidity" property="humidity" jdbcType="VARCHAR" />
+        <result column="weathericon" property="weathericon" jdbcType="VARCHAR" />
+        <result column="illumination" property="illumination" jdbcType="VARCHAR" />
+        <result column="ultraviolet" property="ultraviolet" jdbcType="VARCHAR" />
+        <result column="air" property="air" jdbcType="VARCHAR" />
+        <result column="waterTemperature" property="watertemperature" jdbcType="VARCHAR" />
+        <result column="waterQuality" property="waterquality" jdbcType="VARCHAR" />
+        <result column="parkingSurplus" property="parkingsurplus" jdbcType="VARCHAR" />
+        <result column="trafficConditions" property="trafficconditions" jdbcType="VARCHAR" />
+        <result column="realPeople" property="realpeople" jdbcType="VARCHAR" />
+        <result column="visitorsCrowd" property="visitorscrowd" jdbcType="VARCHAR" />
+        <result column="carflowCrowd" property="carflowcrowd" jdbcType="VARCHAR" />
+        <result column="otherInfo" property="otherinfo" jdbcType="VARCHAR" />
+        <result column="integrityInfo" property="integrityinfo" jdbcType="VARCHAR" />
+        <result column="travelInfo" property="travelinfo" jdbcType="VARCHAR" />
+        <result column="politicsInfo" property="politicsinfo" jdbcType="VARCHAR" />
+        <result column="knowledgeInfo" property="knowledgeinfo" jdbcType="VARCHAR" />
+        <result column="newsInfo" property="newsinfo" jdbcType="VARCHAR" />
+        <result column="date" property="date" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="vcode" property="vcode" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, platform, title, content, weather, temperature, humidity, weathericon, illumination, ultraviolet,
+        air, waterTemperature, waterQuality, parkingSurplus, trafficConditions, realPeople,
+        visitorsCrowd, carflowCrowd, otherInfo, integrityInfo, travelInfo, politicsInfo,
+        knowledgeInfo, newsInfo,DATE_FORMAT(date,'%Y-%m-%d %H:%i:%s') as date, status, vcode
+    </sql>
+    <select id="sendInfoList" resultMap="BaseResultMap" parameterType="java.util.Map" >
+        select
+        <include refid="Base_Column_List" />
+        from jq_send_info_system
+        where vcode=#{vcode} and status = 1
+        <if test="date != null" >
+            AND   date like '%${date}%'
+        </if>
+        ORDER BY DATE DESC limit 1
+    </select>
+
+</mapper>

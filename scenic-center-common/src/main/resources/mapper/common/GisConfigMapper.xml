@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.common.GisConfigMapper" >
+
+
+
+  <select id="getGisConfig" resultType="com.daqsoft.vo.ScenicGisConfigVo" parameterType="java.lang.String" >
+    SELECT
+    id, name ,url, center_longitude as  centerLongitude , center_latitude as centerLatitude ,map_Scale as mapScale ,vcode , status,BACKGROUND_COLOR as backGroundColor
+    FROM res_scenic_gis_config
+    WHERE vcode=#{vcode} and status = 1
+  </select>
+
+</mapper>

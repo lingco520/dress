@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.client.otadata.OtaDataDao">
+	<resultMap id="otaTicket" type="com.daqsoft.vo.client.madeVoBean.TicketIndexSumVo">
+		<result column="timesheet" property="time"></result>
+		<result column="count" property="count"></result>
+	</resultMap>
+
+	<!-- 主页ota-->
+	<select id="getOtaData" parameterType="Map"
+			resultType="com.daqsoft.vo.client.madeVoBean.OtaDataSealVo">
+		<![CDATA[
+		select sum(s.count) as count,s.name
+		from jq_ota_data s
+		where s.vcode=#{vcode}
+		and s.time BETWEEN #{date} and #{addDate} GROUP BY s.name ORDER BY count desc
+		 ]]>
+	</select>
+
+	<!-- OTA年时间段查询 -->
+	<select id="getOtaDataSlotYear"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.OtaDataSealVo">
+		select sum(s.count) as count, s.name
+		from jq_ota_data s
+		where s.vcode = #{vcode}
+		and ( DATE_FORMAT(s.time,'%Y') BETWEEN #{startTime} and #{endTime} )
+		GROUP BY s.name
+	</select>
+
+
+	<select id="getBigOTADataByTimeSlot" resultMap="otaTicket" >
+		select SUM(s.COUNT) as count, DATE_FORMAT(s.TIME,#{dateFormat}) as timesheet
+		from jq_ota_data s
+		where s.vcode= #{vcode}
+		AND s.TIME BETWEEN #{startTime} AND #{endTime} GROUP BY  DATE_FORMAT(s.TIME,#{dateFormat}) as timesheet;
+	</select>
+
+	<!-- OTA月时间段查询 -->
+	<select id="getOtaDataSlotMonth"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.OtaDataSealVo">
+		select sum(s.count) as count, s.name
+		from jq_ota_data s
+		where s.vcode = #{vcode}
+		and ( DATE_FORMAT(s.time,'%Y-%m') BETWEEN #{startTime} and #{endTime} )
+		GROUP BY s.name
+	</select>
+
+	<!-- OTA日时间段查询 -->
+	<select id="getOtaDataSlotDay"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.OtaDataSealVo">
+		select sum(s.count) as count, s.name
+		from jq_ota_data s
+		where s.vcode = #{vcode}
+		and ( DATE_FORMAT(s.time,'%Y-%m-%d') BETWEEN #{startTime} and #{endTime} )
+		GROUP BY s.name
+	</select>
+
+	<!-- OTA时时间段查询 -->
+	<select id="getOtaDataSlotTime"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.OtaDataSealVo">
+		select sum(s.count) as count, s.name
+		from jq_ota_data s
+		where s.vcode = #{vcode}
+		and ( s.time BETWEEN #{startTime} and #{endTime} )
+		GROUP BY s.name
+	</select>
+	<!-- 查询景区ota占比，各占比数量 -->
+	<select id="getOtaDataList"  parameterType="string" resultType="com.daqsoft.vo.client.madeVoBean.OtaDataTendVo">
+		SELECT
+			ifnull(sum(count), 0) AS count,
+			NAME AS name
+		FROM
+			jq_ota_data
+		WHERE
+			VCODE = #{vcode}
+		AND time BETWEEN '${time} 00:00:00' and '${time} 23:59:59'
+		GROUP BY name
+		ORDER BY COUNT DESC
+	</select>
+
+	<!-- 查询景区OTA当天总数 -->
+	<select id="getOtaSumData"  parameterType="Map" resultType="int">
+		SELECT
+		ifnull(sum(count), 0) AS count
+		FROM
+		jq_ota_data
+		WHERE
+		VCODE = #{vcode}
+		AND time BETWEEN #{startTime} and #{endTime}
+	</select>
+
+	<!-- 神龙峡OTA，定制查询 -->
+	<select id="getslxOtaDataList"  parameterType="Map" resultType="Map">
+		SELECT
+			ifnull(sum(count), 0) AS count,
+			`NAME` AS name
+		FROM
+			jq_ota_data
+		WHERE
+			VCODE = #{vcode}
+		AND time BETWEEN #{startTime} and #{endTime} and name = #{name}
+	</select>
+</mapper>

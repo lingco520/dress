@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.client.gisindex.GisIndexDao">
+
+    <!-- 获取gis停车场-->
+    <select id="getParking" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo">
+        SELECT id,name,longitude,latitude
+        FROM res_parking
+        WHERE  vcode = #{vcode} and status = 1  group by  name
+    </select>
+    <!-- 获取gis停车场-->
+    <select id="getParkingByType" resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo" statementType="STATEMENT">
+        SELECT id,longitude,latitude,name
+        FROM res_parking
+        WHERE  vcode = '${vcode}' and status = 1  Group by  name
+    </select>
+
+    <select id="getParkingData" parameterType="String" resultType="Map">
+      SELECT
+        ifnull(SURPLUS,0) as surplus,
+        ifnull((USED+SURPLUS),0) as maxParkSpace,
+        ifnull(USED,0) as used
+        FROM
+        jq_timely_parking
+        WHERE
+        PAKING_ID = #{id}
+		And vcode = #{vcode}
+        AND TIME BETWEEN #{startTime}
+        AND #{endTime}
+        ORDER BY
+        TIME DESC
+        LIMIT 1
+
+    </select>
+
+    <select id="getOnePark" parameterType="Map" resultType="Map">
+        SELECT id,name,PARKING_LOT as maxParkSpace
+        FROM res_parking
+        WHERE  vcode = #{vcode} and id = #{id}
+    </select>
+
+    <!-- 获取gis厕所 -->
+    <select id="getToilet" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo">
+        SELECT id,name,longitude,latitude
+        FROM api_tourism_toilet
+        WHERE  vcode = #{vcode} AND status = 1
+
+    </select>
+    <!-- 获取gis厕所 -->
+    <select id="getToiletByType" resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo" statementType="STATEMENT">
+        SELECT id,
+        <choose>
+            <when test="type != null and '' != type">
+                ${longkey} AS longitude,
+                ${latkey} AS latitude,
+            </when>
+            <otherwise>
+                longitude,latitude,
+            </otherwise>
+        </choose>
+        name
+        FROM api_tourism_toilet
+        WHERE  vcode = '${vcode}' AND status = 1
+
+    </select>
+
+    <!-- 获取gis报警亭 -->
+    <select id="getPolice" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo">
+          SELECT id,name,longitude, latitude
+          FROM api_police
+          WHERE  vcode = #{vcode} AND status = 1
+    </select>
+
+    <!-- 获取gis医疗点 -->
+    <select id="getMedical" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo">
+          SELECT id,name,longitude, latitude
+          FROM api_medical
+          WHERE  vcode = #{vcode}  AND status = 1
+    </select>
+
+    <!-- 获取gis监控 -->
+    <select id="getMonitor" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo">
+    SELECT j.id,j.name,j.longitude,j.latitude,j.url
+    FROM jq_monitor j where  j.ISSHOW = 1  and j.STATUS = 1
+    AND j.vcode = #{vcode};
+    </select>
+    <select id="getMonitorSize" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo">
+        SELECT j.id,j.name,j.longitude,j.latitude,j.url
+        FROM jq_monitor j where  j.ISSHOW = 1  and j.STATUS = 1
+        AND j.vcode = #{vcode} limit 0,${size};
+    </select>
+    <!-- 获取gis监控 -->
+    <select id="getMonitorByType" resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo" statementType="STATEMENT">
+    SELECT j.id,j.name,
+        <choose>
+            <when test="type != null and '' != type">
+                j.${longkey} AS longitude,
+                j.${latkey} AS latitude,
+            </when>
+            <otherwise>
+                j.longitude,j.latitude,
+            </otherwise>
+        </choose>
+    j.url
+    FROM jq_monitor j where  j.ISSHOW = 1  and j.STATUS = 1
+    AND j.vcode = '${vcode}';
+    </select>
+    <select id="getMonitorSizeByType" parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo" statementType="STATEMENT">
+        SELECT j.id,j.name,
+        <choose>
+            <when test="longkey != null and '' != longkey">
+                j.${longkey} AS longitude,
+            </when>
+            <when test="latkey != null and '' != latkey">
+                j.${latkey} AS latitude,
+            </when>
+            <otherwise>
+                j.longitude,j.latitude,
+            </otherwise>
+        </choose>
+        j.url
+        FROM jq_monitor j where  j.ISSHOW = 1  and j.STATUS = 1
+        AND j.vcode = '${vcode}' limit 0,${size};
+    </select>
+
+    <!-- 获取gis景区 -->
+    <select id="getScenic" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.GisSourceGpsVo">
+       SELECT
+			 t.typename AS `types`,
+			`s`.`id` AS `id`,
+			`s`.`name` AS `name`,
+			`s`.`introduction` AS `introduction`,
+			`s`.`pictureLibrary` AS `pictureLibrary`,
+			`s`.`longitude` AS `longitude`,
+			`s`.`latitude` AS `latitude`,
+			`s`.`vcode` AS `vcode`
+		FROM
+			`api_scenic_spots` `s`
+		LEFT JOIN api_scenic_spots_type t on t.code=s.scenicType
+		WHERE
+			`s`.`status` = 1 and s.vcode=#{vcode}
+    </select>
+    <!-- 获取gis景区 -->
+    <select id="getScenicByType" resultType="com.daqsoft.vo.client.madeVoBean.GisSourceGpsVo" statementType="STATEMENT">
+       SELECT
+			 t.typename AS `types`,
+			`s`.`id` AS `id`,
+			`s`.`name` AS `name`,
+			`s`.`introduction` AS `introduction`,
+			`s`.`pictureLibrary` AS `pictureLibrary`,
+            <choose>
+                <when test="type != null and '' != type">
+                    `s`.${longkey} AS `longitude`,
+                    `s`.${latkey} AS `latitude`,
+                </when>
+                <otherwise>
+                    `s`.`longitude` AS `longitude`,
+                    `s`.`latitude` AS `latitude`,
+                </otherwise>
+            </choose>
+			`s`.`vcode` AS `vcode`
+		FROM
+			`api_scenic_spots` `s`
+		LEFT JOIN api_scenic_spots_type t on t.code=s.scenicType
+		WHERE
+			`s`.`status` = 1 and s.vcode='${vcode}'
+    </select>
+
+    <!-- 获取gis寺庙 -->
+    <select id="getTemple" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo">
+         SELECT s.id,s.`name`,s.longitude,s.latitude
+         FROM `api_temple` s
+         where  vcode=#{vcode}  and s.`status` = 1
+    </select>
+
+    <!-- 获取gis越界报警 -->
+    <select id="getBoundsPolice" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.GisBoundsPoliceVo">
+        SELECT @rownum:=@rownum+1 as rownum,j.id,j.name,j.addTime,j.image,j.seed
+		FROM jq_moniter_bounds_police j ,(select @rownum:=0)  t
+		where  j.vcode=#{vcode} ORDER BY j.seed  asc,j.addtime desc
+    </select>
+
+    <!-- 获取gis越界报警未查看数量 -->
+    <select id="getWaitBoundsPolice" parameterType="String"
+            resultType="String">
+        	SELECT count(id) AS NUM
+			FROM jq_moniter_bounds_police
+			WHERE  seed = 1 AND  vcode=#{vcode}
+    </select>
+
+    <!-- 更新gis越界报警查看状态 -->
+    <update id="updateBoundsPolice" parameterType="Map">
+        	update jq_moniter_bounds_police set seed = 2 where id = #{id} and vcode=#{vcode}
+    </update>
+
+    <!-- 获取gis景区资源统计 -->
+    <select id="getSourceStatistics" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.GisSourcestatiVo">
+        SELECT *
+        FROM  v_data_gis_source
+        WHERE  vcode=#{vcode}
+    </select>
+
+    <!-- 获取gis景区资源统计详细信息 -->
+    <select id="getSourceDetail" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.GisSourceDetailVo">
+        SELECT *
+        FROM  v_data_gisList
+        WHERE  vcode=#{vcode} and types=#{types}
+    </select>
+
+    <!-- 获取gis景区资源统计详细信息查询方法 -->
+    <select id="getSourceDetailSearch" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.GisSourceDetailVo">
+        SELECT *
+        FROM  v_data_gisList
+        WHERE  vcode=#{vcode} and types=#{types} and name like '%${search}%'
+    </select>
+
+    <!-- 获取gis景区资源gis地图定位 -->
+    <select id="getSourceGPS" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.GisSourceGpsVo">
+        SELECT *
+        FROM  v_data_gis_gps
+        WHERE  vcode=#{vcode} and types=#{types}
+    </select>
+
+    <!--获取gis景区资源gis酒店 -->
+    <select id="getGisHotel" parameterType="String"  resultType="com.daqsoft.vo.client.madeVoBean.GisHotelVo">
+        select id,name,introduction,phone,longitude,latitude
+        from api_accommodation
+        where vcode=#{vcode} and `status` = 1
+    </select>
+    <!--获取gis景区资源gis酒店 -->
+    <select id="getGisHotelByType" resultType="com.daqsoft.vo.client.madeVoBean.GisHotelVo" statementType="STATEMENT">
+        select id,name,introduction,
+        <choose>
+            <when test="type != null and '' != type">
+                ${longkey} AS longitude,
+                ${latkey} AS latitude,
+            </when>
+            <otherwise>
+                longitude,latitude,
+            </otherwise>
+        </choose>
+        phone
+        from api_accommodation
+        where vcode='${vcode}' and `status` = 1
+    </select>
+
+    <!--获取gis景区资源gis饭店 -->
+    <select id="getDiningPlace" parameterType="String"  resultType="com.daqsoft.vo.client.madeVoBean.GisHotelVo">
+        select id,name,introduction,phone,longitude,latitude
+        from api_dining_place
+        where vcode=#{vcode} and `status` = 1
+    </select>
+
+    <!--获取gis景区资源gis娱乐场所 -->
+    <select id="getEntertainment" parameterType="String"  resultType="com.daqsoft.vo.client.madeVoBean.GisHotelVo">
+        select id,name,introduction,phone,longitude,latitude
+        from api_entertainment_services
+        where vcode=#{vcode} and `status` = 1
+    </select>
+    <!--获取gis景区资源gis娱乐场所 -->
+    <select id="getEntertainmentByType" resultType="com.daqsoft.vo.client.madeVoBean.GisHotelVo" statementType="STATEMENT">
+        select id,name,introduction,
+        <choose>
+            <when test="type != null and '' != type">
+                ${longkey} AS longitude,
+                ${latkey} AS latitude,
+            </when>
+            <otherwise>
+                longitude,latitude,
+            </otherwise>
+        </choose>
+        phone
+        from api_entertainment_services
+        where vcode='${vcode}' and `status` = 1
+    </select>
+
+    <!--获取gis景区资源gis购物场所 -->
+    <select id="getShop" parameterType="String"  resultType="com.daqsoft.vo.client.madeVoBean.GisHotelVo">
+        select s.id,s.name,s.latitude,s.longitude,s.introduction,s.phone
+        from api_shopping_place s
+        where s.status = 1 and vcode=#{vcode}
+    </select>
+    <!--获取gis监控详情 -->
+    <select id="getMonitorById"  resultType="com.daqsoft.vo.client.madeVoBean.MonitorVo">
+        SELECT
+            id,
+            NAME,
+            IMAGE AS image,
+            url,
+            `STATUS` AS STATUS
+        FROM
+            jq_monitor
+        WHERE
+            id = #{id}
+        AND VCODE = #{vcode}
+    </select>
+
+    <!--获取GIS地图资源模块列表-->
+    <select id="getGISResources" parameterType="Map" resultType="Map">
+      SELECT name,code,clickFun from sys_gis_resource_manage s
+      where s.vcode = #{vcode} and s.status = '1' and s.type = #{type}
+      order by sort;
+    </select>
+
+    <!--重点监控-->
+    <select id="getMonitorHQG" parameterType="String" resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo">
+      SELECT j.id,j.name,j.longitude,j.latitude,j.url
+      FROM jq_monitor j where  j.STATUS = 1
+      AND j.vcode = #{vcode} and j.groupName = '重点监控';
+
+    </select>
+    <!--重点监控-->
+    <select id="getMonitorHQGByType" resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo" statementType="STATEMENT">
+      SELECT j.id,j.name,
+        <choose>
+            <when test="type != null and '' != type">
+                j.${longkey} AS longitude,
+                j.${latkey} AS latitude,
+            </when>
+            <otherwise>
+                j.longitude,j.latitude,
+            </otherwise>
+        </choose>
+      j.url
+      FROM jq_monitor j where  j.STATUS = 1
+      AND j.vcode = '${vcode}' and j.groupName = '重点监控';
+
+    </select>
+
+    <!--防火监测-->
+    <select id="getFireproof" parameterType="String" resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo">
+      SELECT j.id,j.name,j.longitude,j.latitude,j.url
+      FROM jq_monitor j where  j.STATUS = 1
+      AND j.vcode = #{vcode} and j.fireproof = '1';
+
+    </select>
+    <!--防火监测-->
+    <select id="getFireproofByType" resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo" statementType="STATEMENT">
+      SELECT j.id,j.name,
+        <choose>
+            <when test="type != null and '' != type">
+                j.${longkey} AS longitude,
+                j.${latkey} AS latitude,
+            </when>
+            <otherwise>
+                j.longitude,j.latitude,
+            </otherwise>
+        </choose>
+      j.url
+      FROM jq_monitor j where  j.STATUS = 1
+      AND j.vcode = '${vcode}' and j.fireproof = '1';
+
+    </select>
+
+    <!--防火监控-->
+    <select id="getFireControl" parameterType="String" resultType="com.daqsoft.vo.client.madeVoBean.GisFireVo">
+      select id,name,person,phone,longitude,latitude,pastTime
+      FROM jq_fire_control
+       where  STATUS = 1
+      AND vcode = #{vcode}
+
+    </select>
+    <!--防火监控-->
+    <select id="getFireControlByType" resultType="com.daqsoft.vo.client.madeVoBean.GisFireVo" statementType="STATEMENT">
+      select id,name,person,
+        <choose>
+            <when test="type != null and '' != type">
+                ${longkey} AS longitude,
+                ${latkey} AS latitude,
+            </when>
+            <otherwise>
+                longitude,latitude,
+            </otherwise>
+        </choose>
+        phone,pastTime
+      FROM jq_fire_control
+       where  STATUS = 1
+      AND vcode = '${vcode}'
+
+    </select>
+    <!--查询地图类型列表(PKEY加空条件，查询的是地图类型)-->
+    <select id="getMapType" parameterType="String" resultType="String">
+      select SKEY from sys_dict WHERE TYPE = #{type} AND PKEY = ''
+    </select>
+    <!--查询地图类型列表(PKEY加空条件，查询的是地图类型)-->
+    <select id="getMapKeyList" resultType="String">
+      select SKEY from sys_dict WHERE TYPE = #{type} AND PKEY = #{pkey}
+    </select>
+    <!-- 通过景区编码查询景点列表 -->
+    <select id="getScenicListByVcode" parameterType="java.lang.String" resultType="com.daqsoft.vo.client.madeVoBean.GisSourceGpsVo">
+      SELECT
+            t. NAME AS `types`,
+            `s`.`id` AS `id`,
+            `s`.`name` AS `name`,
+            `s`.`introduction` AS `introduction`,
+            `s`.`picture_library` AS `pictureLibrary`,
+            `s`.`longitude` AS `longitude`,
+            `s`.`latitude` AS `latitude`,
+            `s`.`vcode` AS `vcode`
+        FROM
+            `res_scenic_spots` `s`
+        LEFT JOIN sys_dict t ON t.
+        VALUE
+            = s.SCENIC_TYPE
+        WHERE
+            `s`.`status` = 1
+        AND s.vcode = #{vcode}
+    </select>
+    <!-- 查询监控列表 -->
+    <select id="getMonitorListByVcode" parameterType="string" resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo">
+        SELECT j.id,j.name,j.longitude,j.latitude,j.url
+            FROM jq_monitor j where  j.ISSHOW = 1  and j.STATUS = 1
+            AND j.vcode = #{vcode};
+    </select>
+    <!-- 查询停车场列表 -->
+    <select id="getParkingListByVcode" parameterType="java.lang.String" resultType="com.daqsoft.vo.client.madeVoBean.GisLocationVo">
+        SELECT id,name,longitude,latitude
+        FROM res_parking
+        WHERE  vcode = #{vcode} and status = 1  group by  name
+    </select>
+    <!-- 查询旅行社列表 -->
+    <select id="getTagencyListByVcode" parameterType="java.lang.String" resultType="map">
+        SELECT
+            LATITUDE AS latitude,
+            LONGITUDE AS longitude,
+            `NAME` AS NAME,
+            INTRODUCTION AS introduction,
+            ID AS id
+        FROM
+            res_travel_agency
+        WHERE
+            `STATUS` = 1
+        AND VCODE = #{vcode}
+    </select>
+    <!--获取gis景区资源gis酒店 -->
+    <select id="getGisHotelListByVcode" parameterType="String"  resultType="map">
+        select id,name,introduction,longitude,latitude
+        from res_accommodation
+        where vcode=#{vcode} and `status` = 1
+    </select>
+    <!--获取gis旅游厕所列表 -->
+    <select id="getToiletListByVcode" parameterType="String"  resultType="map">
+        SELECT id,name,longitude,latitude,address
+        FROM res_scenic_toilet
+        WHERE  vcode = #{vcode} AND status = 1
+    </select>
+</mapper>

@@ -1,0 +1,30 @@
+/* 公用添加删除按钮 */
+.btn-hover:hover{ border-color: #20a0ff;}
+.btn-hover:hover i { color: #20a0ff;}
+.btn-hover1:hover { border-color: #ff4949;}
+.btn-hover1:hover i{ color: #ff4949;}
+/* 页面标题 */
+.base-data-tit { width: 100%; }
+.base-data-tit h3 { font: bold 18px/50px 'Microsoft YaHei UI'; }
+/* 面向属性编程方法 */
+.wid-50 { width: 50px;}
+/* 表格标题背景色*/
+.tab-label-color { background: #f9fafc; padding-right: 5px;}
+.tab-td-wid60 table td { min-width: 60px;}
+.tab-td-wid100 table td { min-width: 100px;}
+.form-item-table table .dq_dt_ltd{
+    text-align: center;
+}
+.form-item-table table .form-label {
+    height: auto;
+    line-height: inherit;
+}
+.wid-139{
+    width: 139px;
+}
+.wid-70{
+    width: 70px;
+}
+.daq-checkbox{
+    margin: 5px 0;
+}

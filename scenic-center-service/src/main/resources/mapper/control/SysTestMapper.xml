@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.control.SysTestMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.test.SysTest" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="IMG" property="img" jdbcType="VARCHAR" />
+    <result column="IMG_WIDTH" property="imgWidth" jdbcType="VARCHAR" />
+    <result column="IMG_HEIGHT" property="imgHeight" jdbcType="VARCHAR" />
+    <result column="IMAGES" property="images" jdbcType="VARCHAR" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="AUDIO_NAME" property="audioName" jdbcType="VARCHAR" />
+    <result column="AUDIO_PATH" property="audioPath" jdbcType="VARCHAR" />
+    <result column="AUDIO_SIZE" property="audioSize" jdbcType="VARCHAR" />
+    <result column="AUDIO_TIME" property="audioTime" jdbcType="VARCHAR" />
+    <result column="VIDEO_NAME" property="videoName" jdbcType="VARCHAR" />
+    <result column="VIDEO_PATH" property="videoPath" jdbcType="VARCHAR" />
+    <result column="VIDEO_SIZE" property="videoSize" jdbcType="VARCHAR" />
+    <result column="VIDEO_TIME" property="videoTime" jdbcType="VARCHAR" />
+    <result column="REGION" property="region" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="CONTENT" property="content" jdbcType="LONGVARCHAR" />
+    <result column="INTRODUCTION" property="introduction" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, NAME, IMG, IMG_WIDTH, IMG_HEIGHT, IMAGES, VCODE, STATUS, AUDIO_NAME, AUDIO_PATH, AUDIO_SIZE, AUDIO_TIME,
+    VIDEO_PATH, VIDEO_NAME, VIDEO_SIZE, VIDEO_TIME, REGION, UPDATE_TIME,CONTENT, INTRODUCTION
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_test
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="map" >
+    select
+    <include refid="Base_Column_List" />
+    from sys_test
+    where STATUS != -1
+    <if test="name != null and '' != name">
+      AND NAME LIKE '%${name}%'
+    </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from sys_test
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.daqsoft.entity.test.SysTest" >
+    insert into sys_test (ID, NAME, IMG, IMG_WIDTH, IMG_HEIGHT,
+      IMAGES, VCODE, STATUS, 
+      AUDIO_NAME, AUDIO_PATH, AUDIO_SIZE, 
+      AUDIO_TIME, VIDEO_PATH, VIDEO_NAME, VIDEO_SIZE,
+      VIDEO_TIME, REGION, UPDATE_TIME, 
+      CONTENT, INTRODUCTION)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR}, #{imgWidth,jdbcType=VARCHAR},
+      #{imgHeight,jdbcType=VARCHAR}, #{images,jdbcType=VARCHAR}, #{vcode,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
+      #{audioName,jdbcType=VARCHAR}, #{audioPath,jdbcType=VARCHAR}, #{audioSize,jdbcType=VARCHAR}, 
+      #{audioTime,jdbcType=VARCHAR}, #{videoPath,jdbcType=VARCHAR}, #{videoName,jdbcType=VARCHAR}, #{videoSize,jdbcType=VARCHAR},
+      #{videoTime,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{content,jdbcType=LONGVARCHAR}, #{introduction,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.test.SysTest" >
+    update sys_test
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="img != null" >
+        IMG = #{img,jdbcType=VARCHAR},
+      </if>
+      <if test="imgWidth != null" >
+        IMG_WIDTH = #{imgWidth,jdbcType=VARCHAR},
+      </if>
+      <if test="imgHeight != null" >
+        IMG_HEIGHT = #{imgHeight,jdbcType=VARCHAR},
+      </if>
+      <if test="images != null" >
+        IMAGES = #{images,jdbcType=VARCHAR},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="audioName != null" >
+        AUDIO_NAME = #{audioName,jdbcType=VARCHAR},
+      </if>
+      <if test="audioPath != null" >
+        AUDIO_PATH = #{audioPath,jdbcType=VARCHAR},
+      </if>
+      <if test="audioSize != null" >
+        AUDIO_SIZE = #{audioSize,jdbcType=VARCHAR},
+      </if>
+      <if test="audioTime != null" >
+        AUDIO_TIME = #{audioTime,jdbcType=VARCHAR},
+      </if>
+      <if test="videoName != null" >
+        VIDEO_NAME = #{videoName,jdbcType=VARCHAR},
+      </if>
+      <if test="videoPath != null" >
+        VIDEO_PATH = #{videoPath,jdbcType=VARCHAR},
+      </if>
+      <if test="videoSize != null" >
+        VIDEO_SIZE = #{videoSize,jdbcType=VARCHAR},
+      </if>
+      <if test="videoTime != null" >
+        VIDEO_TIME = #{videoTime,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        REGION = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="introduction != null" >
+        INTRODUCTION = #{introduction,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

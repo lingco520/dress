@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.ResParkingMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.parking.ResParking" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="PARKING_TYPE" property="parkingType" jdbcType="VARCHAR" />
+    <result column="PARKING_LOT" property="parkingLot" jdbcType="INTEGER" />
+    <result column="CHARGE_STANDARD" property="chargeStandard" jdbcType="VARCHAR" />
+    <result column="OPENTIME" property="opentime" jdbcType="VARCHAR" />
+    <result column="LONGITUDE" property="longitude" jdbcType="VARCHAR" />
+    <result column="LATITUDE" property="latitude" jdbcType="VARCHAR" />
+    <result column="MAP_TYPE" property="mapType" jdbcType="INTEGER" />
+    <result column="SORT" property="sort" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+    <result column="REGION" property="region" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="CONTENT" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, NAME, ADDRESS, PARKING_TYPE, PARKING_LOT, CHARGE_STANDARD, OPENTIME, LONGITUDE,
+    LATITUDE, MAP_TYPE, SORT, STATUS, VCODE, REGION, UPDATE_TIME, CONTENT
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_parking
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select
+    <include refid="Base_Column_List" />
+    from res_parking
+    where STATUS != -1 AND VCODE = #{vcode}
+    <if test="name != null and '' != name">
+      AND NAME LIKE '%${name}%'
+    </if>
+    <if test="parkingType != null and '' != parkingType">
+      AND PARKING_TYPE = #{parkingType}
+    </if>
+    <if test="status != null">
+      AND STATUS = #{status}
+    </if>
+    ORDER BY SORT ASC, UPDATE_TIME DESC
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_parking
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.daqsoft.entity.parking.ResParking" >
+    insert into res_parking (ID, NAME, ADDRESS, 
+      PARKING_TYPE, PARKING_LOT, CHARGE_STANDARD, 
+      OPENTIME, LONGITUDE, LATITUDE, MAP_TYPE,
+      SORT, STATUS, UPDATE_TIME, VCODE, REGION, CONTENT
+      )
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{parkingType,jdbcType=VARCHAR}, #{parkingLot,jdbcType=INTEGER}, #{chargeStandard,jdbcType=VARCHAR}, 
+      #{opentime,jdbcType=VARCHAR}, #{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}, #{mapType,jdbcType=INTEGER},
+      #{sort,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{vcode,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.parking.ResParking" >
+    update res_parking
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="parkingType != null" >
+        PARKING_TYPE = #{parkingType,jdbcType=VARCHAR},
+      </if>
+      <if test="parkingLot != null" >
+        PARKING_LOT = #{parkingLot,jdbcType=INTEGER},
+      </if>
+      <if test="chargeStandard != null" >
+        CHARGE_STANDARD = #{chargeStandard,jdbcType=VARCHAR},
+      </if>
+      <if test="opentime != null" >
+        OPENTIME = #{opentime,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        LONGITUDE = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null" >
+        LATITUDE = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="mapType != null" >
+        MAP_TYPE = #{mapType,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        REGION = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

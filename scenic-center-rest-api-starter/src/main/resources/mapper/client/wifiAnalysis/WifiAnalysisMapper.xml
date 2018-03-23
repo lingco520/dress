@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.daqsoft.mapper.client.wifiAnalysis.WifiAnalysisMapper">
+
+    <sql id="timeSql">
+        <where>
+            <if test="hour!=null">
+                and DATE_FORMAT(s.addTime,'%Y-%m-%d %H')=#{hour}
+            </if>
+            <if test="day!=null">
+                and DATE_FORMAT(s.addTime,'%Y-%m-%d')=#{day}
+            </if>
+            <if test="quarter!=null">
+                and concat(date_format(s.addTime, '%Y'),'_',QUARTER(s.addTime))=#{quarter}
+            </if>
+
+            <if test="month!=null">
+                and DATE_FORMAT(s.addTime,'%Y-%m')=#{month}
+            </if>
+            <if test="year!=null">
+                and DATE_FORMAT(s.addTime,'%Y')=#{year}
+            </if>
+        </where>
+    </sql>
+    <select id="getHour" parameterType="map" resultType="com.daqsoft.vo.client.mysqlBean.WifiHourVo">
+
+        SELECT
+        count(s.id) num,
+        date_format(s.addTime, '%Y-%m-%d %H') time,
+        s.vcode vcode
+        FROM jq_wifi_part s
+        <include refid="timeSql"/>
+        GROUP BY time, vcode
+        order by s.addTime
+    </select>
+    <select id="getDay" parameterType="map" resultType="com.daqsoft.vo.client.mysqlBean.WifiDayVo">
+
+        SELECT
+        count(s.id) num,
+        date_format(s.addTime, '%Y-%m-%d') time,
+        s.vcode vcode
+
+        FROM jq_wifi_part s
+        <include refid="timeSql"/>
+        GROUP BY time, vcode
+        order by s.addTime
+    </select>
+    <select id="getMonth" parameterType="map" resultType="com.daqsoft.vo.client.mysqlBean.WifiMonthVo">
+
+        SELECT
+        count(s.id) num,
+        date_format(s.addTime, '%Y-%m') time,
+        s.vcode vcode
+
+        FROM jq_wifi_part s
+        <include refid="timeSql"/>
+        GROUP BY time, vcode
+        order by s.addTime
+    </select>
+    <select id="getQuarter" parameterType="map" resultType="com.daqsoft.vo.client.mysqlBean.WifiQuarterVo">
+
+        SELECT
+        count(s.id) num,
+        concat(date_format(s.addTime, '%Y'),'_',QUARTER(s.addTime)) time,
+        s.vcode vcode
+
+        FROM jq_wifi_part s
+        <include refid="timeSql"/>
+        GROUP BY time, vcode
+        order by s.addTime
+    </select>
+
+    <select id="getYear" parameterType="map" resultType="com.daqsoft.vo.client.mysqlBean.WifiYear">
+
+        SELECT
+        count(s.id) num,
+        date_format(s.addTime, '%Y') time,
+        s.vcode vcode
+        FROM jq_wifi_part s
+        <include refid="timeSql"/>
+        GROUP BY time, vcode
+        order by s.addTime
+    </select>
+
+    <select id="getCalendarYear" resultType="string" parameterType="map">
+        select DISTINCT date_format(s.addTime, '%Y') from jq_wifi_part s
+        where s.vcode=#{vcode}
+    </select>
+    <select id="getCalendarMonth" resultType="string" parameterType="map">
+        select DISTINCT date_format(s.addTime, '%m') from jq_wifi_part s
+        where s.vcode=#{vcode}
+        and  DATE_FORMAT(s.addtime,'%Y') =#{year}
+    </select>
+    <select id="getCalendarDay" resultType="string" parameterType="map">
+        select DISTINCT date_format(s.addTime, '%d') from jq_wifi_part s
+        where s.vcode=#{vcode}
+        and  DATE_FORMAT(s.addtime,'%Y-%m') =#{month}
+    </select>
+    <select id="getCalendarQuarter" resultType="string" parameterType="map">
+        select DISTINCT QUARTER(s.addTime) from jq_wifi_part s
+        where s.vcode=#{vcode}
+        and  DATE_FORMAT(s.addtime,'%Y') =#{year}
+    </select>
+
+    <select id="isFindData" resultType="com.daqsoft.vo.client.mysqlBean.JqWifiAnalysis" parameterType="map">
+        SELECT count(*) as subgroup
+        FROM jq_wifi_part s
+        WHERE  s.vcode=#{vcode}
+        AND DATE_FORMAT(s.addtime,'%Y-%m-%d %H:%i') BETWEEN   DATE_FORMAT(SUBDATE(now(),interval 20 minute),'%Y-%m-%d %H:%i') and  DATE_FORMAT(now(),'%Y-%m-%d %H:%i')
+
+    </select>
+
+    <select id="findWifiData" resultType="com.daqsoft.vo.client.mysqlBean.JqWifiAnalysis" parameterType="map">
+        SELECT s.status,s.apMacAddress,s.vendorid,s.muMacAddress,s.radioType,s.channel,s.isAssociated,s.associatedApMac,s.mutype,s.rssi,s.noiseFloor,s.age,s.muIpv4,s.reserved,s.addTime,s.vcode,s.subgroup,s.scenicId,s.mark
+        FROM jq_wifi_part s
+        WHERE s.vcode=#{vcode} LIMIT 0,10
+    </select>
+
+
+    <select id="getWifiDays" parameterType="map" resultType="com.daqsoft.vo.client.mysqlBean.WifiAnalysisVo">
+        <![CDATA[
+	        SELECT
+				count(s.id) as num,
+				date_format(s.addTime, '%Y-%m-%d') as time
+			FROM
+				jq_wifi_part s
+			WHERE
+				vcode = '${vcode}'
+			AND addtime >= '${beginDay}'
+			AND addtime <= '${endDay}'
+			GROUP BY
+				date_format(s.addTime, '%Y-%m-%d')
+			ORDER BY
+				s.addTime
+		]]>
+    </select>
+
+    <select id="year2year" parameterType="map" resultType="com.daqsoft.vo.client.mysqlBean.WifiAnalysisVo">
+        <![CDATA[
+	        SELECT
+				count(s.id) as num,
+				date_format(s.addTime, '%Y') as time
+			FROM
+				jq_wifi_part s
+			WHERE
+				vcode = '${vcode}'
+			AND addtime >= '${beginYear}'
+			AND addtime <= '${endYear}'
+			GROUP BY
+				date_format(s.addTime, '%Y')
+			ORDER BY
+				s.addTime
+		]]>
+    </select>
+    <select id="getWifiQuarterByYear" resultType="map" parameterType="map">
+        <![CDATA[
+	        SELECT
+                QUARTER (addTime) AS time,
+                count(id) AS num
+            FROM
+                jq_wifi_part
+            WHERE
+                vcode = #{vcode}
+            AND isAssociated = 1
+            AND addTime BETWEEN #{startTime}
+            AND #{endTime}
+            GROUP BY
+                QUARTER (addTime)
+		]]>
+    </select>
+    <insert id="insertWifiData"  parameterType="map">
+        INSERT INTO jq_wifi_part
+        (status,apMacAddress,vendorid,muMacAddress,radioType,channel,isAssociated,associatedApMac,mutype,rssi,noiseFloor,age,muIpv4,reserved,addTime,vcode,subgroup,scenicId,mark)
+        VALUES (#{status} ,#{apMacAddress} ,#{vendorid},#{muMacAddress},#{radioType},#{channel},#{isAssociated},#{associatedApMac},#{mutype},#{rssi},#{noiseFloor},#{age},#{muIpv4},#{reserved},now(),#{vcode},#{subgroup},#{scenicId},#{mark}) ;
+    </insert>
+    <select id="getWifiByDay" resultType="Integer" parameterType="map">
+        <![CDATA[
+	        SELECT
+                COUNT(1) AS num
+            FROM
+                jq_wifi_part
+            WHERE
+                vcode = #{vcode}
+            AND isAssociated = 1
+            AND addTime BETWEEN #{startTime}
+            AND #{endTime}
+		]]>
+    </select>
+    <select id="getWifiHoursByDay" resultType="com.daqsoft.vo.client.mysqlBean.WifiAnalysisVo" parameterType="map">
+        <![CDATA[
+	        SELECT
+                SUM(totalNumber) AS num,
+                CONCAT(DATE_FORMAT(createTime, '%H'),':00') as time
+            FROM
+                jq_wifi_detail
+            WHERE
+                vcode = #{vcode}
+            AND createTime BETWEEN #{startTime}
+            AND #{endTime}
+            GROUP BY
+                DATE_FORMAT(createTime, '%H')
+		]]>
+    </select>
+</mapper>

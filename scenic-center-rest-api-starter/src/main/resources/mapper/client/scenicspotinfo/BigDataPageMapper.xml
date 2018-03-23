@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daqsoft.mapper.client.scenicspotinfo.BigDataPageDao">
+    <select id="classIfication"
+            resultType="String" parameterType="java.util.Map">
+        select  SUM(TOTAL) from jq_scenic_timely_population WHERE SOURCE not Like'%团体%'and  vcode = #{vcode} AND DATE_FORMAT(TIME,"%Y") = #{date}
+    </select>
+    <select id="tdClass"
+            resultType="String" parameterType="java.util.Map">
+        select SUM(TOTAL) from jq_scenic_timely_population  WHERE   SOURCE Like'%团体%' and  vcode = #{vcode} AND DATE_FORMAT(TIME,"%Y") = #{date}
+
+    </select>
+    <select id="populationFit"
+            resultType="com.daqsoft.vo.client.madeVoBean.PopulationSeal" parameterType="java.util.Map">
+        SELECT SUM(s.TOTAL) as number,DATE_FORMAT(s.TIME,"%m") as  month  FROM jq_scenic_timely_population s where s.VCODE = #{vcode} and s.SOURCE not Like'%团队%' AND DATE_FORMAT(s.TIME,"%Y") = #{date} GROUP BY DATE_FORMAT(s.TIME,"%Y-%m");
+    </select>
+
+    <!-- 景区实时数据按小时查询 -->
+    <select id="isFindPopulationHour" parameterType="map"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleOld">
+        <![CDATA[
+        SELECT count(*) as quantity,date_format(s.time, '%Y年%m月%d日 %H')  as timesheet,s.vcode,'时' as timeType,maxquantity as maxquantity
+        FROM jq_scenic_timely_population s
+        WHERE s.vcode = #{vcode}
+        AND date_format(s.time, '%Y-%m-%d') = #{time}
+        GROUP BY date_format(s.time, '%Y-%m-%d %H')
+        ]]>
+    </select>
+
+</mapper>

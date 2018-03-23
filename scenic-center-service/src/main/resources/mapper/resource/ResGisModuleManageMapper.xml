@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.ResGisModuleManageMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.gisModuleManage.ResGisModuleManage" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="CODE" property="code" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="CLICK_TYPE" property="clickType" jdbcType="VARCHAR" />
+    <result column="IMAGE" property="image" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, NAME, CODE, STATUS, IMAGE,CLICK_TYPE
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_gis_module_manage
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_gis_module_manage
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.daqsoft.entity.gisModuleManage.ResGisModuleManage" >
+    insert into res_gis_module_manage (NAME, CODE,
+      STATUS, IMAGE,CLICK_TYPE, UPDATE_TIME
+      )
+    values ( #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR},
+      #{status,jdbcType=INTEGER}, #{image,jdbcType=VARCHAR},#{clickType,jdbcType=VARCHAR}, now()
+      )
+  </insert>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from res_gis_module_manage
+    <where>
+      AND STATUS != -1
+      <if test="name != null and '' != name">
+        AND name LIKE '%${name}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND status = #{status}
+      </if>
+    </where>
+    ORDER BY id DESC
+  </select>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.gisModuleManage.ResGisModuleManage" >
+    update res_gis_module_manage
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        CODE = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="image != null" >
+        IMAGE = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="clickType != null" >
+        CLICK_TYPE = #{clickType,jdbcType=VARCHAR},
+      </if>
+        UPDATE_TIME =now(),
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="isCheckGisName" parameterType="java.lang.String" resultType="java.lang.Integer">
+    SELECT count(NAME) FROM res_gis_module_manage where name = #{gisName} and status = 1
+  </select>
+
+  <select id="getClickType"  resultType="com.daqsoft.entity.gisClickManage.ResGisClickManage">
+    SELECT
+      code,name
+     FROM res_gis_click_manage
+     where  status = 1
+  </select>
+
+  <select id="getGisModule"  resultType="com.daqsoft.vo.resource.GisModule">
+   SELECT a.vcode,a.name as name,m.CLICK_TYPE as clickType,m.`CODE` as code,a.id,m.IMAGE,t.name
+    FROM res_gis_module_config a ,
+     res_gis_module_manage m ,
+     res_gis_map_type_manage t
+    WHERE
+     m.id=a.moudle_id and t.id=a.map_type_id
+    and t.type = 'GisShowType_1'
+    and a.status =1
+    and a.vcode=#{vcode}
+
+  </select>
+
+  <!--景点信息-->
+  <select id="getGisScenic" resultType="com.daqsoft.vo.resource.GisScenicSpots" parameterType="String">
+    select id,`name`,longitude,latitude,`status`,introduction
+    from res_scenic_spots
+    where vcode=#{vcode} and status = 1
+
+  </select>
+
+  <!--景点厕所-->
+  <select id="getGisToilet" resultType="com.daqsoft.vo.resource.GisScenicToilet" parameterType="String">
+    SELECT name,longitude,latitude,img,address,id
+    from res_scenic_toilet
+    where vcode=#{vcode} and status=1
+  </select>
+
+  <!--景点餐饮-->
+  <select id="getGisDining" resultType="com.daqsoft.vo.resource.GisScenicDining" parameterType="String">
+    SELECT name,longitude,latitude,introduction,address,id
+    from res_dining_place
+    where vcode=#{vcode} and status=1
+  </select>
+
+  <!--景点停车场-->
+  <select id="getGisParking" resultType="com.daqsoft.vo.resource.GisScenicParking" parameterType="String">
+    SELECT name,longitude,latitude,parking_lot,address,id
+    from res_parking
+    where vcode=#{vcode} and status=1
+  </select>
+
+  <!--宾馆酒店-->
+  <select id="getGisHotel" resultType="com.daqsoft.vo.resource.GisCommonVo" parameterType="String">
+    SELECT name,longitude,latitude,introduction,id
+    from res_accommodation
+    where vcode=#{vcode} and status=1
+  </select>
+
+  <!--娱乐场所-->
+  <select id="getGisEntertainment" resultType="com.daqsoft.vo.resource.GisCommonVo" parameterType="String">
+    SELECT name,longitude,latitude,introduction,id
+    from res_entertainment
+    where vcode=#{vcode} and status=1
+  </select>
+
+  <!--景区定位人员路径-->
+  <select id="getPersonLocation" resultType="com.daqsoft.vo.resource.GisScenicPersonLoca" parameterType="Map">
+    select ID,LOCA_NAME as NAME ,LONGITUDE,LATITUDE,date_format(datetime,'%Y-%m-%d %H:%i:%s') as date
+    from ele_person_location
+    where vcode=#{vcode} AND person_id = #{id} AND datetime like '%${date}%'
+    ORDER BY datetime ASC
+  </select>
+</mapper>

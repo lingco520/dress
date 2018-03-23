@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.client.emergency.EmergencyDao">
+
+    <select id="emergencyYearByCjs" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleChoiceTimeVo">
+        <![CDATA[
+
+        SELECT COUNT(s.TYPE) as num,
+          (CASE s.TYPE WHEN 'planstype_07' THEN '自然灾害'
+					WHEN 'planstype_08' THEN '事故灾难'
+                    WHEN 'planstype_09' THEN '公共卫生'
+                    WHEN 'planstype_10' THEN '社会安全'
+					ELSE '其他' END) AS time
+          FROM JQ_INC_REPORT s WHERE s.VCODE=#{vcode} and s.HAPPENTIME BETWEEN #{startTime} AND #{endTime} GROUP BY s.TYPE
+
+        ]]>
+    </select>
+
+    <select id="getEmergencyInfoList" parameterType="map" resultType="com.daqsoft.vo.client.madeVoBean.EmergencyInfoListVo">
+        SELECT
+        jir.content content,/*时间内容*/
+        jir.DEALPERSON dealPeople,/*处理人*/
+        '' as dealPhone,/*处理人电话*/
+        '' as expectedTime,/*处理时间*/
+        '' as dealInfo,/*处理内容*/
+        jir.`NAME` eventName,/*时间名称*/
+        SD.`NAME` AS eventType,/*时间类型*/
+        jir.HAPPENTIME happenTime,/*发生时间*/
+        jir.ID AS id,/*主键*/
+        jir.ID as eventNum,/*时间编号*/
+        jir.`LEVEL` LEVEL,
+        (
+        CASE JIR.`NOWSTATUS`
+        WHEN '1' THEN
+        '正在处理'
+        WHEN '99' THEN
+        '处理完成'
+        ELSE
+        '其他'
+        END
+        ) myStatus,/*处理状态*/
+        jir.REPORTPEO reportPeople,/*上报人*/
+        jir.PHONE reportPhone,/*上报人电话*/
+        jir.TYPE type
+        FROM
+        jq_inc_report jir
+        LEFT JOIN SYS_DICT sd ON jir.TYPE = sd.SKEY
+        WHERE 1=1
+        <if test="vcode != null and vcode != ''">
+            AND    JIR.VCODE=#{vcode}
+        </if>
+        <if test="date != null and date != ''">
+            AND  DATE_FORMAT(HAPPENTIME,'%Y-%m')=#{date}
+        </if>
+        <if test="type != null and type != ''">
+            AND 	 JIR.TYPE=#{type}
+        </if>
+
+        <if test="status != null and status != ''">
+            AND JIR.`NOWSTATUS`=#{status}
+        </if>
+
+        <if test="start != null and start != ''">
+            LIMIT ${start},${end}
+        </if>
+
+    </select>
+
+    <select id="getEmergencyInfo" parameterType="java.lang.String" resultType="com.daqsoft.vo.client.madeVoBean.EmergencyInfoListVo">
+       SELECT
+        jir.content content,/*时间内容*/
+        jir.DEALPERSON dealPeople,/*处理人*/
+        '' as dealPhone,/*处理人电话*/
+        '' as expectedTime,/*处理时间*/
+        '' as dealInfo,/*处理内容*/
+        jir.`NAME` eventName,/*时间名称*/
+        SD.`NAME` AS eventType,/*时间类型*/
+        jir.HAPPENTIME happenTime,/*发生时间*/
+        jir.ID AS id,/*主键*/
+        jir.ID as eventNum,/*时间编号*/
+        jir.`LEVEL` LEVEL,
+        (
+        CASE JIR.`NOWSTATUS`
+        WHEN '1' THEN
+        '正在处理'
+        WHEN '99' THEN
+        '处理完成'
+        ELSE
+        '其他'
+        END
+        ) myStatus,/*处理状态*/
+        jir.REPORTPEO reportPeople,/*上报人*/
+        jir.PHONE reportPhone,/*上报人电话*/
+        jir.TYPE type
+        FROM
+        jq_inc_report jir
+        LEFT JOIN SYS_DICT sd ON jir.TYPE = sd.SKEY
+        WHERE jir.ID = #{id}
+    </select>
+    <insert id="savaEmergencyDealInfo" parameterType="map">
+      INSERT INTO jq_inc_deal (
+            dealinfo,
+            opertaor,
+            report_id,
+            dealtime
+        )
+        VALUES
+            (
+                #{dealinfo},
+                #{opertaor},
+                #{report_id},
+                #{dealtime}
+            )
+    </insert>
+    <select id="emergencyByTypeList" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.EmergencyByTypeListVO">
+
+            SELECT ID,NAME ,
+            HAPPENTIME,
+            (CASE NOWSTATUS WHEN '1' THEN '正在处理'
+					      WHEN '99' THEN '处理完成'
+                       ELSE '其它' END) AS status
+             FROM JQ_INC_REPORT
+			 WHERE 1=1
+             AND NOWSTATUS != 99
+			 <if test="vcode != null and vcode != ''">
+					  AND    VCODE='${vcode}'
+			 </if>
+             <if test="date != null and date != ''">
+					  AND  DATE_FORMAT(HAPPENTIME,'%Y')='${date}'
+			 </if>
+			 <if test="type != null and type != ''">
+					AND    TYPE='${type}'
+			 </if>
+            LIMIT ${start},${end}
+
+
+    </select>
+    <!-- 年度应急事件分析-列表总条数获取 -->
+    <select id="emergencyByTypeListCount" parameterType="Map"
+            resultType="java.lang.Integer">
+
+        SELECT count(*) as TotalPage
+             FROM JQ_INC_REPORT
+			 WHERE 1=1
+             AND NOWSTATUS != 99
+			 <if test="vcode != null and vcode != ''">
+					  AND    VCODE='${vcode}'
+             </if>
+             <if test="date != null and date != ''">
+					  AND  DATE_FORMAT(HAPPENTIME,'%Y')='${date}'
+			 </if>
+			 <if test="type != null and type != ''">
+					AND    TYPE='${type}'
+			 </if>
+
+    </select>
+    <!-- 年度应急事件分析-总数 -->
+    <select id="emergencyCountByYear" parameterType="Map"
+            resultType="java.lang.Integer">
+
+        SELECT count(*) as TotalPage
+        FROM JQ_INC_REPORT
+        WHERE 1=1
+        <if test="vcode != null and vcode != ''">
+            AND    VCODE='${vcode}'
+        </if>
+        <if test="sdate != null and sdate != '' and edate != null and edate != ''">
+            AND  HAPPENTIME BETWEEN '${sdate}' and '${edate}'
+        </if>
+        <if test="type != null and type != ''">
+            AND    TYPE='${type}'
+        </if>
+        <if test="status != null and status != ''">
+            AND    NOWSTATUS != ${status}
+        </if>
+
+    </select>
+
+    <select id="emergencyMonthByCj" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleChoiceTimeVo">
+        <![CDATA[
+
+             SELECT COUNT(s.TYPE) AS num,
+	         DATE_FORMAT(s.HAPPENTIME,'%m月') AS time
+	         FROM JQ_INC_REPORT s
+	         WHERE  s.VCODE=#{vcode}
+	         AND   DATE_FORMAT(s.HAPPENTIME,'%Y')=#{year}
+	         GROUP BY DATE_FORMAT(s.HAPPENTIME,'%Y-%m')
+
+        ]]>
+    </select>
+
+    <!-- 小屏数据接口—应急分析 -->
+    <select id="emergencySmallYear" parameterType="Map"
+            resultType="java.lang.Integer">
+        <![CDATA[
+            SELECT count(*) as TotalPage
+            FROM JQ_INC_REPORT
+            WHERE 1=1
+            AND    VCODE=#{vcode}
+            AND  HAPPENTIME BETWEEN #{sdate} and #{edate}
+            AND    TYPE=#{type}
+        ]]>
+    </select>
+
+    <!-- 小屏数据接口—应急统计 -->
+    <select id="emergencySmallCountList" parameterType="Map"
+            resultType="java.lang.Integer">
+        <![CDATA[
+            SELECT count(*) as TotalPage
+            FROM JQ_INC_REPORT
+            WHERE 1=1
+            AND    VCODE=#{vcode}
+            AND  HAPPENTIME BETWEEN #{sdate} and #{edate}
+        ]]>
+    </select>
+
+    <!-- 值班排班管理表 -->
+    <select id="emergencyFullMeg" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.emergencyFullMegVo">
+        <![CDATA[
+            SELECT s.id, DATE_FORMAT(s.dutyTime, '%Y-%m-%d') AS dutyTime,s. NAME AS personName,s.person,p. NAME AS leaderName,s.leaderShip,p.vcode
+            FROM sys_dutyPersonnel p,(
+            SELECT t.dutyTime,t.id,t1. NAME,t.leaderShip,t.person,t.vcode FROM jq_duty t,sys_dutyPersonnel t1
+            WHERE t.person = t1.id and t.vcode = t1.vcode ) s
+            WHERE p.id = s.leaderShip
+            and DATE_FORMAT(s.dutyTime,'%Y-%m-%d') = #{dateTime}
+            and s.vcode=#{vcode}
+            order by s.id desc;
+        ]]>
+    </select>
+    <!-- 值班排班人员信息与手机号码 -->
+    <select id="emergencyFullMegPerson" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleChoiceTimeVo">
+        <![CDATA[
+            SELECT s.`NAME` as num,s.phone as time from sys_dutyPersonnel s where 1=1 and id= #{id}
+        ]]>
+    </select>
+
+    <!-- 主页值班人员信息与手机号码 -->
+    <select id="getDutyPersonEmergency" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.DutyPersonEmerVo">
+        <![CDATA[
+        SELECT * from
+			(SELECT name as dutyuserNames ,phone as dutyPhone
+				FROM sys_dutypersonnel
+					WHERE id=(
+						SELECT t.person
+						FROM jq_duty t
+							WHERE  t.resourcecode = #{resourcecode}
+							AND  t.DUTYTIME BETWEEN DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00') AND DATE_FORMAT(NOW(),'%Y-%m-%d 23:59:59')
+			 				)) as person JOIN
+(SELECT leader.name as dutyleaderNames, leader.landline as reportPhone,leader.phone as emerPhone
+				FROM sys_dutypersonnel leader
+					WHERE id=(SELECT t.leadership
+						FROM jq_duty t
+						WHERE t.resourcecode = #{resourcecode}
+						AND  t.DUTYTIME BETWEEN DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00') AND DATE_FORMAT(NOW(),'%Y-%m-%d 23:59:59')
+ 						)) as leaders
+
+        ]]>
+    </select>
+
+</mapper>

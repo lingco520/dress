@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.ResGisModuleConfigMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.gisModuleConfig.ResGisModuleConfig" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="MOUDLE_ID" property="moudleId" jdbcType="VARCHAR" />
+    <result column="MAP_TYPE_ID" property="mapTypeId" jdbcType="INTEGER" />
+    <result column="SORT" property="sort" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, NAME, MOUDLE_ID, MAP_TYPE_ID, SORT, STATUS, VCODE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_gis_module_config
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_gis_module_config
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.daqsoft.entity.gisModuleConfig.ResGisModuleConfig" >
+    insert into res_gis_module_config (ID, NAME, MOUDLE_ID,
+       MAP_TYPE_ID, SORT,
+      STATUS, VCODE, UPDATE_TIME
+      )
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{moudleId,jdbcType=VARCHAR},
+      #{mapTypeId,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER},
+      #{status,jdbcType=INTEGER}, #{vcode,jdbcType=VARCHAR}, now()
+      )
+  </insert>
+
+  <select id="selectList" resultType="com.daqsoft.entity.gisModuleConfig.ResGisModuleConfigList" >
+    select
+    s.ID,s.NAME,s.MOUDLE_ID,s.SORT,s.STATUS,s.VCODE,m.name as mapType
+    from res_gis_module_config s
+    LEFT JOIN
+    res_gis_map_type_manage m ON s.MAP_TYPE_ID = m.id
+    <where>
+      AND s.STATUS != -1
+      <if test="name != null and '' != name">
+        AND s.name LIKE '%${name}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND s.status = #{status}
+      </if>
+      AND vcode=#{vcode}
+    </where>
+
+    ORDER BY s.sort ASC
+  </select>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.gisModuleConfig.ResGisModuleConfig" >
+    update res_gis_module_config
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="moudleId != null" >
+        MOUDLE_ID = #{moudleId,jdbcType=VARCHAR},
+      </if>
+      <if test="mapTypeId != null" >
+        MAP_TYPE_ID = #{mapTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+        UPDATE_TIME = now(),
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+
+  <select id="getGisModule" resultType="com.daqsoft.entity.gisModuleManage.ResGisModuleManage" >
+    select
+    id,name,code
+    from res_gis_module_manage
+    where status = 1
+  </select>
+
+  <select id="getGisMapType" resultType="com.daqsoft.entity.gisMapTypeManage.ResGisMapTypeManage" >
+    select
+    id,name
+    from res_gis_map_type_manage
+    where status = 1
+  </select>
+
+  <select id="getGisName" resultType="com.daqsoft.entity.gisModuleManage.ResGisModuleManage" parameterType="java.lang.String">
+    select
+    id,NAME
+    from res_gis_module_manage
+    where id=#{id}
+  </select>
+
+  <select id="getIsTrue" resultType="Integer" parameterType="java.util.HashMap">
+    select
+    count(*)
+    from res_gis_module_config
+    where moudle_Id=#{moudleId} AND VCODE=#{vcode} AND map_type_id=#{mapTypeId}
+  </select>
+
+  <delete id="removeGisMoudle"  parameterType="java.lang.String">
+    delete from res_gis_module_config
+    where vcode = #{vcode}
+  </delete>
+
+  <update id="updateSort" parameterType="com.daqsoft.entity.gisModuleConfig.ResGisModuleConfig" >
+    update res_gis_module_config
+    <set >
+        SORT = #{sort,jdbcType=INTEGER},
+        STATUS = #{status,jdbcType=INTEGER},
+        UPDATE_TIME = now(),
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

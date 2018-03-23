@@ -1,0 +1,186 @@
+/*登录*/
+.canvas-box {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: url('/images/login/login-bg.jpg') no-repeat top center #1266b1;
+    background-size: 100% 100%;
+}
+
+.log-bg {
+    position: absolute;
+    z-index: 9;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.login-box {
+    position: relative;
+    z-index: 11;
+    width: 1200px;
+    height: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.login-logo {
+    display: block;
+    height: 128px;
+    margin: 8% auto 0;
+}
+.errorSpan {
+    padding-left:90px;
+    color: #ff0000;
+}
+
+.log-message {
+    width: 400px;
+    height: 402px;
+    margin: 9% auto 0;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 3px 3px 3px rgba(0, 74, 185, .15);
+    overflow: hidden;
+}
+
+.log-tit {
+    height: 58px;
+    line-height: 58px;
+    font-size: 24px;
+    text-align: center;
+    color: #fff;
+    font-weight: normal;
+    letter-spacing: 4px;
+    background-color: #004ab9;
+    border-bottom: 2px solid #0090ff;
+}
+
+.log-pad {
+    padding: 26px 50px 0;
+}
+
+.log-item {
+    width: 100%;
+    height: 43px;
+    line-height: 43px;
+    margin-top: 14px;
+    background-color: #fff;
+    border: 1px solid #cfdae9;
+    border-radius: 5px;
+}
+
+.log-item .sysfont {
+    vertical-align: middle;
+    padding: 0 10px 0 13px;
+    font-weight: bold;
+    font-size: 22px;
+    color: #3d76cb;
+}
+
+.log-btn {
+    display: inline-block;
+    vertical-align: top;
+    width: 100%;
+    height: 45px;
+    line-height: 45px;
+    text-align: center;
+    font-size: 14px;
+    color: #fff;
+    background-color: #4488ee;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.log-btn:hover {
+    background-color: #2d76e3;
+}
+
+.log-rember {
+    height: 18px;
+    padding: 12px 0;
+}
+
+.log-rember .daq-checkbox {
+    margin: 0 20px 0 0;
+}
+
+.log-error {
+    display: inline-block;
+    max-width: 60%;
+    height: 100%;
+    font-size: 12px;
+    color: #ff4949;
+    overflow: hidden;
+}
+
+.globe {
+    position: absolute;
+    top: 30%;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+}
+
+.login-button-wrap {
+    margin-top: 15px;
+}
+
+/*滑动解锁*/
+.slider {
+    margin-top: 14px;
+}
+
+.ui-slider-wrap {
+    position: relative;
+    background-color: #eff6ff;
+    border: 1px solid #afc6e4;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.ui-slider-wrap .ui-slider-bg {
+    width: 0;
+}
+
+.ui-slider-wrap .ui-slider-btn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: move;
+    text-align: center;
+    color: #afc6e4;
+    border: 1px solid #cfdae9;
+    background-color: #fff;
+    border-radius: 5px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.ui-slider-wrap .ui-slider-btn.success {
+    color: #4488ee;
+}
+
+.ui-slider-wrap .ui-slider-text {
+    width: 100%;
+    height: 100%;
+    font-family: "微软雅黑";
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #666;
+}
+
+.ui-slider-wrap .ui-slider-no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}

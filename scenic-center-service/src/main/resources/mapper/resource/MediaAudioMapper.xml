@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.MediaAudioMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.audio.MediaAudio" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="AUDIO_URL" property="audioUrl" jdbcType="VARCHAR" />
+    <result column="AUDIO_TYPE" property="audioType" jdbcType="VARCHAR" />
+    <result column="SCENIC_ID" property="scenicId" jdbcType="BIGINT" />
+    <result column="AUDIO_SIZE" property="audioSize" jdbcType="VARCHAR" />
+    <result column="INTRODUCTION" property="introduction" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="INTEGER" />
+    <result column="LANGUAGE_TYPE" property="languageType" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, TITLE, AUDIO_URL, AUDIO_TYPE, SCENIC_ID, AUDIO_SIZE, INTRODUCTION, SORT, LANGUAGE_TYPE, 
+    UPDATE_TIME, STATUS, VCODE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from media_audio
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    from media_audio
+    where STATUS != -1 AND VCODE = #{vcode}
+    <if test="title != null and '' != title">
+      AND TITLE LIKE '%${title}%'
+    </if>
+    <if test="scenicId != null and '' != scenicId">
+      AND SCENIC_ID = #{scenicId}
+    </if>
+    <if test="languageType != null and '' != languageType">
+      AND LANGUAGE_TYPE = #{languageType}
+    </if>
+    <if test="audioType != null and '' != audioType">
+      AND AUDIO_TYPE = #{audioType}
+    </if>
+    <if test="status != null">
+      AND STATUS = #{status}
+    </if>
+    ORDER BY SORT ASC, UPDATE_TIME DESC
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from media_audio
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.daqsoft.entity.audio.MediaAudio" >
+    insert into media_audio (ID, TITLE, AUDIO_URL, 
+      AUDIO_TYPE, SCENIC_ID, AUDIO_SIZE, 
+      INTRODUCTION, SORT, LANGUAGE_TYPE, 
+      UPDATE_TIME, STATUS, VCODE
+      )
+    values (#{id,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{audioUrl,jdbcType=VARCHAR}, 
+      #{audioType,jdbcType=VARCHAR}, #{scenicId,jdbcType=BIGINT}, #{audioSize,jdbcType=VARCHAR}, 
+      #{introduction,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{languageType,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{vcode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.audio.MediaAudio" >
+    update media_audio
+    <set >
+      <if test="title != null" >
+        TITLE = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="audioUrl != null" >
+        AUDIO_URL = #{audioUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="audioType != null" >
+        AUDIO_TYPE = #{audioType,jdbcType=VARCHAR},
+      </if>
+      <if test="scenicId != null" >
+        SCENIC_ID = #{scenicId,jdbcType=BIGINT},
+      </if>
+      <if test="audioSize != null" >
+        AUDIO_SIZE = #{audioSize,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null" >
+        INTRODUCTION = #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="languageType != null" >
+        LANGUAGE_TYPE = #{languageType,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

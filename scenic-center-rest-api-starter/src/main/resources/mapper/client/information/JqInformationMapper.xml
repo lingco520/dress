@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.client.information.JqInformationMapper" >
+    <resultMap id="BaseResultDitchMap" type="com.daqsoft.vo.client.madeVoBean.JqInformationDitch" >
+        <id column="ID" property="id" jdbcType="INTEGER" />
+        <result column="DITCH_NAME" property="ditchName" jdbcType="VARCHAR" />
+        <result column="INFORMATION_TYPE" property="informationType" jdbcType="VARCHAR" />
+        <result column="TYPE" property="type" jdbcType="VARCHAR" />
+        <result column="PUBLISH_TIME" property="publishTime" jdbcType="TIMESTAMP" />
+        <result column="STATUS" property="status" jdbcType="INTEGER" />
+        <result column="STATE" property="state" jdbcType="INTEGER" />
+        <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap id="BaseResultPlatformMap" type="com.daqsoft.vo.client.madeVoBean.JqInformationPlatform" >
+        <id column="ID" property="id" jdbcType="INTEGER" />
+        <result column="NAME" property="name" jdbcType="VARCHAR" />
+        <result column="STATUS" property="status" jdbcType="INTEGER" />
+        <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+        <result column="STATE" property="state" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ID, NAME, STATUS, VCODE, STATE
+    </sql>
+    <select id="getInformationVideo" resultType="com.daqsoft.vo.client.madeVoBean.InformationVideoVo" parameterType="map">
+    SELECT
+    s.id,
+    s.title,
+    s.url,
+    ss.`name` AS scenicName,
+    s.image
+    FROM
+    api_video_library AS s
+    LEFT JOIN api_scenic_spots ss ON s.scenicId = ss.id
+    WHERE
+    s. STATUS != - 99
+    AND s.vcode = #{vcode}
+    LIMIT #{startRow},#{endRow}
+  </select>
+    <select id="getVideoCount" resultType="int" parameterType="map">
+        SELECT
+        count(s.id)
+        FROM
+        api_video_library AS s
+        LEFT JOIN api_scenic_spots ss ON s.scenicId = ss.id
+        WHERE
+        s. STATUS != - 99
+        AND s.vcode = #{vcode}
+    </select>
+  <select id="getMinMaxComfort" resultType="com.daqsoft.vo.client.madeVoBean.ScenicComfortVo" parameterType="map">
+    SELECT
+    jsc.maxCount maxCount,
+    jsc.minCount minCount,
+    jsc.MARK mark
+    FROM
+    api_scenic_spots ass,
+    jq_scenic_comfort jsc
+    WHERE
+    ass.vcode = #{vcode}
+    AND ass.`name` = #{name}
+    AND ass.id = jsc.SCENICID
+    AND jsc.status != -99
+  </select>
+  <select id="getScenicNews" resultType="com.daqsoft.vo.client.madeVoBean.ScenicNewsVo" parameterType="map">
+    SELECT
+        jic.id id,
+        jic.TITLE title,
+        jic.SOURCE source,
+        jic.LINK link,
+        jic.CONTENT content
+    FROM
+        jq_information_content jic
+    INNER JOIN jq_information_platform jip ON jic.PLATFORM_ID = jip.ID
+    INNER JOIN jq_information_ditch jid ON jic.DITCH_ID = jid.ID
+    WHERE
+        jic.`STATUS` != - 99
+    AND jic.STATE = 1
+    AND jid.`STATUS` != - 99
+    AND jid.STATE = 1
+    AND jip.`STATUS` != - 99
+    AND jip.STATE = 1
+    AND jip.`NAME` = #{name}
+    AND jid.DITCH_NAME = #{ditchName}
+    AND jic.VCODE = #{vcode}
+  </select>
+  <select id="getScenicQrcode" resultType="com.daqsoft.vo.client.madeVoBean.ScenicQrcodeVo" parameterType="map">
+    SELECT
+        NAME,
+        EQCODEURL as url
+    FROM
+        jq_scenic_qrcode
+        WHERE
+        STATUS != 0
+        AND STATUS != -99
+        AND VCODE = #{vcode}
+  </select>
+    <insert id="saveInformation" parameterType="com.daqsoft.vo.client.madeVoBean.JqInformationContent" >
+        insert into jq_information_content (ID, DITCH_ID,PLATFORM_ID, TITLE,
+        AUTHO, SOURCE, LABEL,
+        PUBLISH_TIME, LINK, STATUS,
+        STATE, CONTENT, VCODE)
+        values (#{id,jdbcType=INTEGER}, #{ditchId,jdbcType=INTEGER}, #{platformId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR},
+        #{autho,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR}, #{label,jdbcType=VARCHAR},
+        #{publishTime,jdbcType=TIMESTAMP}, #{link,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
+        #{state,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}, #{vcode,jdbcType=VARCHAR})
+    </insert>
+    <select id="getPlatformList" resultType="map" parameterType="string" >
+        select
+         ID id,
+        `NAME` name
+        from jq_information_platform
+        where status != -99
+        AND state = 1
+        AND vcode = #{vcode}
+    </select>
+    <select id="getDitchListByPlatformId" resultType="map" parameterType="map" >
+        SELECT
+        jid.ID id,
+        jid.DITCH_NAME ditchName
+        FROM
+        jq_information_ditch jid
+        INNER JOIN jq_platform_ditch jpd ON jid.ID = jpd.DITCHID
+        WHERE
+        jid.STATE = 1
+        AND jid.`STATUS` != - 99
+        AND jpd.PLATFORMID = #{platformid}
+        AND jid.VCODE = #{vcode}
+    </select>
+</mapper>

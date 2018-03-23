@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.monitorConfig.MonitorConfigMapper">
+
+
+    <select id="getMonitorGroupNum"  parameterType="String" resultType="int">
+        SELECT  count(a.groupName) num from
+        (SELECT groupName from jq_monitor where vcode = #{vcode} AND status = 1 GROUP BY groupName) a
+    </select>
+
+    <select id="getMonitorGroupName" resultType="Map" parameterType="String">
+        SELECT groupName from jq_monitor where vcode = #{vcode} AND status = 1 GROUP BY groupName
+
+    </select>
+
+    <select id="getMonitorOutInfos" resultType="Map" parameterType="Map">
+        SELECT jq.ID id , jq.NAME name, jq.IMAGE image,jq.OUTIPADDRESS outipaddress, jq.OUTPORT outport ,
+        d.VALUE simplename, jq.UNAME uname, jq.pwd pwd, jq.numcode numcode, jq.rank rank,
+        jq.nowStatus nowStatus, jq.status status
+        FROM jq_monitor jq LEFT JOIN sys_dict d ON jq.BRAND = d.NAME
+        WHERE jq.vcode = #{vcode}
+        <if test="groupName != null and '' != groupName ">
+            AND jq.groupName = #{groupName}
+        </if>
+         AND jq.status = 1 order by jq.ID DESC
+    </select>
+
+    <select id="getMonitorInfos" resultType="Map" parameterType="Map">
+        SELECT jq.ID id , jq.NAME name, jq.IMAGE image,jq.INIPADDRESS outipaddress, jq.INPORT outport ,
+        d.VALUE simplename, jq.UNAME uname, jq.pwd pwd, jq.numcode numcode, jq.rank rank,
+        jq.nowStatus nowStatus, jq.status status
+        FROM jq_monitor jq LEFT JOIN sys_dict d ON jq.BRAND = d.NAME
+        WHERE jq.vcode = #{vcode}
+        <if test="groupName != null and '' != groupName ">
+            AND jq.groupName = #{groupName}
+        </if>
+        AND jq.status = 1 order by jq.ID DESC
+    </select>
+
+    <select id="getCountMonitor" parameterType="Map" resultType="int">
+        SELECT count(id)  count FROM jq_monitor
+        WHERE vcode = #{vcode}
+        <if test="groupName != null and '' != groupName ">
+            AND groupName = #{groupName}
+        </if>
+        AND  status = 1
+
+    </select>
+
+    <select id="getScenicName" parameterType="Map" resultType="String">
+        SELECT scenic_name  FROM sys_user WHERE VCODE = #{vcode}
+
+    </select>
+
+    <select id="getRegion" parameterType="String" resultType="Map">
+        SELECT r.REGION region , r.name name FROM
+        sys_region r  LEFT JOIN res_scenic_areas m ON r.REGION=m.REGION
+        WHERE m.VCODE= #{vcode}
+    </select>
+
+</mapper>

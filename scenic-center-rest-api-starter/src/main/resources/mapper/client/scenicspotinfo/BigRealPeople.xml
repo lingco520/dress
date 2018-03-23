@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daqsoft.mapper.client.scenicspotinfo.BigRealPeopleDao">
+    <!--团队 日 -->
+    <select id="find_ts_date_day" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Citigroup_cl">
+        <![CDATA[
+		select SUM(s.TOTALPRICE) as money
+		from JQ_TICKET s
+		where s.TYPE LIKE '%团体%' and (DATE_FORMAT(s.TIME,"%Y-%m-%d") between #{date} and #{end} ) and s.`STATUS` != -99 and s.VCODE = #{vcode}
+		 ]]>
+    </select>
+    <!--团队 日 -->
+    <select id="findSumTeamPeople_day" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Citigroup_cl">
+        <![CDATA[
+         SELECT   SUM(TOTAL) as ts_num
+         FROM jq_scenic_timely_population
+         WHERE SOURCE  Like'%团体%'
+         and  VCODE = #{vcode}
+         AND DATE_FORMAT(TIME,'%Y-%m-%d') between #{date} and #{end};
+		 ]]>
+    </select>
+
+    <!--团队 月 -->
+    <select id="find_ts_date_mm" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Citigroup_cl">
+        <![CDATA[
+		select SUM(s.TOTALPRICE) as money
+		from JQ_TICKET s
+		where s.TYPE LIKE '%团体%' and DATE_FORMAT(s.TIME,"%Y-%m") = #{date} and s.`STATUS` != -99 and s.VCODE = #{vcode}
+		 ]]>
+    </select>
+
+    <!--团队 月 -->
+    <select id="findSumTeamPeople_month" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Citigroup_cl">
+        <![CDATA[
+             SELECT  SUM(TOTAL) as ts_num  from jq_scenic_timely_population
+            WHERE SOURCE  Like'%团体%'
+            AND  VCODE = #{vcode}
+            AND DATE_FORMAT(TIME,'%Y-%m')= #{date};
+		 ]]>
+    </select>
+
+    <!--团队 年票的金额量2017-08-02优化，lrd-->
+    <select id="find_ts_date_year" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Citigroup_cl">
+        <![CDATA[
+		select IFNULL(SUM(s.TOTALPRICE),0) as money
+		from JQ_TICKET s
+		where s.VCODE = #{vcode} and s.TIME between '${date}-01-01 00:00:00' and '${end}-12-31 23:59:59'  and s.TYPE LIKE '%团体%'  and s.STATUS != -99
+		 ]]>
+    </select>
+
+    <!--团队 年人数量2017-08-02优化，lrd -->
+    <select id="findNotTeamPeople" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Citigroup_cl">
+        <![CDATA[
+         select  IFNULL(SUM(TOTAL),0) as ts_num
+         from jq_scenic_timely_population
+         WHERE SOURCE  Like'%团体%'
+         and  VCODE = #{vcode}
+         AND time BETWEEN '${date}-01-01 00:00:00' and '${end}-12-31 23:59:59'
+		 ]]>
+    </select>
+
+    <!--团队 季度 -->
+    <select id="find_ts_date_jidu" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Citigroup_cl">
+        <![CDATA[
+		select SUM(s.TOTALPRICE) as money
+		from JQ_TICKET s
+		where s.TYPE LIKE '%团体%' and (DATE_FORMAT(s.TIME,"%Y-%m") between #{date} and #{end} ) and s.`STATUS` != -99 and s.VCODE = #{vcode}
+		 ]]>
+    </select>
+
+    <!--团队 季度 -->
+    <select id="findSumTeamPeople_jidu" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Citigroup_cl">
+        <![CDATA[
+		SELECT  SUM(TOTAL) as ts_num  from jq_scenic_timely_population
+        WHERE SOURCE  Like'%团体%'
+        AND  VCODE = #{vcode}
+        AND DATE_FORMAT(TIME,'%Y-%m') between #{date} and #{end};
+        ]]>
+    </select>
+
+
+
+
+    <!--散客 日-->
+    <select id="find_sk_date_day" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Citigroup_cl">
+        <![CDATA[
+		select SUM(s.TOTALPRICE) as money
+		from JQ_TICKET s
+		where s.TYPE NOT LIKE '%团体%' and (DATE_FORMAT(s.TIME,"%Y-%m-%d") between #{date} and #{end} ) and s.`STATUS` != -99 and s.VCODE = #{vcode}
+		 ]]>
+    </select>
+
+    <!--散客 日-->
+    <select id="findNotTeamPeople_day" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Citigroup_cl">
+        <![CDATA[
+         SELECT  SUM(TOTAL) as ts_num
+         FROM jq_scenic_timely_population
+         WHERE SOURCE not Like'%团体%'
+         and  VCODE = #{vcode}
+         AND DATE_FORMAT(TIME,'%Y-%m-%d') between #{date} and #{end};
+		 ]]>
+    </select>
+
+    <!--散客 月-->
+    <select id="find_sk_date_mm" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Citigroup_cl">
+        <![CDATA[
+		select SUM(s.TOTALPRICE) as money
+		from JQ_TICKET s
+		where s.TYPE NOT LIKE '%团体%' and DATE_FORMAT(s.TIME,"%Y-%m") = #{date}  and s.`STATUS` != -99 and s.VCODE = #{vcode}
+		 ]]>
+    </select>
+
+    <!--散客 月-->
+    <select id="findNotTeamPeople_month" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Citigroup_cl">
+        <![CDATA[
+          SELECT  SUM(TOTAL) as ts_num  from jq_scenic_timely_population
+            WHERE SOURCE NOT  Like'%团体%'
+            AND  VCODE = #{vcode}
+            AND DATE_FORMAT(TIME,'%Y-%m')= #{date};
+		 ]]>
+    </select>
+
+    <!--散客 年总票的总金额2017-08-02 优化lrd-->
+    <select id="find_sk_date_year" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Citigroup_cl">
+        <![CDATA[
+	   select IFNULL(SUM(s.TOTALPRICE),0) as money
+		from JQ_TICKET s
+		where s.VCODE= #{vcode} AND s.TYPE NOT LIKE '%团体%'
+        and s.time  BETWEEN '${date}-01-01 00:00:00' and '${end}-12-31 23:59:59' and s.`STATUS` != -99
+		 ]]>
+    </select>
+
+    <!--散客 年总人数 2017-08-02优化lrd-->
+    <select id="findSumPeople" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Citigroup_cl">
+        <![CDATA[
+         select  IFNULL(SUM(TOTAL),0) as ts_num
+         from jq_scenic_timely_population
+         WHERE SOURCE not Like'%团体%'
+         and  VCODE = #{vcode}
+         AND time BETWEEN '${date}-01-01 00:00:00' and '${end}-12-31 23:59:59'
+		 ]]>
+    </select>
+
+    <!--散客 季度-->
+    <select id="find_sk_date_jidu" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Citigroup_cl">
+        <![CDATA[
+		select SUM(s.TOTALPRICE) as money
+		from JQ_TICKET s
+		where s.TYPE NOT LIKE '%团体%' and (DATE_FORMAT(s.TIME,"%Y-%m") between #{date} and #{end} ) and s.`STATUS` != -99 and s.VCODE = #{vcode}
+		 ]]>
+    </select>
+
+    <!--散客 季度-->
+    <select id="findNotTeamPeople_jidu" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Citigroup_cl">
+        <![CDATA[
+            SELECT  SUM(TOTAL) as ts_num  from jq_scenic_timely_population
+            WHERE SOURCE NOT Like'%团体%'
+            AND  vcode = #{vcode}
+            AND DATE_FORMAT(TIME,'%Y-%m') between #{date} and #{end};
+		 ]]>
+    </select>
+
+    <!-- 根据年份筛选  日中最大销售金额的在峰谷值 -->
+    <select id="find_money_date_dd_max" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Big_Ticket_Money">
+        <![CDATA[
+      SELECT s.TOTALPRICE as moneys,s.TIME as dates
+FROM  JQ_TICKET s
+where s.`STATUS` != -99
+and s.VCODE = #{vcode}
+and s.TOTALPRICE > 1
+and DATE_FORMAT(s.TIME,'%Y') = #{date}
+ORDER BY s.TOTALPRICE DESC LIMIT 1;
+		 ]]>
+    </select>
+
+    <!-- 根据年份筛选  日中最小销售金额的在峰谷值 -->
+    <select id="find_money_date_dd_min" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Big_Ticket_Money">
+        <![CDATA[
+      SELECT s.TOTALPRICE as moneys,s.TIME as dates
+FROM  JQ_TICKET s
+where s.`STATUS` != -99
+and s.VCODE = #{vcode}
+and s.TOTALPRICE > 1
+and DATE_FORMAT(s.TIME,'%Y') = #{date}
+ORDER BY s.TOTALPRICE LIMIT 1;
+		 ]]>
+    </select>
+    <!-- 根据年份筛选  月中最大销售金额的在峰谷值 -->
+    <select id="find_money_date_yy_max" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Big_Ticket_Money">
+        <![CDATA[
+          SELECT max_date.nums as moneys,max_date.dates from (
+SELECT SUM(s.TOTALPRICE) as nums,DATE_FORMAT(s.TIME,'%Y-%m') as dates
+FROM `JQ_TICKET` s
+where s.`STATUS` != -99
+and s.VCODE = #{vcode}
+and DATE_FORMAT(s.TIME,'%Y') = #{date}
+GROUP BY DATE_FORMAT(s.TIME,'%Y-%m')
+) max_date ORDER BY max_date.nums DESC LIMIT 1;
+		 ]]>
+    </select>
+    <!-- 根据年份筛选  月中最小销售金额的在峰谷值 -->
+    <select id="find_money_date_yy_min" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Big_Ticket_Money">
+        <![CDATA[
+          SELECT max_date.nums as moneys,max_date.dates from (
+SELECT SUM(s.TOTALPRICE) as nums,DATE_FORMAT(s.TIME,'%Y-%m') as dates
+FROM `JQ_TICKET` s
+where s.`STATUS` != -99
+and s.VCODE = #{vcode}
+and DATE_FORMAT(s.TIME,'%Y') = #{date}
+GROUP BY DATE_FORMAT(s.TIME,'%Y-%m')
+) max_date ORDER BY max_date.nums LIMIT 1;
+		 ]]>
+    </select>
+
+
+    <!-- 全屏导航页 -->
+    <select id="find_home_page" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Home_page">
+        <![CDATA[
+      SELECT s.`NAME`,s.IMAGES,s.URL,s.CLASS_S,s.CLASS_HOVER FROM `API_HOME_PAGE` s where s.`STATUS` != -99 and VCODE = #{vcode};
+		 ]]>
+    </select>
+    
+    
+    <select id="fundAll_date_end" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Big_RealP_Tend">
+        <![CDATA[
+        	SELECT
+				sum(total) AS num,
+				DATE_FORMAT(TIME, '${date_format}') AS time
+			FROM
+				jq_scenic_timely_population
+			WHERE
+				vcode = '${vcode}'
+			  and time >= '${date}'
+			  and time <= '${end}'
+			GROUP BY
+				DATE_FORMAT(TIME, '${date_format}')
+			order by time asc
+        ]]>
+    </select>
+    
+    <!--峰谷值（销售量金额占比）-->
+    <select id="find_money_date" parameterType="java.util.Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.Big_Ticket_Money">
+        <![CDATA[
+       		SELECT sum(s.TOTALPRICE) as moneys,DATE_FORMAT(s.TIME,'${date_format}') as dates
+	        FROM  JQ_TICKET s
+	        where s.`STATUS` != -99
+	        and s.vcode='${vcode}'
+			and s.TOTALPRICE > 1
+			and s.TIME between '${startTime}' AND '${endTime}'
+	        GROUP BY DATE_FORMAT(s.TIME,'${date_format}') ORDER BY moneys;
+        ]]>
+    </select>
+
+
+    <!-- 大数据客流来源分析 -->
+    <select id="getBigPeopleYear" resultType="com.daqsoft.vo.client.madeVoBean.CarComeFromVo" parameterType="map">
+        select count(s.ID)*5 num,
+        substr(s.VEHICLENO,1,2) carNum
+        from JQ_TVPM_VEHICLELOG_PART s
+        where s.VCODE = #{vcode}
+        and DATE_FORMAT(s.ACCESSDATE,'%Y') = #{year}
+        group by substr(s.ACCESSDATE,1,4),CARNUM,VCODE
+        ORDER BY num desc
+    </select>
+    <!-- 获取景区所在省份城市大数据客流来源分析 -->
+    <select id="getBigPeopleYearCity" resultType="com.daqsoft.vo.client.madeVoBean.CarComeFromCarVo" parameterType="map">
+        SELECT
+        count(ID) * 5 num,
+        substr(VEHICLENO, 1, 2) carNum,
+        CITY city
+        FROM
+        JQ_TVPM_VEHICLELOG_PART
+        WHERE
+        VCODE = #{vcode}
+        AND PROVINCE = #{pname}
+        AND ACCESSDATE BETWEEN #{startTime}
+        AND #{endTime}
+        GROUP BY
+        CITY
+        ORDER BY
+        num DESC
+    </select>
+
+    <!--每年季度客流趋势 zf-->
+    <select id="find_quarter_date" resultType="java.util.Map">
+          SELECT IFNULL(SUM(q1),0) AS q1,IFNULL(SUM(q2),0) AS q2,IFNULL(SUM(q3),0) AS q3,IFNULL(SUM(q4),0) AS q4 FROM (
+    SELECT  CASE WHEN TIME BETWEEN '${date}-01-01' AND '${date}-03-31' THEN 1 ELSE 0 END AS q1,
+                 CASE WHEN TIME BETWEEN '${date}-04-01' AND '${date}-06-31' THEN 1 ELSE 0 END AS q2,
+                CASE WHEN TIME BETWEEN '${date}-07-01' AND '${date}-09-31' THEN 1 ELSE 0 END AS q3,
+                CASE WHEN TIME BETWEEN '${date}-10-01' AND '${date}-12-31' THEN 1 ELSE 0 END AS q4
+     FROM jq_scenic_timely_population WHERE TIME BETWEEN '${date}-01-01' AND '${date}-12-31' AND vcode ='${vcode}')a
+
+    </select>
+
+    <!--改成缓存了 2017-08-16 lrd每年月度客流趋势 zf -->
+    <select id="fundAll_date" resultType="com.daqsoft.vo.client.madeVoBean.Big_RealP_Tend">
+      SELECT DATE_FORMAT(P.TIME,'%m月') AS TIME,
+        SUM(P.TOTAL) AS num
+        FROM jq_scenic_timely_population AS P
+        WHERE DATE_FORMAT(p.time, '%Y') = '${date}'  AND p.vcode = '${vcode}'
+        GROUP BY DATE_FORMAT(P.TIME,'%Y年%m月')
+        ORDER BY DATE_FORMAT(P.TIME,'%Y年%m月') ASC;
+    </select>
+
+    <!--每日度客流趋势按小时统计 没用了。走缓存了。2017-08-16 刘瑞东 zf-->
+    <select id="find_oneday_date" resultType="com.daqsoft.vo.client.madeVoBean.Big_RealP_Tend">
+        SELECT t.hh AS time,SUM(t.TOTAL) AS num,t.maxquantity AS maxquantity   FROM (
+        SELECT
+        s.time,
+        DATE_FORMAT(s.TIME, '%H') AS hh,
+        s.TOTAL,s.maxquantity
+        FROM
+        jq_scenic_timely_population s
+        WHERE
+        s.vcode = '${vcode}'
+        AND s.TIME BETWEEN '${date} 00:00:00' and '${date} 23:59:59'
+        ) t
+        GROUP BY t.hh ORDER BY t.hh
+    </select>
+
+    <!-- 不用了。走缓存。2017-08-16每月客流趋势 zf-->
+    <select id="fundAll_datebymonth" resultType="com.daqsoft.vo.client.madeVoBean.Big_RealP_Tend">
+        SELECT CONCAT(DATE_FORMAT(j.time,'%d'),'日') AS TIME,COUNT(1) AS num FROM jq_scenic_timely_population j WHERE
+         DATE_FORMAT(j.time,'%Y-%m')='${date}' AND vcode='${vcode}'
+        GROUP BY DATE_FORMAT(j.time,'%Y-%m-%d')
+        ORDER BY DATE_FORMAT(j.time,'%Y-%m-%d') ASC
+    </select>
+</mapper>

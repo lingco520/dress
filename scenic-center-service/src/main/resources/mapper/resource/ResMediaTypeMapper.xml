@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.MediaTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.mediaType.ResMediaType" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="SHOW_WEB" property="showWeb" jdbcType="INTEGER" />
+    <result column="SHOW_TOUCH" property="showTouch" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, NAME, TYPE, SHOW_WEB, SHOW_TOUCH, STATUS, VCODE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_media_type
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    s.ID AS ID, s.NAME AS NAME, d.NAME AS TYPE , s.SHOW_WEB AS SHOW_WEB, s.SHOW_TOUCH AS SHOW_TOUCH,s.STATUS AS STATUS, s.VCODE AS VCODE
+    from res_media_type s
+    LEFT JOIN sys_dict d ON d.value = s.type
+    <where>
+      AND s.vcode = #{vcode}
+      AND s.STATUS != -1
+      <if test="name != null and '' != name">
+        AND s.name LIKE '%${name}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND s.status = #{status}
+      </if>
+    </where>
+    ORDER BY s.ID DESC
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+     DELETE  FROM res_media_type
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.daqsoft.entity.mediaType.ResMediaType" >
+    insert into res_media_type ( NAME, TYPE,
+      SHOW_WEB, SHOW_TOUCH, STATUS, 
+      VCODE,UPDATE_TIME)
+    values (#{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
+      #{showWeb,jdbcType=INTEGER}, #{showTouch,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{vcode,jdbcType=VARCHAR},NOW())
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.mediaType.ResMediaType" >
+    update res_media_type
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="showWeb != null" >
+        SHOW_WEB = #{showWeb,jdbcType=INTEGER},
+      </if>
+      <if test="showTouch != null" >
+        SHOW_TOUCH = #{showTouch,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      UPDATE_TIME = NOW()
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

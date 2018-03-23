@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.client.ticket.TicketDao">
+
+    <resultMap id="bigTicket" type="com.daqsoft.vo.client.madeVoBean.TicketClTendVo">
+        <result column="timesheet" property="ticket_time"></result>
+        <result column="count" property="ticket_num"></result>
+        <result column="totalPrice" property="ticket_totalPrice"></result>
+    </resultMap>
+
+
+    <!--根据日期查询 票务 数据统计-->
+    <select id="getTicketCountAndPriceByDay"
+            resultMap="bigTicket">
+        <![CDATA[
+            SELECT IFNULL(sum(t.COUNT),0) as count,IFNULL(sum(t.TOTALPRICE),0) as totalPrice
+            FROM jq_ticket t
+            where t.VCODE = #{vcode}
+            and t.TIME between #{startTime} and #{endTime}
+        ]]>
+    </select>
+
+
+    <!--根据时间段查询 票务 数据统计-->
+    <select id="getRealTimeTicketListByDay"
+            resultType="com.daqsoft.vo.client.madeVoBean.TicketClSsTendVO">
+        <![CDATA[
+        SELECT DATE_FORMAT(s.TIME,'%H') as ticket_time,SUM(s.COUNT) as ticket_num
+        FROM `jq_ticket` s
+        where s.VCODE = #{vcode}
+                and s.`status` != -99
+                and s.TIME between concat(#{date}, ' 00:00:00') and concat(#{date}, ' 23:59:59')
+                GROUP BY DATE_FORMAT(s.TIME,'%Y-%m-%d %H');
+        ]]>
+    </select>
+
+    <!--根据时间段查询 票务金额 统计-->
+    <select id="getRealTimeTicketAllListByDay"
+            resultType="com.daqsoft.vo.client.madeVoBean.TicketPriceClSsTendVO">
+        <![CDATA[
+        SELECT DATE_FORMAT(s.TIME,'%H') as ticket_time,SUM(s.COUNT) AS ticket_num ,SUM(s.TOTALPRICE) AS ticket_price
+        FROM `jq_ticket` s
+        where s.VCODE = #{vcode}
+                and s.`status` != -99
+                and s.TIME between concat(#{date}, ' 00:00:00') and concat(#{date}, ' 23:59:59')
+                GROUP BY DATE_FORMAT(s.TIME,'%Y-%m-%d %H');
+        ]]>
+    </select>
+
+    <!--根据时间段查询票务数据统计-->
+    <select id="getTicketNumByTimeSlot" resultMap="bigTicket">
+        <![CDATA[
+            select
+            IFNULL(sum(t.count),0) as count,IFNULL(sum(t.TOTALPRICE),0) as totalPrice,DATE_FORMAT(time, #{dateFormat}) as timesheet
+            from jq_ticket as t
+            where 1=1  and t.vcode = #{vcode}
+            AND t.TIME BETWEEN #{startTime} AND #{endTime}
+            GROUP BY DATE_FORMAT(time, #{dateFormat});
+        ]]>
+    </select>
+
+
+    <!--按时间段 获取 票务类型 统计数据-->
+    <select id="getTicketTypeByTimeSlot" resultType="com.daqsoft.vo.client.madeVoBean.TicketClTypeVO">
+        <![CDATA[
+            select  t.type as types,
+            IFNULL(sum(t.count),0)  as nums,IFNULL(sum(t.TOTALPRICE),0) as typecal
+            from jq_ticket as t where 1 = 1 and t.vcode=#{vcode}
+            and t.time   BETWEEN #{startTime} AND #{endTime}
+            GROUP BY t.type ORDER BY nums DESC;
+        ]]>
+    </select>
+
+    <!--按传入时间段 获取 游客构成 数据统计-->
+    <select id="getTouristNumByTimeSlot" resultType="com.daqsoft.vo.client.madeVoBean.TicketClTypeVO">
+        <![CDATA[
+            SELECT J.SOURCE as types , SUM(J.total)  as nums
+            FROM jq_scenic_timely_population AS J
+            WHERE 1=1  and vcode =  #{vcode}
+            AND J.SOURCE IS NOT NULL
+            AND J.TIME BETWEEN #{startTime} AND #{endTime}
+            AND J.type = 1
+            GROUP BY J.SOURCE ORDER BY nums DESC;
+        ]]>
+    </select>
+
+    <select id="getOnLineByDay" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+            SELECT SUM(s.count) AS count,s.vcode  FROM jq_ota_data s
+            WHERE vcode=#{vcode}
+            AND s.TIME BETWEEN '${stime} 00:00:00' and '${etime} 23:59:59'
+    </select>
+
+    <select id="getOffLineByDay" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT SUM(s.count) AS count,s.vcode  FROM jq_ticket s
+        WHERE vcode=#{vcode}
+        AND s.TIME BETWEEN '${stime} 00:00:00' and '${etime} 23:59:59'
+        AND s.status = 1
+    </select>
+
+</mapper>

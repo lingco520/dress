@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.ResScenicSpotsMapper" >
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.scenicSpots.ResScenicSpots" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <id column="MAXQUANTITY" property="maxquantity" jdbcType="INTEGER" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="ZH_NAME" property="zhName" jdbcType="VARCHAR" />
+    <result column="US_NAME" property="usName" jdbcType="VARCHAR" />
+    <result column="KEY_WORD" property="keyWord" jdbcType="VARCHAR" />
+    <result column="REGION" property="region" jdbcType="VARCHAR" />
+    <result column="SCENIC_TYPE" property="scenicType" jdbcType="VARCHAR" />
+    <result column="SCENIC_LEVEL" property="scenicLevel" jdbcType="VARCHAR" />
+    <result column="TICKET_PRICE" property="ticketPrice" jdbcType="VARCHAR" />
+    <result column="TICKET_DESCRIPTION" property="ticketDescription" jdbcType="VARCHAR" />
+    <result column="SCENIC_ADDRESS" property="scenicAddress" jdbcType="VARCHAR" />
+    <result column="ELECTRONIC_MAP" property="electronicMap" jdbcType="VARCHAR" />
+    <result column="TRAFFIC_DESCRIPTION" property="trafficDescription" jdbcType="VARCHAR" />
+    <result column="SURROUNDING_LANDMARK" property="surroundingLandmark" jdbcType="VARCHAR" />
+    <result column="BUSINESS_HOURS" property="businessHours" jdbcType="VARCHAR" />
+    <result column="LONG_TOUR" property="longTour" jdbcType="VARCHAR" />
+    <result column="RECOMMENDED_TRAVEL_TIME" property="recommendedTravelTime" jdbcType="VARCHAR" />
+    <result column="TOUR_MAP" property="tourMap" jdbcType="VARCHAR" />
+    <result column="CORPORATE" property="corporate" jdbcType="VARCHAR" />
+    <result column="SKETCH_PICTURE" property="sketchPicture" jdbcType="VARCHAR" />
+    <result column="PICTURE_LIBRARY" property="pictureLibrary" jdbcType="VARCHAR" />
+    <result column="VIDEO_LIBRARY" property="videoLibrary" jdbcType="VARCHAR" />
+    <result column="VIRTUAL_MATERIAL" property="virtualMaterial" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="SORT" property="sort" jdbcType="INTEGER" />
+    <result column="VCODE" property="vcode" jdbcType="VARCHAR" />
+    <result column="LONGITUDE" property="longitude" jdbcType="VARCHAR" />
+    <result column="LATITUDE" property="latitude" jdbcType="VARCHAR" />
+    <result column="MAP_TYPE" property="mapType" jdbcType="INTEGER" />
+    <result column="INTRODUCTION" property="introduction" jdbcType="LONGVARCHAR" />
+    <result column="TOUR_GUIDE_WORD" property="tourGuideWord" jdbcType="LONGVARCHAR" />
+    <result column="CHARACTERISTIC_LANDSCAPE" property="characteristicLandscape" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    ID, NAME, ZH_NAME, US_NAME, KEY_WORD, REGION, SCENIC_TYPE, SCENIC_LEVEL,MAXQUANTITY,
+    TICKET_PRICE, TICKET_DESCRIPTION, SCENIC_ADDRESS, ELECTRONIC_MAP, TRAFFIC_DESCRIPTION, 
+    SURROUNDING_LANDMARK, BUSINESS_HOURS, LONG_TOUR, RECOMMENDED_TRAVEL_TIME,
+     TOUR_MAP, CORPORATE, SKETCH_PICTURE, PICTURE_LIBRARY, VIDEO_LIBRARY,
+    VIRTUAL_MATERIAL, STATUS, VCODE, LONGITUDE, LATITUDE, MAP_TYPE, INTRODUCTION, TOUR_GUIDE_WORD, CHARACTERISTIC_LANDSCAPE,SORT
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_scenic_spots
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM res_scenic_spots
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from res_scenic_spots
+    <where>
+      AND vcode = #{vcode}
+      AND STATUS != -1
+      <if test="name != null and '' != name">
+        AND name LIKE '%${name}%'
+      </if>
+      <if test="level != null and '' != level">
+        AND level = #{level}
+      </if>
+      <if test="status != null and '' != status">
+        AND status = #{status}
+      </if>
+    </where>
+      ORDER BY sort DESC
+  </select>
+
+  <insert id="insert" parameterType="com.daqsoft.entity.scenicSpots.ResScenicSpots" >
+    insert into res_scenic_spots ( NAME, ZH_NAME,
+      US_NAME, KEY_WORD, REGION,
+      SCENIC_TYPE, SCENIC_LEVEL, TICKET_PRICE, 
+      TICKET_DESCRIPTION, SCENIC_ADDRESS, ELECTRONIC_MAP, 
+      TRAFFIC_DESCRIPTION,
+      SURROUNDING_LANDMARK, BUSINESS_HOURS, LONG_TOUR, 
+      RECOMMENDED_TRAVEL_TIME,
+      TOUR_MAP, CORPORATE, SKETCH_PICTURE, 
+      PICTURE_LIBRARY, VIDEO_LIBRARY, VIRTUAL_MATERIAL, 
+      STATUS, VCODE, LONGITUDE, 
+      LATITUDE, MAP_TYPE, INTRODUCTION,
+      TOUR_GUIDE_WORD, CHARACTERISTIC_LANDSCAPE,MAXQUANTITY,UPDATE_TIME,SORT
+      )
+    values ( #{name,jdbcType=VARCHAR}, #{zhName,jdbcType=VARCHAR},
+      #{usName,jdbcType=VARCHAR}, #{keyWord,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR},
+      #{scenicType,jdbcType=VARCHAR}, #{scenicLevel,jdbcType=VARCHAR}, #{ticketPrice,jdbcType=VARCHAR}, 
+      #{ticketDescription,jdbcType=VARCHAR}, #{scenicAddress,jdbcType=VARCHAR}, #{electronicMap,jdbcType=VARCHAR}, 
+      #{trafficDescription,jdbcType=VARCHAR},
+      #{surroundingLandmark,jdbcType=VARCHAR}, #{businessHours,jdbcType=VARCHAR}, #{longTour,jdbcType=VARCHAR}, 
+      #{recommendedTravelTime,jdbcType=VARCHAR},
+      #{tourMap,jdbcType=VARCHAR}, #{corporate,jdbcType=VARCHAR}, #{sketchPicture,jdbcType=VARCHAR}, 
+      #{pictureLibrary,jdbcType=VARCHAR}, #{videoLibrary,jdbcType=VARCHAR}, #{virtualMaterial,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{vcode,jdbcType=VARCHAR}, #{longitude,jdbcType=VARCHAR}, 
+      #{latitude,jdbcType=VARCHAR}, #{mapType,jdbcType=INTEGER}, #{introduction,jdbcType=LONGVARCHAR},
+      #{tourGuideWord,jdbcType=LONGVARCHAR}, #{characteristicLandscape,jdbcType=LONGVARCHAR},#{maxquantity,jdbcType=INTEGER},now(),#{sort}
+      )
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.scenicSpots.ResScenicSpots" >
+    update res_scenic_spots
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="zhName != null" >
+        ZH_NAME = #{zhName,jdbcType=VARCHAR},
+      </if>
+      <if test="usName != null" >
+        US_NAME = #{usName,jdbcType=VARCHAR},
+      </if>
+      <if test="keyWord != null" >
+        KEY_WORD = #{keyWord,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        REGION = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="scenicType != null" >
+        SCENIC_TYPE = #{scenicType,jdbcType=VARCHAR},
+      </if>
+      <if test="scenicLevel != null" >
+        SCENIC_LEVEL = #{scenicLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketPrice != null" >
+        TICKET_PRICE = #{ticketPrice,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketDescription != null" >
+        TICKET_DESCRIPTION = #{ticketDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="scenicAddress != null" >
+        SCENIC_ADDRESS = #{scenicAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="electronicMap != null" >
+        ELECTRONIC_MAP = #{electronicMap,jdbcType=VARCHAR},
+      </if>
+      <if test="trafficDescription != null" >
+        TRAFFIC_DESCRIPTION = #{trafficDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="surroundingLandmark != null" >
+        SURROUNDING_LANDMARK = #{surroundingLandmark,jdbcType=VARCHAR},
+      </if>
+      <if test="businessHours != null" >
+        BUSINESS_HOURS = #{businessHours,jdbcType=VARCHAR},
+      </if>
+      <if test="longTour != null" >
+        LONG_TOUR = #{longTour,jdbcType=VARCHAR},
+      </if>
+      <if test="recommendedTravelTime != null" >
+        RECOMMENDED_TRAVEL_TIME = #{recommendedTravelTime,jdbcType=VARCHAR},
+      </if>
+      <if test="tourMap != null" >
+        TOUR_MAP = #{tourMap,jdbcType=VARCHAR},
+      </if>
+      <if test="corporate != null" >
+        CORPORATE = #{corporate,jdbcType=VARCHAR},
+      </if>
+      <if test="sketchPicture != null" >
+        SKETCH_PICTURE = #{sketchPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureLibrary != null" >
+        PICTURE_LIBRARY = #{pictureLibrary,jdbcType=VARCHAR},
+      </if>
+      <if test="videoLibrary != null" >
+        VIDEO_LIBRARY = #{videoLibrary,jdbcType=VARCHAR},
+      </if>
+      <if test="virtualMaterial != null" >
+        VIRTUAL_MATERIAL = #{virtualMaterial,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="vcode != null" >
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        LONGITUDE = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null" >
+        LATITUDE = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="mapType != null" >
+        MAP_TYPE = #{mapType,jdbcType=INTEGER},
+      </if>
+      <if test="introduction != null" >
+        INTRODUCTION = #{introduction,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="tourGuideWord != null" >
+        TOUR_GUIDE_WORD = #{tourGuideWord,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="characteristicLandscape != null" >
+        CHARACTERISTIC_LANDSCAPE = #{characteristicLandscape,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="maxquantity != null" >
+        MAXQUANTITY = #{maxquantity,jdbcType=INTEGER},
+      </if>
+      UPDATE_TIME = now()
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

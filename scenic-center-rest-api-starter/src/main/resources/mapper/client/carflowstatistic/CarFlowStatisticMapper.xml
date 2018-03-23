@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.daqsoft.mapper.client.carflowstatistic.CarFlowStatisticDao">
+    <!--车流量统计 -->
+    <select id="getCarFlow" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.CarFlowStatisticVo">
+		<![CDATA[
+
+
+
+
+        select count(1) as quantity,vcode,v.source,DATE_FORMAT(v.ACCESSDATE,'%H') as timesheet
+        from jq_tvpm_vehiclelog_part as v
+        where 1=1   and v.VCODE=#{vcode}   and v.ACCESSDATE > concat(cast(current_date as char),' 08')
+        GROUP BY DATE_FORMAT(v.ACCESSDATE,'%H'),source ORDER BY v.ACCESSDATE,v.source ASC;
+
+
+
+
+        ]]>
+	</select>
+
+    <select id="getCarFlowCountByGate" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.CarFlowStatisticVo">
+        <![CDATA[
+
+        select source,timesheet,quantity from
+        (select v.source,DATE_FORMAT(v.ACCESSDATE,'%H') as timesheet, count(1) as quantity
+                from jq_tvpm_vehiclelog_part as v
+                where 1=1   and v.VCODE=#{vcode}
+            and v.ACCESSDATE BETWEEN #{startTime} and #{endTime}
+
+                GROUP BY source ,DATE_FORMAT(v.ACCESSDATE,'%H') ) as t
+        order by source asc , timesheet asc
+
+        ]]>
+    </select>
+
+
+</mapper>

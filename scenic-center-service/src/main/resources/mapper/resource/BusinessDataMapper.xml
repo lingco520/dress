@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.resource.BusinessDataMapper">
+
+    <delete id="deleteBusinessData" parameterType="java.lang.String">
+        DELETE FROM data_imitate WHERE vcode = #{vcode}
+    </delete>
+    <insert id="saveBusinessData" parameterType="java.lang.String">
+        ${sql}
+    </insert>
+    <select id="getDataImitateList" parameterType="java.lang.String" resultType="map">
+      SELECT SKEY as skey, SVALUE as svalue FROM data_imitate WHERE VCODE = #{vcode}
+    </select>
+    <select id="getTemplateHkeyList" resultType="string">
+      SELECT HKEY as hkey FROM data_template_html
+    </select>
+    <select id="getHkeyList" parameterType="string" resultType="string">
+      SELECT HKEY as hkey FROM data_template_config_html WHERE VCODE = #{vcode}
+    </select>
+</mapper>

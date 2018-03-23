@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daqsoft.mapper.resource.ResToiletMapper">
+  <resultMap id="BaseResultMap" type="com.daqsoft.entity.toilet.Toilet">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="LONGITUDE" jdbcType="VARCHAR" property="longitude" />
+    <result column="LATITUDE" jdbcType="VARCHAR" property="latitude" />
+    <result column="MAP_TYPE" jdbcType="VARCHAR" property="mapType" />
+    <result column="IMG" jdbcType="VARCHAR" property="img" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="STATUS" jdbcType="INTEGER" property="status" />
+    <result column="VCODE" jdbcType="VARCHAR" property="vcode" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, NAME, LONGITUDE, LATITUDE, MAP_TYPE, IMG, ADDRESS, STATUS, VCODE, UPDATE_TIME
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from res_scenic_toilet
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from res_scenic_toilet
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.daqsoft.entity.toilet.Toilet">
+    insert into res_scenic_toilet (ID, NAME, LONGITUDE, 
+      LATITUDE, MAP_TYPE, IMG, ADDRESS,
+      STATUS, VCODE, UPDATE_TIME
+      )
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{longitude,jdbcType=VARCHAR}, 
+      #{latitude,jdbcType=VARCHAR}, #{mapType,jdbcType=INTEGER}, #{img,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+      #{status,jdbcType=INTEGER}, #{vcode,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.daqsoft.entity.toilet.Toilet">
+    update res_scenic_toilet
+    <set>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        LONGITUDE = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        LATITUDE = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="mapType != null">
+        MAP_TYPE = #{mapType,jdbcType=VARCHAR},
+      </if>
+      <if test="img != null">
+        IMG = #{img,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="vcode != null">
+        VCODE = #{vcode,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectList" resultMap="BaseResultMap" >
+    select
+    s.ID,
+    s.NAME,
+    s.LONGITUDE,
+    s.LATITUDE,
+    s.IMG,
+    s.ADDRESS,
+    s.STATUS,
+    s.VCODE,
+    s.UPDATE_TIME
+    from res_scenic_toilet s
+    <where>
+      AND s.vcode = #{vcode}
+      AND s.STATUS != -1
+      <if test="name != null and '' != name">
+        AND s.NAME LIKE '%${name}%'
+      </if>
+      <if test="status != null and '' != status">
+        AND s.STATUS = #{status}
+      </if>
+    </where>
+    ORDER BY s.UPDATE_TIME DESC
+  </select>
+</mapper>

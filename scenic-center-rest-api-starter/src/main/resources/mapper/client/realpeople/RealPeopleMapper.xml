@@ -1,0 +1,760 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.client.realpeople.RealPeopleDao">
+
+
+    <parameterMap id="RealPeople" type="com.daqsoft.vo.client.mysqlBean.RealPeople"/>
+
+
+    <select id="getMaxThrity" parameterType="Map" resultType="Map">
+        SELECT a.sum as max, a.timeym as time from
+        (SELECT sum(total) as sum, timeym
+        from jq_scenic_timely_population
+        where timeym BETWEEN #{start} and #{end} and vcode =#{vcode} GROUP BY  timeym) a
+        where a.sum = (SELECT Max(b.sum) as max from
+        (SELECT sum(total) as sum,timeym
+        from jq_scenic_timely_population
+        where timeym BETWEEN #{start} and #{end} and vcode =#{vcode} GROUP BY  timeym) b)
+
+    </select>
+
+
+    <!--查询近30天内的总人数-->
+    <select id="getSumThrity" parameterType="Map" resultType="Int">
+        SELECT sum(total) as sum from jq_scenic_timely_population
+        where timeym BETWEEN #{start} and #{end} and vcode = #{vcode}
+
+    </select>
+
+    <!--主页今日人数统计-->
+    <select id="getCountPeopleSum" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleIndexSumVo">
+		<![CDATA[
+
+
+        SELECT sum(s.total) as SumPeople
+        FROM jq_scenic_timely_population s
+        WHERE s.time > DATE_FORMAT(CURDATE(),'%Y-%m-%d') and s.time < DATE_FORMAT(CURDATE()+1,'%Y-%m-%d')
+        AND s.vcode=#{vcode}
+        GROUP BY DATE_FORMAT(s.time,'%Y-%m-%d')
+
+
+        ]]>
+	</select>
+
+    <!--主页今日人数统计-->
+    <select id="getCountPeopleSumYesterday" parameterType="String"
+            resultType="com.daqsoft.vo.client.mysqlBean.RealPeople">
+		<![CDATA[
+
+
+        SELECT DATE_FORMAT(s.time,'%Y-%m-%d'),count(1),sum(s.total) as SumPeople
+        FROM jq_scenic_timely_population s
+        WHERE s.time > DATE_FORMAT(CURDATE()-1,'%Y-%m-%d') and s.time < DATE_FORMAT(CURDATE(),'%Y-%m-%d')
+        AND s.vcode=#{vcode}
+        GROUP BY DATE_FORMAT(s.time,'%Y-%m-%d')
+
+
+        ]]>
+	</select>
+
+    <!--主页同比今日人数-->
+    <select id="getScenicTimeOnTime" parameterType="map"
+            resultType="com.daqsoft.vo.client.mysqlBean.RealPeople">
+        <![CDATA[
+
+          SELECT DATE_FORMAT(s.time,'%Y-%m-%d-%H') ,COUNT(1),sum(s.total) AS TOTAL ,s.MAXQUANTITY
+          FROM jq_scenic_timely_population s
+          WHERE s.time BETWEEN #{nowTime} AND #{now} AND s.vcode=#{vcode} GROUP BY DATE_FORMAT(s.time,'%Y-%m-%d-%H')
+
+        ]]>
+    </select>
+    <select id="getNowLoad" parameterType="map"
+            resultType="com.daqsoft.vo.client.mysqlBean.RealPeople">
+        <![CDATA[
+
+          SELECT sum(s.total) AS TOTAL ,s.MAXQUANTITY
+          FROM jq_scenic_timely_population s
+          WHERE s.time > #{nowTime} AND s.time < #{now} AND s.vcode=#{vcode} GROUP BY DATE_FORMAT(s.time,'%Y-%m-%d %H')
+
+        ]]>
+    </select>
+    <!--主页同比昨日人数-->
+    <select id="getScenicTimeOnTimeYesterday" parameterType="map"
+            resultType="com.daqsoft.vo.client.mysqlBean.RealPeople">
+        <![CDATA[
+
+          SELECT DATE_FORMAT(s.time,'%Y-%m-%d-%H') ,COUNT(1),sum(s.total) AS TOTAL ,s.MAXQUANTITY
+          FROM jq_scenic_timely_population s
+          WHERE s.time BETWEEN #{oldTime} AND #{old} AND s.vcode=#{vcode}   GROUP BY DATE_FORMAT(s.time,'%Y-%m-%d-%H')
+
+        ]]>
+    </select>
+    <select id="getYesterdayLoad" parameterType="map"
+            resultType="com.daqsoft.vo.client.mysqlBean.RealPeople">
+        <![CDATA[
+
+          SELECT sum(s.total) AS TOTAL ,s.MAXQUANTITY
+          FROM jq_scenic_timely_population s
+          WHERE s.time > #{oldTime} AND s.time < #{old} AND s.vcode=#{vcode} GROUP BY DATE_FORMAT(s.time,'%Y-%m-%d %H')
+
+        ]]>
+    </select>
+    <!--30日峰值和平均人数-->
+    <select id="getPeopleAvgByMonth" parameterType="String"
+            resultType="com.daqsoft.vo.client.mysqlBean.RealPeople">
+        <![CDATA[
+
+
+          SELECT sum(a.total1) as TOTAL,max(a.total1) as SumPeople from  (select DATE_FORMAT(s.time,'%Y-%m-%d') ,sum(s.total) as TOTAL1 from jq_scenic_timely_population s where s.vcode=#{vcode} and
+            DATE_FORMAT(s.TIME,'%Y-%m-%d') <= CURRENT_DATE() and DATE_FORMAT(s.TIME,'%Y-%m-%d') BETWEEN date_add(CURRENT_DATE(), interval -30 day) and CURRENT_DATE()
+          GROUP BY DATE_FORMAT(s.time,'%Y-%m-%d')
+          ORDER BY time desc ) a
+
+        ]]>
+    </select>
+
+    <!--根据门票查询一天每时段的散客数量-->
+    <select id="getScenicTimePeople" parameterType="map"
+            resultType="com.daqsoft.vo.client.mysqlBean.JqScenicTimelyPopulation">
+        <![CDATA[
+
+            SELECT DATE_FORMAT(s.time,'%Y-%m-%d-%H') ,DATE_FORMAT(s.time,'%H') as PopTime ,count(*) as SumPeople,s.source
+            FROM jq_scenic_timely_population s where 1=1  and s.vcode = #{vcode} and s.source not LIKE '%团体%'  and DATE_FORMAT(s.time,'%Y-%m-%d') = DATE_FORMAT(#{time},'%Y-%m-%d')
+            GROUP BY DATE_FORMAT(s.time,'%Y-%m-%d-%H')
+
+
+        ]]>
+    </select>
+
+    <!--根据门票查询一月每天的散客数量-->
+    <select id="getScenicTimePeopleByMonth" parameterType="map"
+            resultType="com.daqsoft.vo.client.mysqlBean.JqScenicTimelyPopulation">
+        <![CDATA[
+
+            SELECT DATE_FORMAT(s.time,'%Y-%m-%d') ,DATE_FORMAT(s.time,'%d') as popTime,count(*) as SumPeople,s.source
+            FROM jq_scenic_timely_population s where 1=1  and s.vcode = #{vcode} and s.source not LIKE '%团体%' and DATE_FORMAT(s.time,'%Y-%m') like '%${time}%'
+            GROUP BY DATE_FORMAT(s.time,'%Y-%m-%d')
+
+        ]]>
+    </select>
+    <!--根据门票查询一年散客数量-->
+    <select id="getScenicTimePeopleByYear" parameterType="map"
+            resultType="com.daqsoft.vo.client.mysqlBean.JqScenicTimelyPopulation">
+        <![CDATA[
+
+                SELECT DATE_FORMAT(s.time,'%Y-%m') ,DATE_FORMAT(s.time,'%m') as popTime,count(*) as SumPeople,s.source
+            FROM jq_scenic_timely_population s where
+            s.time between '${time}-01-01 00:00:00' and '${time}-12-31 23:59:59'
+            and s.vcode = #{vcode} and s.source not LIKE '%团体%'
+            GROUP BY DATE_FORMAT(s.time,'%Y-%m')
+
+        ]]>
+    </select>
+
+
+    <!--主页今日查询人数-->
+    <select id="getPeopleAtToday" parameterType="map"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleIndexTodayVo">
+        <![CDATA[
+
+            select SUM(s.total) as count,s.name
+            from jq_scenic_timely_population s
+            where s.vcode=#{vcode}
+            and s.name != '岸上' and s.name != '百家岩'
+            and s.time  > #{date} and  s.time < #{yesterdayTime} GROUP BY s.name order by count desc
+
+        ]]>
+    </select>
+
+    <!--主页昨日人数-->
+    <select id="getPeopleAtYesterday" parameterType="map"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleIndexYesterdayVo">
+        <![CDATA[
+
+            select SUM(s.total) as count,s.name
+            from jq_scenic_timely_population s
+            where s.vcode=#{vcode}
+            and s.time > #{oldTime} and s.time < #{date}
+            and s.name=#{name} GROUP BY s.name
+
+
+        ]]>
+    </select>
+
+    <!--主页昨日人数-->
+    <select id="getPeopleFlowMonth" parameterType="map"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleChoiceTimeVo">
+        <![CDATA[
+
+          select s.total as num ,DATE_FORMAT(s.time,'%d') as time
+          from api_passenger_operator s where s.vcode=#{vcode} and DATE_FORMAT(s.time,'%Y-%m')=#{date};
+
+        ]]>
+    </select>
+
+    <!--主页实时人数-->
+    <select id="getPeopleRealTime" parameterType="map"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleIndexSumVo">
+        <![CDATA[
+
+           SELECT SUM(s.total) as SumPeople
+           FROM jq_scenic_timely_population s
+           WHERE vcode=#{vcode}
+           AND s.time >= #{endTime} and s.time <= #{startTime}
+           GROUP BY DATE_FORMAT(s.time,'%Y-%m-%d')
+
+        ]]>
+    </select>
+
+    <!--主页去年今日人数统计-->
+    <select id="getPeopleSumBylastyear" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleIndexSumVo">
+        <![CDATA[
+
+
+        SELECT sum(s.total) as SumPeople
+        FROM jq_scenic_timely_population s
+        WHERE s.time > #{LastYearTime} and s.time < #{todayTime}
+        AND s.vcode=#{vcode}
+        GROUP BY DATE_FORMAT(s.time,'%Y-%m-%d')
+
+
+        ]]>
+    </select>
+
+    <!--主页前年今日人数统计-->
+    <select id="getPeopleSumBeforelast" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleIndexSumVo">
+        <![CDATA[
+
+
+        SELECT sum(s.total) as SumPeople
+        FROM jq_scenic_timely_population s
+        WHERE s.time > #{beforelastTime} and s.time < #{LastYearTime}
+        AND s.vcode=#{vcode}
+        GROUP BY DATE_FORMAT(s.time,'%Y-%m-%d')
+
+
+        ]]>
+    </select>
+
+    <!--主页景点最大承载量-->
+    <select id="getMaxCountPeople" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleIndexYesterdayVo">
+        <![CDATA[
+
+            SELECT s.name,com.maxCount as count
+            FROM API_SCENIC_SPOTS s,JQ_SCENIC_COMFORT com
+            WHERE s.vcode=#{vcode}
+            AND s.id=com.scenicid and s.name=#{name}
+
+        ]]>
+    </select>
+
+    <!--按年月日分时间段统计-->
+    <select id="getRealTimeSlotMeth" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleChoiceTimeVo">
+        <![CDATA[
+
+
+        SELECT sum(s.total) as num,DATE_FORMAT(s.time,#{date_format}) as time
+        FROM jq_scenic_timely_population s
+        WHERE s.time between #{startTime} AND #{endTime}
+        AND s.vcode=#{vcode}
+        GROUP BY DATE_FORMAT(s.time,#{date_format})
+
+
+        ]]>
+    </select>
+
+    <!--峰谷值（最高与最低销量峰谷值）-->
+    <select id="getRealPeakValleyValueMeth" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleChoiceTimeVo">
+        <![CDATA[
+
+
+        SELECT MxMi.SumPeople as num,MxMi.times as time FROM (SELECT sum(s.total) as SumPeople,DATE_FORMAT(s.time,'%Y-%m-%d') as times
+        FROM jq_scenic_timely_population s
+        WHERE s.time between #{startTime} AND #{endTime}
+        AND s.vcode=#{vcode}
+        GROUP BY DATE_FORMAT(s.time,#{date_format})) as MxMi ORDER BY MxMi.SumPeople
+
+
+        ]]>
+    </select>
+
+    <!--峰谷值（销售量金额占比）-->
+    <select id="getMoneyPeakValleyValueMeth" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleChoiceTimeVo">
+        <![CDATA[
+
+
+        SELECT s.TOTALPRICE as num,DATE_FORMAT(s.TIME,#{date_format}) as time
+        FROM  JQ_TICKET s
+        where s.`STATUS` != -99
+        and s.vcode=#{vcode}
+		and s.TOTALPRICE > 1
+		and s.TIME between #{startTime} AND #{endTime}
+        GROUP BY DATE_FORMAT(s.TIME,#{date_format}) ORDER BY s.TOTALPRICE;
+
+
+        ]]>
+    </select>
+
+    <!--历史客流最高（历史客流最高值）-->
+    <select id="getRealHistoryMeth" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleChoiceTimeVo">
+        <![CDATA[
+
+
+        SELECT MxMi.num as num,MxMi.time as time FROM (SELECT sum(s.total) as num,DATE_FORMAT(s.time,#{date_format}) as time
+        FROM jq_scenic_timely_population s
+        WHERE s.time between #{startTime} AND #{endTime}
+        AND s.vcode=#{vcode}
+        GROUP BY DATE_FORMAT(s.time,#{date_format})) as MxMi ORDER BY MxMi.num DESC limit 10;
+
+
+        ]]>
+    </select>
+
+    <!--大数据（客流分析-团队与散客对比）散客-->
+    <select id="getMapStartTimeFitMeth" parameterType="java.util.Map"
+            resultType="String">
+        <![CDATA[
+
+
+        select  SUM(s.TEMPLYQUANTITY) as num
+        from jq_scenic_timely_population s
+        WHERE  vcode = #{vcode}
+        AND s.SOURCE not Like'%团体%'
+        and s.time
+        between #{startTime} AND #{endTime}
+
+
+        ]]>
+    </select>
+
+    <!--大数据（客流分析-团队与散客对比 团队-->
+    <select id="getTeamFitMeth" parameterType="java.util.Map"
+            resultType="String">
+        <![CDATA[
+
+
+        select  SUM(s.TEMPLYQUANTITY) as num
+        from jq_scenic_timely_population s
+        WHERE  vcode = #{vcode}
+        AND s.SOURCE Like'%团体%'
+        and s.time
+        between #{startTime} AND #{endTime}
+
+
+        ]]>
+    </select>
+
+
+    <!--景区实时舒适度-->
+    <select id="getComfortDegreeMeth" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleChoiceTimeVo">
+        <![CDATA[
+
+
+        SELECT  COUNT(jw.scenicId) as num,DATE_FORMAT(jw.addTime,'%Y-%m-%d %H') as TIME
+		FROM JQ_WIFI jw LEFT JOIN API_SCENIC_SPOTS ass ON jw.VCODE=ass.vcode
+		WHERE jw.vcode=#{vcode} and jw.addTime between #{startTime} AND #{endTime}
+		GROUP BY DATE_FORMAT(jw.addTime,'%Y-%m-%d %H');
+
+
+        ]]>
+    </select>
+
+    <!--景点舒适度（WIFI统计）-->
+    <select id="getScenicSpotComfortDegreeMeth" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.ScenicSpotComfortDegreeVo">
+        <![CDATA[
+
+
+        SELECT b.scenicId AS id, IFNULL(people,'0') AS sumPeople, a.name,b.vcode,a.longitude,a.latitude
+        FROM api_scenic_spots a
+        left JOIN jq_wifi_apmac b
+        ON a.id=b.scenicid
+        AND b.vcode=#{vcode}
+        left JOIN (
+        select w.apMacAddress,w.people,w.vcode,w.timeWifi
+        from (
+        SELECT s.apMacAddress,count(1) as people,s.vcode,s.addtime as timeWifi
+        FROM jq_wifi s
+        WHERE s.vcode=#{vcode}
+        and s.addtime
+        between #{startTime} AND #{endTime}
+        GROUP BY s.apMacAddress
+        ) w where 1=1
+        ) c
+		ON b.apmac=c.apMacAddress
+		WHERE  b.vcode is not null
+
+
+        ]]>
+    </select>
+
+    <!--景点舒适度（咂机统计）-->
+    <select id="getScenicSpotZJMeth" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.jQScenicSpotZJ">
+        <![CDATA[
+
+
+        select a.id,count(s.name) as count,s.name,j.maxcount,s.maxquantity from jq_scenic_timely_population s
+        LEFT JOIN api_scenic_spots a on  a.name=s.name
+        LEFT JOIN jq_scenic_comfort j on j.scenicid=a.id
+        where s.vcode=#{vcode} and a.vcode=#{vcode} and s.time between #{startTime} AND #{endTime} and  a.name != '岸上' and a.name != '百家岩'
+        GROUP BY s.name ORDER BY count DESC
+
+]]>
+    </select>
+
+    <!--景点舒适度（咂机统计）-->
+    <select id="getScenicSpotBTPeople" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.jQScenicSpotZJ">
+        <![CDATA[
+
+        select s.`name` as name,
+        (select IFNULL(sum(total),0)
+        from jq_scenic_timely_population p
+        where p.VCODE = #{vcode}
+        and p.`NAME` = s.`name`
+        and p.time between #{startTime} AND #{endTime} )  as count
+        from api_scenic_spots s where s.vcode = #{vcode}
+        ORDER BY  count DESC ;
+
+
+        ]]>
+    </select>
+
+    <!--景点舒适度（统计景点数量与最大承载量）-->
+    <select id="getScenicSpotZJCountMeth" parameterType="String"
+            resultType="com.daqsoft.vo.client.madeVoBean.jQScenicSpotZJList">
+        <![CDATA[
+
+
+        select count(s.name) as count,t.maxquantity from api_scenic_spots s,(select maxquantity from jq_scenic_timely_population  where vcode=#{vcode} order by time desc  limit 1) t
+        where vcode=#{vcode} and status = 1
+
+
+        ]]>
+    </select>
+
+    <!--主页景区景点人数分析-->
+    <select id="getScenicPeopleToday" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.RealPeopleIndexTodayVo">
+        <![CDATA[
+            select count(*) as count,s.name from jq_scenic_timely_population s where s.vcode=#{vcode}
+            and s.time >#{today} and s.time < #{tomorrow}
+            GROUP BY NAME
+        ]]>
+    </select>
+
+
+    <!--主页团队来源统计-->
+    <select id="getTourCountDay" parameterType="Map"
+            resultType="com.daqsoft.vo.client.madeVoBean.TourCountVo" statementType="CALLABLE">
+        <![CDATA[
+           CALL TourFrom_day(#{st},#{et},#{vcode});
+		 ]]>
+    </select>
+    <!-- 通过日期查询实时人数 不用了 走缓存 -->
+    <select id="getPeopleRealByDate" parameterType="map" resultType="long">
+        <![CDATA[
+
+               SELECT SUM(s.total) as SumPeople
+               FROM jq_scenic_timely_population s
+               WHERE vcode=#{vcode}
+               AND s.time BETWEEN #{startTime} AND #{endTime}
+               GROUP BY DATE_FORMAT(s.time,'%Y-%m-%d')
+            ]]>
+    </select>
+    <!-- 通过日期查询实时旅行团 -->
+    <select id="getToursByDate" parameterType="map" resultType="long">
+        SELECT
+            SUM(AMOUNT)
+        FROM
+            jq_tours
+        WHERE
+            VCODE = #{vcode}
+        AND ARRIVETIME = DATE_FORMAT(#{date}, '%Y-%m-%d')
+    </select>
+    <!-- 通过日期查询实时票务收入 -->
+    <select id="getTicketMoneyByDate" parameterType="map" resultType="java.math.BigDecimal">
+        SELECT
+            SUM(TOTALPRICE)
+        FROM
+            jq_ticket
+        WHERE
+            VCODE = #{vcode}
+        AND DATE_FORMAT(TIME, '%Y-%m-%d') = DATE_FORMAT(#{date}, '%Y-%m-%d')
+    </select>
+    <!-- 查询年总人数 -->
+    <select id="getyearTotalPeople" parameterType="map" resultType="long">
+        SELECT SUM(s.total) as SumPeople
+               FROM jq_scenic_timely_population s
+               WHERE vcode=#{vcode}
+               AND DATE_FORMAT(s.time, '%Y') = DATE_FORMAT(#{date}, '%Y')
+               GROUP BY DATE_FORMAT(s.time,'%Y')
+    </select>
+    <!-- 查询年票务收入 -->
+    <select id="getYearTicketMoney" parameterType="map" resultType="java.math.BigDecimal">
+        SELECT
+        SUM(TOTALPRICE)
+        FROM
+        jq_ticket
+        WHERE
+        VCODE = #{vcode}
+        AND DATE_FORMAT(TIME, '%Y') = DATE_FORMAT(#{date}, '%Y')
+    </select>
+    <!-- 查询实时游客08:00-19:00 -->
+    <select id="getPassengerList" parameterType="map" resultType="long">
+        <![CDATA[
+               SELECT SUM(s.total) as SumPeople
+               FROM jq_scenic_timely_population s
+               WHERE vcode=#{vcode}
+               AND DATE_FORMAT(s.time, '%Y-%m-%d %H') between #{startTime} AND #{endTime}
+               GROUP BY DATE_FORMAT(s.time,'%Y-%m-%d %H')
+               ]]>
+    </select>
+    <!-- 查询景区最大承载量 -->
+    <select id="getScenicMaxCount" parameterType="map" resultType="long">
+        <![CDATA[
+           select MAXQUANTITY from jq_scenic_timely_population where vcode=#{vcode} limit 1;
+        ]]>
+    </select>
+    <!-- 查询景区视频监控 -->
+    <select id="getMonitorList" parameterType="String" resultType="com.daqsoft.vo.client.madeVoBean.DeviceVo">
+        <![CDATA[
+           SELECT
+            s.`name` AS spotName,
+            (
+                SELECT
+                    count(id)
+                FROM
+                    jq_monitor m
+                WHERE
+                    s.id = m.spotId
+                AND m.`STATUS` != - 99
+                AND m.nowStatus = 1
+                AND m.VCODE = #{vcode}
+            ) AS normalNum,
+            (
+                SELECT
+                    count(id)
+                FROM
+                    jq_monitor m
+                WHERE
+                    s.id = m.spotId
+                AND m.`STATUS` != - 99
+                AND m.nowStatus = 0
+                AND m.VCODE = #{vcode}
+            ) AS abnormalNum
+        FROM
+            api_scenic_spots s
+        WHERE
+            s.VCODE = #{vcode}
+        AND s.`status` != - 99;
+        ]]>
+    </select>
+
+    <!-- 查询景点最大舒适度 -->
+    <select id="getComfortMaxCount" parameterType="map" resultType="String">
+        <![CDATA[
+        select j.maxcount
+        from api_scenic_spots s ,jq_scenic_comfort j
+        where s.vcode=#{vcode} and s.id=j.scenicid and s.`STATUS` != -99 and s.name=#{scenicName}
+        ORDER BY maxcount desc LIMIT 1
+        ]]>
+    </select>
+
+    <!-- 查询景点所有名称 -->
+    <select id="getScenicSum" parameterType="map" resultType="com.daqsoft.vo.client.madeVoBean.jQScenicSpotZJ">
+        <![CDATA[
+        select s.name
+        from api_scenic_spots s
+        where s.vcode=#{vcode}  and s.`STATUS` != -99
+
+        ]]>
+    </select>
+    <!-- 查询景区停车场使用情况 -->
+    <select id="getParkingInfo" parameterType="map" resultType="com.daqsoft.vo.client.madeVoBean.ParkingVo">
+        SELECT
+            p.`name` AS pname,
+            ifnull(s.SURPLUS,0) AS totalParking,
+            ifnull(sum(s.USED + s.SURPLUS),0) AS maxParkSpace
+        FROM
+            jq_timely_parking s,
+            res_parking p
+        WHERE
+            p.id = s.PAKING_ID
+        AND p.vcode = #{vcode}
+        AND s.id = (
+            SELECT
+                id
+            FROM
+                jq_timely_parking
+            WHERE
+                vcode = #{vcode}
+            AND time BETWEEN #{startTime}
+            AND #{endTime}
+            ORDER BY
+                time DESC
+            LIMIT 0,
+            1
+        )
+        GROUP BY p.name
+    </select>
+
+    <!-- 旅行团数据获取-->
+    <select id="getToursByDateYear" parameterType="map" resultType="map">
+        SELECT GROUP_CONCAT(tabless.tours) as tours,GROUP_CONCAT(tabless.tourFrom) as tourFroms,tabless.dateTime FROM (
+        SELECT
+        COUNT(id) as tours,case when substr(busnum,1,1)='京' THEN '北京'
+        when substr(busnum,1,1)='沪' THEN '上海'
+        when substr(busnum,1,1)='津' THEN '天津'
+        when substr(busnum,1,1)='渝' THEN '重庆'
+        when substr(busnum,1,1)='黑' THEN '黑龙江'
+        when substr(busnum,1,1)='吉' THEN '吉林'
+        when substr(busnum,1,1)='辽' THEN '辽宁'
+        when substr(busnum,1,1)='蒙' THEN '内蒙古'
+        when substr(busnum,1,1)='冀' THEN '河北'
+        when substr(busnum,1,1)='新' THEN '新疆'
+        when substr(busnum,1,1)='甘' THEN '甘肃'
+        when substr(busnum,1,1)='青' THEN '青海'
+        when substr(busnum,1,1)='陕' THEN '陕西'
+        when substr(busnum,1,1)='宁' THEN '宁夏'
+        when substr(busnum,1,1)='豫' THEN '河南'
+        when substr(busnum,1,1)='鲁' THEN '山东'
+        when substr(busnum,1,1)='晋' THEN '山西'
+        when substr(busnum,1,1)='皖' THEN '安徽'
+        when substr(busnum,1,1)='鄂' THEN '湖北'
+        when substr(busnum,1,1)='湘' THEN '湖南'
+        when substr(busnum,1,1)='苏' THEN '江苏'
+        when substr(busnum,1,1)='川' THEN '四川'
+        when substr(busnum,1,1)='贵' THEN '贵州'
+        when substr(busnum,1,1)='云' THEN '云南'
+        when substr(busnum,1,1)='桂' THEN '广西'
+        when substr(busnum,1,1)='藏' THEN '西藏'
+        when substr(busnum,1,1)='浙' THEN '浙江'
+        when substr(busnum,1,1)='赣' THEN '江西'
+        when substr(busnum,1,1)='粤' THEN '广东'
+        when substr(busnum,1,1)='闽' THEN '福建'
+        when substr(busnum,1,1)='琼' THEN '海南'
+        ELSE '未知'
+        END tourFrom,
+        DATE_FORMAT(ARRIVETIME,#{dateFormat}) as dateTime
+        FROM
+        jq_tours
+        WHERE
+        VCODE = #{vcode}
+        GROUP BY  DATE_FORMAT(ARRIVETIME,#{dateFormat}),tourFrom
+        ORDER BY DATE_FORMAT(ARRIVETIME,#{dateFormat}) DESC
+
+        ) as tabless GROUP BY tabless.dateTime;
+    </select>
+    <select id="getParkingUsePoint"
+            resultType="java.math.BigDecimal"  parameterType="java.util.Map">
+        <![CDATA[
+        select ((select USED from jq_timely_parking where ID = (select MAX(ID) from jq_timely_parking where
+        VCODE = #{vcode} AND TIME  BETWEEN #{startTime} and #{endTime}  AND `status` = 1)) /
+        (select PARKING_LOT from res_parking where vcode = #{vcode} and id = #{id} AND `status` = 1)*100) as total
+        ]]>
+    </select>
+    <select id="getParkingUseInfo" resultType="map"  parameterType="java.util.Map">
+        <![CDATA[
+        SELECT
+            USED AS used,
+            SURPLUS AS noUsed
+        FROM
+            jq_timely_parking
+        WHERE
+            ID = (
+                SELECT
+                    MAX(ID)
+                FROM
+                    jq_timely_parking
+                WHERE
+                    VCODE = #{vcode}
+                AND TIME BETWEEN #{startTime}
+                AND #{endTime}
+                AND `status` = 1
+                AND PAKING_ID = #{id}
+            )
+        ]]>
+    </select>
+    <select id="getScenicComfort" resultType="map"  parameterType="java.util.Map">
+        <![CDATA[
+        SELECT
+            RATING AS rating,
+            COLORVALUE AS colorvalue
+        FROM
+            jq_comfort
+        WHERE
+            VCODE = #{vcode}
+        AND STANDARD >= #{num}
+        ORDER BY
+            (STANDARD+0) ASC
+        LIMIT 1
+        ]]>
+    </select>
+    <!--<select id="getSpotsNumList" resultType="map"  parameterType="map">-->
+        <!--<![CDATA[-->
+        <!--SELECT-->
+            <!--`NAME` AS name,-->
+            <!--sum(total) AS num-->
+        <!--FROM-->
+            <!--jq_scenic_timely_population-->
+        <!--WHERE-->
+            <!--VCODE = #{vcode}-->
+        <!--AND time BETWEEN #{startTime}-->
+        <!--AND #{endTime}-->
+        <!--GROUP BY-->
+            <!--`NAME`-->
+        <!--ORDER BY num desc-->
+        <!--]]>-->
+    <!--</select>-->
+    <select id="getSpotsNumList" resultType="map"  parameterType="map">
+        <![CDATA[
+        select s.`name` as name,
+        (select IFNULL(sum(total),0)
+        from jq_scenic_timely_population p
+        where p.VCODE = #{vcode}
+        and p.`NAME` = s.`name`
+        and p.time between #{startTime} AND #{endTime} )  as count
+        from api_scenic_spots s where s.vcode = #{vcode}
+        ORDER BY  count DESC ;
+        ]]>
+    </select>
+    <select id="getSpotsList" resultType="map"  parameterType="string">
+        <![CDATA[
+        SELECT
+            s.`name` AS name,
+            j.maxcount AS maxcount
+        FROM
+            api_scenic_spots s,
+            jq_scenic_comfort j
+        WHERE
+            s.vcode = #{vcode}
+        AND s.id = j.scenicid
+        AND s.`STATUS` != - 99
+        ]]>
+    </select>
+
+    <select id="getMonitorStatus" parameterType="String" resultType="Map">
+      SELECT name, outipaddress as ip, IF(nowStatus = '0','异常','正常') as nowStatus from jq_monitor
+      where vcode = #{vcode} and status = 1
+
+    </select>
+
+    <select id="getMonitorStatusSum" parameterType="String" resultType="Map">
+        SELECT count(nowStatus) as abnormal from jq_monitor
+        where vcode = #{vcode} and status = 1 and nowStatus = '0'
+
+    </select>
+
+
+</mapper>

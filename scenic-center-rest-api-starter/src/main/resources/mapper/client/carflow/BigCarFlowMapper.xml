@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.daqsoft.mapper.client.carflow.BigCarFlowDao">
+
+
+    <!-- 车流趋势日分段-->
+    <select id="findCarFlowByDay"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.Big_CarFlow_Tend">
+        SELECT count(id) as sumCar,DATE_FORMAT(s.accessdate,'%Y-%m-%d') as Time
+        FROM jq_tvpm_vehiclelog_part as s
+        where s.vcode = #{vcode}
+        and ( DATE_FORMAT(s.accessdate,'%Y-%m-%d') BETWEEN #{startTime} and #{endTime} )
+        GROUP BY  DATE_FORMAT(s.accessdate,'%Y-%m-%d')
+    </select>
+
+    <!-- 车流趋势年分段-->
+    <select id="findCarFlowByYear"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.Big_CarFlow_Tend">
+        SELECT count(id) as sumCar,DATE_FORMAT(s.accessdate,'%Y') as Time
+        FROM jq_tvpm_vehiclelog_part as s
+        where s.vcode = #{vcode}
+        and ( DATE_FORMAT(s.accessdate,'%Y') BETWEEN #{startTime} and #{endTime} )
+        GROUP BY  DATE_FORMAT(s.accessdate,'%Y')
+    </select>
+
+    <!-- 各类车辆总体数量分布 年-->
+    <select id="findCarTypePrecentByYear"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.CarFlow_Type_Tend">
+        SELECT count(id) as SumCar,source as CarType
+        FROM jq_tvpm_vehiclelog_part as s
+        where s.vcode = #{vcode}
+        and ( DATE_FORMAT(s.accessdate,'%Y') BETWEEN #{startTime} and #{endTime} )
+        GROUP BY  s.source
+    </select>
+
+    <!-- 各类车辆总体数量分布 月-->
+    <select id="findCarTypePrecentByMonth"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.CarFlow_Type_Tend">
+        SELECT count(id) as SumCar,source as CarType
+        FROM jq_tvpm_vehiclelog_part as s
+        where s.vcode = #{vcode}
+        and ( DATE_FORMAT(s.accessdate,'%Y-%m') BETWEEN #{startTime} and #{endTime} )
+        GROUP BY  s.source
+    </select>
+
+    <!-- 各类车辆总体数量分布 日-->
+    <select id="findCarTypePrecentByDay"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.CarFlow_Type_Tend">
+        SELECT count(id) as SumCar,source as CarType
+        FROM jq_tvpm_vehiclelog_part as s
+        where s.vcode = #{vcode}
+        and ( DATE_FORMAT(s.accessdate,'%Y-%m-%d') BETWEEN #{startTime} and #{endTime} )
+        GROUP BY  s.source
+    </select>
+
+    <!-- 各类车辆总体数量分布 日期段-->
+    <select id="findCarTypePrecentByTimeQuantum"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.CarFlow_Type_Tend">
+        SELECT count(id) as SumCar,source as CarType
+        FROM jq_tvpm_vehiclelog_part as s
+        where s.vcode = #{vcode}
+        and ( DATE_FORMAT(s.accessdate,'%Y-%m-%d') BETWEEN #{startTime} and #{endTime} )
+        GROUP BY  s.source
+    </select>
+
+    <!-- 车流分析各类车型分析，总体数量分布  年-->
+    <select id="findCarTypePrecentByYearTime"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.CarFlow_Type_Tend">
+        SELECT count(id) as SumCar,source as CarType
+        FROM jq_tvpm_vehiclelog_part as s
+        where s.vcode = #{vcode}
+        and  DATE_FORMAT(s.accessdate,'%Y') = #{time}
+        GROUP BY  DATE_FORMAT(s.accessdate,'%Y'),s.source
+    </select>
+
+    <!-- 车流分析各类车型分析，总体数量分布  月-->
+    <select id="findCarTypePrecentByMonthTime"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.CarFlow_Type_Tend">
+        SELECT count(id) as SumCar,source as CarType
+        FROM jq_tvpm_vehiclelog_part as s
+        where s.vcode = #{vcode}
+        and  DATE_FORMAT(s.accessdate,'%Y-%m') = #{time}
+        GROUP BY  DATE_FORMAT(s.accessdate,'%Y-%m'),s.source
+    </select>
+
+    <!-- 车流分析各类车型分析，总体数量分布  日-->
+    <select id="findCarTypePrecentByDayTime"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.CarFlow_Type_Tend">
+        SELECT count(id) as SumCar,source as CarType
+        FROM jq_tvpm_vehiclelog_part as s
+        where s.vcode = #{vcode}
+        and  DATE_FORMAT(s.accessdate,'%Y-%m-%d') = #{time}
+        GROUP BY  DATE_FORMAT(s.accessdate,'%Y-%m-%d'),s.source
+    </select>
+
+    <!-- 汽车趋势（月份）-->
+    <select id="findChangeCarSumByMonth"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.CarFlow_Change_Time_Tend">
+        SELECT count(id) as num,source as source,DATE_FORMAT(s.accessdate,'%Y-%m-%d') as time
+        FROM jq_tvpm_vehiclelog_part as s
+        where s.vcode = #{vcode}
+        and  DATE_FORMAT(s.accessdate,'%Y-%m') = #{time}
+        GROUP BY  DATE_FORMAT(s.accessdate,'%Y-%m-%d'),s.source
+    </select>
+
+    <!-- 车流分析;各类车辆实时变动趋势  日-->
+    <select id="findChangeCarSum"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.CarFlow_Change_Time_Tend">
+        SELECT count(id) as num,source as source,DATE_FORMAT(s.accessdate,'%Y-%m-%d') as time
+        FROM jq_tvpm_vehiclelog_part as s
+        where s.vcode = #{vcode}
+        and  (DATE_FORMAT(s.accessdate,'%Y-%m-%d') BETWEEN #{startTime} and #{endTime} )
+        GROUP BY  DATE_FORMAT(s.accessdate,'%Y-%m-%d'),s.source
+    </select>
+
+    <!-- 各类车辆变动趋势（每日） -->
+    <select id="getCarTypeHour"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.CarFlow_Change_Time_Tend">
+        SELECT count(id) as num,source as source,DATE_FORMAT(s.accessdate,'%H') as time
+        FROM jq_tvpm_vehiclelog_part as s
+        where s.vcode = #{vcode}
+        and  DATE_FORMAT(s.accessdate,'%Y-%m-%d') = #{day}
+        and  s.source = #{type}
+        GROUP BY  DATE_FORMAT(s.accessdate,'%Y-%m-%d %H')
+    </select>
+
+    <!-- 各类车辆变动趋势（月） -->
+    <select id="getCarTypeMonth"  parameterType="Map" resultType="com.daqsoft.vo.client.madeVoBean.CarFlow_Change_Time_Tend">
+        SELECT count(id) as num,source as source,DATE_FORMAT(s.accessdate,'%m') as time
+        FROM jq_tvpm_vehiclelog_part as s
+        where s.vcode = #{vcode}
+        and  DATE_FORMAT(s.accessdate,'%Y') = #{year}
+        and  s.source = #{type}
+        GROUP BY  DATE_FORMAT(s.accessdate,'%Y-%m')
+    </select>
+    <!-- 通过景区编码查询省份名,省份的region是前三位+"000"-->
+    <select id="getRegionByVcode" resultType="string" parameterType="string">
+        SELECT
+	    sr.`NAME`
+        FROM
+            sys_region sr
+        WHERE
+            sr.REGION = CONCAT(
+                SUBSTRING(
+                    (
+                        SELECT
+                            sr.REGION
+                        FROM
+                            sys_region sr
+                        INNER JOIN sys_user sml ON sr.REGION = sml.REGION
+                        WHERE
+                            sml.VCODE = #{vcode}
+                        AND sml.REGION IS NOT NULL
+                        LIMIT 1
+                    ),
+                    1,
+                    2
+                ),
+                '0000'
+            )
+    </select>
+    <!-- 查询景区所在省份的城市车辆来源 -->
+    <select id="getCarComeFromYearCar" resultType="com.daqsoft.vo.client.madeVoBean.CarComeFromCarVo" parameterType="map">
+        SELECT
+            count(ID) num,
+            substr(VEHICLENO, 1, 2) carNum,
+            CITY city
+        FROM
+            jq_tvpm_vehiclelog_part
+        WHERE
+            VCODE = #{vcode}
+        AND PROVINCE = #{pname}
+        AND ACCESSDATE BETWEEN #{startTime}
+        AND #{endTime}
+        GROUP BY
+            CITY
+        ORDER BY
+            num DESC
+    </select>
+</mapper>
