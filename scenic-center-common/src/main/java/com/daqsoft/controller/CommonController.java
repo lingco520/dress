@@ -98,46 +98,4 @@ public class CommonController {
             return ResponseBuilder.custom().failed("查询错误", 1).build();
         }
     }
-    /**
-     * 查询景区下的景点列表
-     * @param request
-     * @return
-     */
-    @RequestMapping(value = "/getScenicList", method = RequestMethod.GET)
-    @ResponseBody
-    public BaseResponse getScenicList(HttpServletRequest request) {
-        try {
-            //查询景区下的景点
-            String vcode = request.getSession().getAttribute(ScrsConstants.VCODE)+"";
-            List<ScenicSpotsVo> scenicList = commonService.getScenicByVcode(vcode);
-            List<SysDictVo> dictVoList = new ArrayList<>();
-            if(scenicList != null && scenicList.size() > 0){
-                for(ScenicSpotsVo scenicSpotsVo : scenicList){
-                    SysDictVo sysDictVo = new SysDictVo();
-                    sysDictVo.setName(scenicSpotsVo.getName());
-                    sysDictVo.setValue(scenicSpotsVo.getId());
-                    dictVoList.add(sysDictVo);
-                }
-            }
-            return ResponseBuilder.custom().success().data(dictVoList).build();
-        } catch (Exception e){
-            LOGGER.error("查询错误:", e);
-            return ResponseBuilder.custom().failed("查询错误", 1).build();
-        }
-    }
-
-    /**
-     * 使用超图调用的公共方法
-     * 超图渲染 iframe 请求地址，渲染超图页面
-     * @param request
-     * @param model
-     * @return
-     */
-    @RequestMapping(value = "/getGisMap", method = RequestMethod.GET)
-    public String getGisMap(HttpServletRequest request, Model model){
-        ScenicGisConfigVo gisConfig = commonService.getGisConfig(request.getSession().getAttribute(ScrsConstants.VCODE)+"");
-        model.addAttribute("dto", gisConfig);
-        // 超图公共页面
-        return "superMapLayer";
-    }
 }

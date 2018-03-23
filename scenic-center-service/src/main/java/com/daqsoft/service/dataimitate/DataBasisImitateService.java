@@ -6,7 +6,6 @@
  */
 package com.daqsoft.service.dataimitate;
 
-import com.daqsoft.constants.BusinessConstants;
 import com.daqsoft.entity.dataconfig.DataBasisConfig;
 import com.daqsoft.mapper.resource.DataBasisConfigMapper;
 import com.daqsoft.mapper.resource.DataBasisImitateMapper;

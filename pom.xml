@@ -13,10 +13,8 @@
     <modules>
         <module>scenic-center-starter</module>
         <module>scenic-center-common</module>
-        <module>scenic-center-manager-control</module>
         <module>scenic-center-resource</module>
         <module>scenic-center-service</module>
-        <module>scenic-center-rest-api-starter</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
